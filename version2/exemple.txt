@@ -1,0 +1,72 @@
+REAL ROUTINE nomfonction1 (A,(5*8),B,C+(5*mat(8,2)-tab(a- 9 +(8*9))),8)
+
+INTEGER A, B;
+CHARACTER C ;
+LOGICAL D;
+INTEGER MAT DIMENSION (op+(8));
+B =  5-(6);
+A =  (B * 5);
+C = "L3";
+D = TRUE; 
+nomfonction = 5*A ;
+ENDR 
+
+REAL ROUTINE nomfonction2 (A,mat(1,2),28)
+
+INTEGER X, Z;
+CHARACTER C ;
+LOGICAL D;
+INTEGER MAT DIMENSION (op+(8), -25 - 95);
+B =  5-(6);
+A =  (B * 5);
+C = "L3";
+D = FALSE; 
+nomfonction2 = 25*36 + 528+ -5744+ -5 +myConst ;
+ENDR 
+
+PROGRAM nomprogral 
+INTEGER A,B ;
+CHARACTER C*20;
+LOGICAL D;
+CHARACTER char;
+INTEGER MAT DIMENSION (30,10);
+LOGICAL MATLOG DIMENSION (taille);
+B = 30;
+A = MAT(5,4) + (B * 5) + tab(5);
+C = "L3 acad c meli bila";
+D = TRUE;
+WRITE ("Donner la valeur de A :");
+    READ (A); 
+WRITE ("La Valeur de A est ", A, "et i am heppy yaaay",80+ 96 + happy + mat(80,3),"io");
+
+A = 0;
+DOWHILE (A.LT.10) 
+A = A + 1; 
+IF ((A.EQ.(here* 123)).OR.(C.EQ.TRUE)) THEN A = 5 + X ; 
+ELSE 
+
+A = CALL nomroutine (50 , -60 , pi , tab(82), mat2(70,9));
+ENDIF
+A = A + B; 
+
+ENDDO
+
+
+ nomvariable = CALL fonc (A,v); 
+
+EQUIVALENCE (N,LEc), (RO,o);
+
+IF (A.EQ.B) THEN A = (A* B + 5 + +8 - 9 + -3 - +6 -(-9)) ; 
+ELSE 
+A = A +( B); 
+ ENDIF
+IF (((hiyo.NE.p3).OR.TRUE ).NE.(FALSE.OR.TRUE )) THEN A = (A* B + 5 + +8 - 9 + -3 - +6 -(-9)) ; 
+ELSE 
+A = A +( B); 
+ ENDIF
+
+A = tab(85) + y - 89 ; 
+EQUIVALENCE (A, B, C), (Y, TAB(3)); 
+
+END
+
