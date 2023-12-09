@@ -1,7 +1,11 @@
 REAL ROUTINE nomfonction1 (A,(5*8),B,C+(5*mat(8,2)-tab(a- 9 +(8*9))),8)
 
-INTEGER A, B;
-CHARACTER C ;
+REAL A, BIL;
+REAL F=5;
+LOGICAL V= TRUE;
+REAL A, B=5;
+CHARACTER  T  , SMILE , L *5 , N *9 = "MELI THE BEST" ;
+CHARACTER NPL="j";
 LOGICAL D;
 INTEGER MAT DIMENSION (op+(8));
 B =  5-(6);
@@ -50,9 +54,12 @@ ENDIF
 A = A + B; 
 
 ENDDO
+IF ((A.NE.8).AND.(a.AND.B.OR.(Z.LT.802))) THEN A=A-MAT(8,8); ENDIF
+IF(((MELI.NE.P3).OR.TRUE).NE.(FALSE.OR.TRUE)) THEN A=A-MAT(8,8); ENDIF
+IF(A+B.LT.B-C.OR.(A+B.LT.B-C.AND.TRUE)) THEN A=A-MAT(8,8); ENDIF
 
 
- nomvariable = CALL fonc (A,v); 
+nomvariable = CALL fonc (A,v); 
 
 EQUIVALENCE (N,LEc), (RO,o);
 

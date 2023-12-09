@@ -1,3 +1,4 @@
 flex lexical.l
-gcc lex.yy.c -o comp.exe  -lfl 
-comp.exe exemple.txt
+bison syntaxiqueMeli.y -d
+gcc lex.yy.c syntaxiqueMeli.tab.c -lfl -ly -o app.exe
+app.exe exemple.txt

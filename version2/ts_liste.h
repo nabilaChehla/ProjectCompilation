@@ -3,19 +3,25 @@
 #include <string.h>
 #include <stdbool.h>
 
+// Constants
+#define MAX_NAME_LENGTH 50
+#define MAX_TYPE_LENGTH 20
+#define MAX_CODE_LENGTH 20
+#define MAX_VAL_LENGTH 50
+
 typedef struct elt_Cst_Idf_node
 {
-  char name[20];
-  char type[20];
-  float val;
-  char code[20];
+  char name[MAX_NAME_LENGTH];
+  char type[MAX_TYPE_LENGTH];
+  char val[MAX_VAL_LENGTH];
+  char code[MAX_CODE_LENGTH];
   struct elt_Cst_Idf_node *next;
 } elt_Cst_Idf_node;
 
 typedef struct elt_Sep_MotCle_node
 {
-  char name[20];
-  char code[20];
+  char name[MAX_NAME_LENGTH];
+  char code[MAX_CODE_LENGTH];
   struct elt_Sep_MotCle_node *next;
 } elt_Sep_MotCle_node;
 
@@ -32,9 +38,7 @@ typedef struct list_Sep_MotCle
 list_Cst_Idf *L_Cst_Idf;
 list_Sep_MotCle *L_Sep_MotCle;
 
-/*----------------------------------------------------*/
-
-elt_Cst_Idf_node *createnode_Cst_Idf(const char name[20], const char type[20], const char code[20], float val)
+elt_Cst_Idf_node *createnode_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH], const char code[MAX_CODE_LENGTH], const char val[MAX_VAL_LENGTH])
 {
   elt_Cst_Idf_node *newNode = (elt_Cst_Idf_node *)malloc(sizeof(elt_Cst_Idf_node));
   if (!newNode)
@@ -43,14 +47,14 @@ elt_Cst_Idf_node *createnode_Cst_Idf(const char name[20], const char type[20], c
   }
   strcpy(newNode->name, name);
   strcpy(newNode->type, type);
-  newNode->val = val;
+  strcpy(newNode->val, val);
   strcpy(newNode->code, code);
 
   newNode->next = NULL;
   return newNode;
 }
 
-elt_Sep_MotCle_node *createnode_Sep_MotCle(const char name[20], const char code[20])
+elt_Sep_MotCle_node *createnode_Sep_MotCle(const char name[MAX_NAME_LENGTH], const char code[MAX_CODE_LENGTH])
 {
   elt_Sep_MotCle_node *newNode = (elt_Sep_MotCle_node *)malloc(sizeof(elt_Sep_MotCle_node));
   if (!newNode)
@@ -111,7 +115,8 @@ void freeList_Sep_MotCle()
   }
   free(L_Sep_MotCle);
 }
-void insert_Cst_Idf(const char name[20], const char type[20], const char code[20], float val)
+
+void insert_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH], const char code[MAX_CODE_LENGTH], char val[MAX_VAL_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
 
@@ -142,7 +147,7 @@ void insert_Cst_Idf(const char name[20], const char type[20], const char code[20
   }
 }
 
-void insert_Sep_MotCle(const char name[20], const char code[20])
+void insert_Sep_MotCle(const char name[MAX_NAME_LENGTH], const char code[MAX_CODE_LENGTH])
 {
   elt_Sep_MotCle_node *current = L_Sep_MotCle->head;
 
@@ -173,7 +178,7 @@ void insert_Sep_MotCle(const char name[20], const char code[20])
   }
 }
 
-void add_TYPE_Cst_Idf(const char name[20], char type[20])
+void add_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
@@ -189,7 +194,23 @@ void add_TYPE_Cst_Idf(const char name[20], char type[20])
   printf("ERROR : cant change the type node doesnt exist"); // Node with the specified name does not exist
 }
 
-bool nodeExists_Cst_Idf(const char name[20])
+void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VAL_LENGTH])
+{
+  elt_Cst_Idf_node *current = L_Cst_Idf->head;
+  while (current != NULL)
+  {
+    if (strcmp(current->name, name) == 0)
+    {
+      strcpy(current->val, value); // Node with the specified name exists
+      printf("\n\nVALUE DONE : %s \n\n", value);
+      return;
+    }
+    current = current->next;
+  }
+  printf("ERROR : cant change the value node doesnt exist"); // Node with the specified name does not exist
+}
+
+bool nodeExists_Cst_Idf(const char name[MAX_NAME_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
@@ -203,7 +224,7 @@ bool nodeExists_Cst_Idf(const char name[20])
   return false; // Node with the specified name does not exist
 }
 
-bool nodeExists_Sep_MotCle(const char name[20])
+bool nodeExists_Sep_MotCle(const char name[MAX_NAME_LENGTH])
 {
   elt_Sep_MotCle_node *current = L_Sep_MotCle->head;
   while (current != NULL)
@@ -228,7 +249,7 @@ void displayList_Cst_Idf()
 
   while (current != NULL)
   {
-    printf("\t|%10s |%15s | %12s | %12f\n", current->name, current->code, current->type, current->val);
+    printf("\t|%10s |%15s | %12s | %12s\n", current->name, current->code, current->type, current->val);
     current = current->next;
   }
 }
@@ -247,4 +268,32 @@ void displayList_Sep_MotCle()
     printf("\t|%10s |%12s | \n", current->name, current->code);
     current = current->next;
   }
+}
+
+char *intToString(int number)
+{
+  // Determine the maximum number of digits needed
+  int numDigits = snprintf(NULL, 0, "%d", number);
+
+  // Allocate memory for the string representation
+  char *result = (char *)malloc((numDigits + 1) * sizeof(char));
+
+  // Convert the integer to a string
+  snprintf(result, numDigits + 1, "%d", number);
+
+  return result;
+}
+
+char *floatToString(float number)
+{
+  // Determine the maximum number of digits needed
+  int numDigits = snprintf(NULL, 0, "%f", number);
+
+  // Allocate memory for the string representation
+  char *result = (char *)malloc((numDigits + 1) * sizeof(char));
+
+  // Convert the float to a string
+  snprintf(result, numDigits + 1, "%f", number);
+
+  return result;
 }

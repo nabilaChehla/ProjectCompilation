@@ -988,7 +988,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
     Col= Col + strlen(yytext);
     if (yyleng>10) printf ("WARNING: identificateur trop long a la ligne %d a la colonne %d (%d characters) \n",nb_ligne, Col,strlen(yytext));
-    insert_Cst_Idf(yytext,"","idf",0); 
+    insert_Cst_Idf(yytext,"","idf","0"); 
     printf("Entite lexicale reconnue : identificateur (%s)\n",yytext); 
     return idf;
 }
@@ -1003,7 +1003,7 @@ YY_RULE_SETUP
      printf("Warning :%d real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
     }
     else{
-     insert_Cst_Idf(yytext,"REAL","cst_real",0); 
+     insert_Cst_Idf(yytext,"REAL","cst_real","0"); 
      printf("Entite lexicale reconnue : constante real (%s)\n",yytext); 
         return cst_real;
     }
@@ -1014,12 +1014,12 @@ case 32:
 YY_RULE_SETUP
 #line 220 "lexical.l"
 {
-        yylval.entier=atoi(yytext);
+     yylval.entier=atoi(yytext);
     Col= Col + strlen(yytext);
     if(atoi(yytext) >32767 ||  atoi(yytext) < -32768) {
      printf("Warning :%d real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
     }else{
-     insert_Cst_Idf(yytext,"INTEGER","cst_int",0); 
+     insert_Cst_Idf(yytext,"INTEGER","cst_int","0"); 
      printf("Entite lexicale reconnue : constante integer (%s)\n",yytext); 
                  return cst_int;
     }
