@@ -6,6 +6,8 @@
 #include "ts_liste.h"
   int nb_ligne=1, Col=1;
   char fileName[50];
+Stack *stack_type;
+Stack *stack_value;
   char save_type[MAX_TYPE_LENGTH]; 
   char save_val[MAX_VAL_LENGTH]; 
 
@@ -23,10 +25,10 @@
 %%
 S : Fonction_i PROGRAM_mc idf DEC INSTRUCTIONS END_mc{printf("syntaxe correcte \n"); YYACCEPT;}
 ;
-Fonction_i: type_fonc ROUTINE_mc idf par_ouvrante liste_parametres par_fermante DEC INSTRUCTIONS Affectation ENDR_mc Fonction_i {add_TYPE_Cst_Idf($3, save_type);}
+Fonction_i: type_fonc ROUTINE_mc idf par_ouvrante liste_parametres par_fermante DEC INSTRUCTIONS Affectation ENDR_mc Fonction_i {add_TYPE_Cst_Idf($3,top(stack_type));pop(stack_type)}
            | 
 ;
-type_fonc: type| CHARACTER_mc {strcpy(save_type,$1);  }
+type_fonc: type| CHARACTER_mc {push(stack_type, $1)  }
 ;
 liste_parametres: EXPRESSION  SUITE_liste_parametres | TAB_PAR liste_parametres
 ;
@@ -38,49 +40,35 @@ TAB_PAR: idf par_ouvrante EXPRESSION LIST_PAR_TAB par_fermante
 ;
 LIST_PAR_TAB : ver EXPRESSION |
 ;
-EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1
-           | EXPRESSION moins SUITE_EXPRESSION_1
-           | SUITE_EXPRESSION_1
-;
 
-SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2
-                   | SUITE_EXPRESSION_1 divis SUITE_EXPRESSION_2
-                   | SUITE_EXPRESSION_2
+DEC: type SUITE_DEC pvg DEC {pop(stack_type)}
+    |CHARACTER_mc DEC_CHAR pvg DEC  
+    | 
 ;
-
-SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante
-                   | cst_int
-                   | cst_real
-                   | TAB_PAR
-                   | idf
+SUITE_DEC:  idf DEC_AFF ver SUITE_DEC {add_TYPE_Cst_Idf($1,top(stack_type)); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)};  
+          | idf DEC_AFF {add_TYPE_Cst_Idf($1,top(stack_type)); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)} 
+          | idf ver SUITE_DEC {add_TYPE_Cst_Idf($1,top(stack_type));}; 
+          | idf  {add_TYPE_Cst_Idf($1,top(stack_type));}; 
+          | idf DIMENSION_mc par_ouvrante EXPRESSION LIST_PAR_TAB par_fermante  ver SUITE_DEC {add_TYPE_Cst_Idf($1,top(stack_type))}
+          | idf DIMENSION_mc par_ouvrante EXPRESSION LIST_PAR_TAB par_fermante {add_TYPE_Cst_Idf($1,top(stack_type));}
 ;
-DEC: type SUITE_DEC pvg DEC 
-    |CHARACTER_mc DEC_CHAR pvg DEC | 
-;
-SUITE_DEC:  idf DEC_AFF ver SUITE_DEC {add_TYPE_Cst_Idf($1,save_type); add_VALUE_Cst_Idf($1,save_val)};  
-          | idf DEC_AFF {add_TYPE_Cst_Idf($1,save_type); add_VALUE_Cst_Idf($1,save_val)} 
-          | idf ver SUITE_DEC {add_TYPE_Cst_Idf($1,save_type)}; 
-          | idf  {add_TYPE_Cst_Idf($1,save_type)}; 
-          | idf DIMENSION_mc par_ouvrante EXPRESSION LIST_PAR_TAB par_fermante  ver SUITE_DEC {add_TYPE_Cst_Idf($1, save_type)}
-          | idf DIMENSION_mc par_ouvrante EXPRESSION LIST_PAR_TAB par_fermante {add_TYPE_Cst_Idf($1, save_type)}
-;
-DEC_AFF: aff cst_int {strcpy(save_val,intToString($2));} | aff cst_real {strcpy(save_val,floatToString($2));} | aff  TRUE_mc {strcpy(save_val,$2);}| aff FALSE_mc{strcpy(save_val,$2);}
+DEC_AFF: aff cst_int {push(stack_value, intToString($2)) } | aff cst_real {push(stack_value, floatToString($2))  } | aff  TRUE_mc {push(stack_value, $2)  }| aff FALSE_mc{push(stack_value, $2)  }
 ;
 DEC_CHAR :  idf multip cst_int ver   DEC_CHAR {add_TYPE_Cst_Idf($1, "CHARACTER")}
           |  idf multip cst_int  {add_TYPE_Cst_Idf($1, "CHARACTER");}
-          |   idf multip cst_int DEC_CHAR_AFF  {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,save_val)}
-          |   idf multip cst_int DEC_CHAR_AFF ver DEC_CHAR {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,save_val)}
+          |   idf multip cst_int DEC_CHAR_AFF  {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)}
+          |   idf multip cst_int DEC_CHAR_AFF ver DEC_CHAR {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)}
           |   idf  {add_TYPE_Cst_Idf($1, "CHARACTER");}
           |   idf ver DEC_CHAR {add_TYPE_Cst_Idf($1, "CHARACTER")}
-          |   idf DEC_CHAR_AFF {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,save_val)}
-          |   idf DEC_CHAR_AFF ver   DEC_CHAR   {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,save_val)}
+          |   idf DEC_CHAR_AFF {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)}
+          |   idf DEC_CHAR_AFF ver   DEC_CHAR   {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)}
 ;
 
-DEC_CHAR_AFF: aff character  {strcpy(save_val,$2)}
+DEC_CHAR_AFF: aff character  {push(stack_value,$2)}
 ;
-type:  INTEGER_mc  {strcpy(save_type,$1);  }
-     | REAL_mc     {strcpy(save_type,$1);  }
-     | LOGICAL_mc  {strcpy(save_type,$1);  }
+type:  INTEGER_mc  {push(stack_type, $1)  }
+     | REAL_mc     {push(stack_type, $1)  }
+     | LOGICAL_mc  {push(stack_type, $1)  }
 ;
 
 INSTRUCTIONS: INSTRUCTIONS TYPE_INSTRUCTION
@@ -97,8 +85,7 @@ TYPE_INSTRUCTION : Affectation
 Affectation: idf aff EXPRESSION pvg 
             |idf aff character pvg 
             |idf par_ouvrante EXPRESSION LIST_PAR_TAB par_fermante aff EXPRESSION pvg 
-            |idf aff TRUE_mc pvg 
-            |idf aff FALSE_mc pvg 
+            |idf aff LOGICAL_VALUE pvg 
 ;
 
 Entre_Sortie_INST:  WRITE_mc par_ouvrante SORTIE_MESSAGE par_fermante pvg 
@@ -111,6 +98,22 @@ EQUIVALENCE_INST: EQUIVALENCE_mc SUITE_EQUI ver SUITE_EQUI pvg
 SUITE_EQUI: par_ouvrante liste_parametres par_fermante
 ;
 
+EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1
+           | EXPRESSION moins SUITE_EXPRESSION_1
+           | SUITE_EXPRESSION_1
+;
+
+SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2
+                   | SUITE_EXPRESSION_1 divis SUITE_EXPRESSION_2
+                   | SUITE_EXPRESSION_2
+;
+
+SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante
+                   | cst_int
+                   | cst_real
+                   | TAB_PAR
+                   | idf
+;
 
 COND:   COND  OR_mc   SUITE_COND_1
       | SUITE_COND_1
@@ -119,12 +122,17 @@ SUITE_COND_1:  SUITE_COND_1  AND_mc  SUITE_COND_2
              | SUITE_COND_2
 ;
 SUITE_COND_2:   EXPRESSION_BOOL
-              | COND_SIMPLE
+              | COND_SIMPLE 
 ;
-COND_SIMPLE :  COND_SIMPLE   OPERATEUR_LOGIQUE_1  EXPRESSION_BOOL 
+COND_SIMPLE :  COND_SIMPLE  OPERATEUR_LOGIQUE_1  EXPRESSION_BOOL 
              | EXPRESSION_BOOL  OPERATEUR_LOGIQUE_1  EXPRESSION_BOOL 
 ;
-EXPRESSION_BOOL : EXPRESSION | LOGICAL_VALUE | par_ouvrante COND par_fermante
+EXPRESSION_BOOL : EXPRESSION 
+                | LOGICAL_VALUE 
+                | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante 
+                | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante 
+                | par_ouvrante COND_SIMPLE par_fermante  
+                | par_ouvrante LOGICAL_VALUE par_fermante
 ;
 SUITE_OPERATEUR_LOGIQUE_1: LT_mc | GT_mc | NE_mc | LE_mc | GE_mc |EQ_mc 
 ;
@@ -155,6 +163,8 @@ int main(int argc , char *argv[]) {
             return EXIT_FAILURE ; 
         }
         else{
+              stack_type = initializeStack();
+              stack_value = initializeStack();
             yyrestart(fileLex);
 
               //initialisation

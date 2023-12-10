@@ -1,0 +1,24 @@
+LOGICAL ROUTINE nomfonction1 (A,(5*8),B,C+(5*mat(8,2)-tab(a- 9 +(8*9))),8)
+INTEGER AI , BI , CI = 5 , OI = 28 ; 
+INTEGER TR =0.25 , OR , JR , UR  ; 
+nomfonction1 = 5 ; 
+ENDR 
+
+CHARACTER ROUTINE nomfonction2 (A,(5*8),B,C+(5*mat(8,2)-tab(a- 9 +(8*9))),8)
+INTEGER AI , BI , CI = 5 , OI = 28 ; 
+REAL TR =0.25 , OR , JR , UR = 6.3 ; 
+nomfonction1 = 5 ; 
+ENDR 
+
+INTEGER ROUTINE nomfonction3 (A,(5*8),B,C+(5*mat(8,2)-tab(a- 9 +(8*9))),8)
+INTEGER AI , BI , CI = 5 , OI = 28 ; 
+REAL TR =0.25 , OR , JR , UR = 6.3 ; 
+nomfonction1 = 5 ; 
+ENDR 
+
+PROGRAM nomprogrm 
+
+LOGICAL LL = TRUE ; 
+LOGICAL ML , PL = TRUE , CL = FALSE ; 
+
+END
