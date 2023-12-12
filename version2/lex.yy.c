@@ -450,10 +450,10 @@ char *yytext;
 #line 1 "lexical.l"
 #define INITIAL 0
 #line 3 "lexical.l"
-   #include "syntaxiqueMeli.tab.h"
-    extern nb_ligne ;
-    extern Col ;
-    extern fileName ;
+   #include "syntaxique.tab.h"
+    int nb_ligne =1;
+    int  Col = 1;
+    char fileName[50];
     extern YYSTYPE yylval;
 #line 459 "lex.yy.c"
 
@@ -698,7 +698,7 @@ YY_RULE_SETUP
 {
     insert_Sep_MotCle(yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : PROGRAM\n"); 
+    ECHO ;
     return PROGRAM_mc;
 }
 	YY_BREAK
@@ -707,8 +707,8 @@ YY_RULE_SETUP
 #line 27 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle(yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : END\n"); 
+        Col= Col + strlen(yytext);
+        ECHO ;
         return END_mc;
 }
 	YY_BREAK
@@ -717,8 +717,8 @@ YY_RULE_SETUP
 #line 33 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : ROUTINE\n"); 
+        Col= Col + strlen(yytext);
+        ECHO ;        
         return ROUTINE_mc;
 }
 	YY_BREAK
@@ -728,7 +728,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : ENDR\n");
+        ECHO ;        
     return ENDR_mc; 
 }
 	YY_BREAK
@@ -738,7 +738,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
     insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : LOGICAL\n");  
+        ECHO ;        
     return LOGICAL_mc;  
 }
 	YY_BREAK
@@ -748,7 +748,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : TRUE\n"); 
+        ECHO ;        
     return TRUE_mc;     
 }
 	YY_BREAK
@@ -758,7 +758,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : FALSE\n");    
+        ECHO ;        
     return FALSE_mc; 
 } 
 	YY_BREAK
@@ -768,7 +768,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : CHARACTER mot clef\n");  
+        ECHO ;        
     return CHARACTER_mc; 
 }
 	YY_BREAK
@@ -778,7 +778,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : REAL\n");  
+        ECHO ;        
         return REAL_mc; 
 }
 	YY_BREAK
@@ -788,7 +788,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : INTEGER\n");  
+        ECHO ;        
             return INTEGER_mc; 
 }
 	YY_BREAK
@@ -798,7 +798,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : DIMENSION\n"); 
+        ECHO ;        
             return DIMENSION_mc;  
 } 
 	YY_BREAK
@@ -808,7 +808,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : READ\n");  
+        ECHO ;        
             return READ_mc; 
 }
 	YY_BREAK
@@ -818,7 +818,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  WRITE\n"); 
+        ECHO ;        
             return WRITE_mc;  
 }
 	YY_BREAK
@@ -828,7 +828,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  IF\n"); 
+        ECHO ;        
             return IF_mc;  
 }
 	YY_BREAK
@@ -838,7 +838,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  THEN\n");   
+        ECHO ;        
             return THEN_mc;  
 }
 	YY_BREAK
@@ -848,7 +848,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  ELSE\n"); 
+        ECHO ;        
             return ELSE_mc;  
 }
 	YY_BREAK
@@ -858,7 +858,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  ENDIF\n");   
+        ECHO ;        
             return ENDIF_mc; 
 }
 	YY_BREAK
@@ -868,7 +868,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  GT\n");   
+        ECHO ;        
             return GT_mc; 
 }  
 	YY_BREAK
@@ -878,7 +878,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  GE\n");  
+        ECHO ;        
             return GE_mc;   
 }  
 	YY_BREAK
@@ -888,7 +888,7 @@ YY_RULE_SETUP
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  EQ\n");  
+        ECHO ;        
             return EQ_mc; 
 }  
 	YY_BREAK
@@ -897,9 +897,9 @@ YY_RULE_SETUP
 #line 141 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  NE\n");  
-            return NE_mc;  
+        Col= Col + strlen(yytext);
+        ECHO ;        
+        return NE_mc;  
 }  
 	YY_BREAK
 case 22:
@@ -907,9 +907,9 @@ YY_RULE_SETUP
 #line 147 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  LE\n");  
-            return LE_mc; 
+        Col= Col + strlen(yytext);
+        ECHO ;        
+        return LE_mc; 
 }  
 	YY_BREAK
 case 23:
@@ -917,18 +917,18 @@ YY_RULE_SETUP
 #line 153 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  LT\n");  
-            return LT_mc;   
+        Col= Col + strlen(yytext);
+        ECHO ;        
+        return LT_mc;   
 } 
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
 #line 159 "lexical.l"
 {yylval.str=strdup(yytext);
-        insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  OR\n");   
+            insert_Sep_MotCle( yytext,"Mot Clef");
+            Col= Col + strlen(yytext);
+            ECHO ;        
             return OR_mc; 
 }  
 	YY_BREAK
@@ -936,9 +936,9 @@ case 25:
 YY_RULE_SETUP
 #line 165 "lexical.l"
 {yylval.str=strdup(yytext);
-        insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  AND\n");  
+            insert_Sep_MotCle( yytext,"Mot Clef");
+            Col= Col + strlen(yytext);
+            ECHO ;        
             return AND_mc; 
 } 
 	YY_BREAK
@@ -946,19 +946,19 @@ case 26:
 YY_RULE_SETUP
 #line 172 "lexical.l"
 {yylval.str=strdup(yytext);
-        insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  DOWHILE\n");  
-            return DOWHILE_mc; 
+               insert_Sep_MotCle( yytext,"Mot Clef");
+               Col= Col + strlen(yytext);
+               ECHO ;        
+               return DOWHILE_mc; 
 } 
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
 #line 178 "lexical.l"
 {yylval.str=strdup(yytext);
-        insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  ENDDO\n");  
+            insert_Sep_MotCle( yytext,"Mot Clef");
+            Col= Col + strlen(yytext);
+            ECHO ;        
             return ENDDO_mc; 
 }
 	YY_BREAK
@@ -966,19 +966,19 @@ case 28:
 YY_RULE_SETUP
 #line 184 "lexical.l"
 {yylval.str=strdup(yytext);
-        insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  EQUIVALENCE\n");  
-            return EQUIVALENCE_mc; 
+                  insert_Sep_MotCle( yytext,"Mot Clef");
+                  Col= Col + strlen(yytext);
+                  ECHO ;        
+                  return EQUIVALENCE_mc; 
 }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 190 "lexical.l"
 {yylval.str=strdup(yytext);
-        insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue :  CALL\n");    
+            insert_Sep_MotCle( yytext,"Mot Clef");
+            Col= Col + strlen(yytext);
+            ECHO ;        
             return CALL_mc; 
 }
 	YY_BREAK
@@ -986,11 +986,11 @@ case 30:
 YY_RULE_SETUP
 #line 197 "lexical.l"
 {yylval.str=strdup(yytext);
-    Col= Col + strlen(yytext);
-    if (yyleng>10) printf ("WARNING: identificateur trop long a la ligne %d a la colonne %d (%d characters) \n",nb_ligne, Col,strlen(yytext));
-    insert_Cst_Idf(yytext,"","idf","0"); 
-    printf("Entite lexicale reconnue : identificateur (%s)\n",yytext); 
-    return idf;
+        Col= Col + strlen(yytext);
+        ECHO ; 
+        if (yyleng>10) printf ("\nWARNING: identificateur trop long a la ligne %d a la colonne %d (%d characters) \n",nb_ligne, Col,strlen(yytext));
+        insert_Cst_Idf(yytext,"","idf","0");        
+        return idf;
 }
 	YY_BREAK
 case 31:
@@ -998,13 +998,17 @@ YY_RULE_SETUP
 #line 206 "lexical.l"
 {
         yylval.reel=atof(yytext);
-    Col= Col + strlen(yytext);
-    if(atof(yytext) >32767.32767 ||  atof(yytext) < -32768.32768){
-     printf("Warning :%d real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
+        Col= Col + strlen(yytext);
+        if(atof(yytext) >32767.32767 ||  atof(yytext) < -32768.32768){
+        ECHO ; 
+        printf("\nWarning :%s real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
+        insert_Cst_Idf(yytext,"REAL","cst_real","0"); 
+        return cst_real;
+
     }
     else{
-     insert_Cst_Idf(yytext,"REAL","cst_real","0"); 
-     printf("Entite lexicale reconnue : constante real (%s)\n",yytext); 
+        insert_Cst_Idf(yytext,"REAL","cst_real","0"); 
+        ECHO ;        
         return cst_real;
     }
 
@@ -1012,174 +1016,178 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 220 "lexical.l"
+#line 224 "lexical.l"
 {
-     yylval.entier=atoi(yytext);
+    yylval.entier=atoi(yytext);
     Col= Col + strlen(yytext);
     if(atoi(yytext) >32767 ||  atoi(yytext) < -32768) {
-     printf("Warning :%d real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
+        ECHO ; 
+        printf("\nWarning :%d real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
     }else{
-     insert_Cst_Idf(yytext,"INTEGER","cst_int","0"); 
-     printf("Entite lexicale reconnue : constante integer (%s)\n",yytext); 
-                 return cst_int;
+        insert_Cst_Idf(yytext,"INTEGER","cst_int","0"); 
+        ECHO ;        
+        return cst_int;
     }
 
 }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 232 "lexical.l"
+#line 237 "lexical.l"
 {yylval.str=strdup(yytext);
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : character\n"); 
-        return character;
+                Col= Col + strlen(yytext);
+                ECHO;        
+                return character;
 }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 237 "lexical.l"
+#line 242 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : = \n"); 
+        Col= Col + strlen(yytext);
+        ECHO ;        
         return aff;
 }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 243 "lexical.l"
+#line 248 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : + \n"); 
+        Col= Col + strlen(yytext);
+        ECHO ;        
         return plus;
 }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 249 "lexical.l"
+#line 254 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : - \n"); 
+        Col= Col + strlen(yytext);
+        ECHO ;        
         return moins;
 }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 255 "lexical.l"
+#line 260 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : / \n"); 
+        Col= Col + strlen(yytext);
+        ECHO ;        
         return divis;
 }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 261 "lexical.l"
+#line 266 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : * \n"); 
+        Col= Col + strlen(yytext);
+        ECHO;        
         return multip;
 }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 267 "lexical.l"
+#line 272 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : ;\n"); 
-    return pvg;
+        Col= Col + strlen(yytext);
+        ECHO ;        
+        return pvg;
 }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 273 "lexical.l"
+#line 278 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : ,\n"); 
-    return ver;
+        Col= Col + strlen(yytext);
+        ECHO ;        
+        return ver;
 }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 279 "lexical.l"
+#line 284 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : .\n"); 
+        Col= Col + strlen(yytext);
+        ECHO ;        
         return point;
 }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 285 "lexical.l"
+#line 290 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : (\n"); 
+        Col= Col + strlen(yytext);
+        ECHO ;        
         return par_ouvrante;
 }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 291 "lexical.l"
+#line 296 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : %s\n",yytext); 
+        Col= Col + strlen(yytext);
+        ECHO ;        
         return par_fermante;
 }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 297 "lexical.l"
+#line 302 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
-    Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : :\n"); 
+        Col= Col + strlen(yytext);
+        ECHO ;        
         return points_sup;
 }
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 303 "lexical.l"
+#line 308 "lexical.l"
 {
     Col= Col + strlen(yytext);
-    printf("Entite lexicale reconnue : commantaire\n"); 
+        ECHO ;        
 }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 307 "lexical.l"
-Col= Col + strlen(yytext);
+#line 312 "lexical.l"
+{Col= Col + strlen(yytext);
+        ECHO;
+}
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 309 "lexical.l"
+#line 317 "lexical.l"
 {
     Col = 1;
     nb_ligne++;
+    ECHO;
 }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 314 "lexical.l"
+#line 323 "lexical.l"
 {
     Col = Col + yyleng;
-    printf("File %s, line %d, character %d: lexical error: %s\n",fileName ,nb_ligne, Col, yytext);
+    printf("\nFile %s, line %d, character %d: lexical error: %s\n",fileName ,nb_ligne, Col, yytext);
 }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 321 "lexical.l"
+#line 330 "lexical.l"
 ECHO;
 	YY_BREAK
-#line 1183 "lex.yy.c"
+#line 1191 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2065,4 +2073,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 321 "lexical.l"
+#line 330 "lexical.l"

@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <math.h>
 
 // Constants
 #define MAX_NAME_LENGTH 50
@@ -127,7 +128,6 @@ void insert_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_L
   {
     if (strcmp(current->name, name) == 0)
     {
-      printf("ERROR: Node with the specified name already exists\n");
       return;
     }
     current = current->next;
@@ -158,7 +158,6 @@ void insert_Sep_MotCle(const char name[MAX_NAME_LENGTH], const char code[MAX_COD
   {
     if (strcmp(current->name, name) == 0)
     {
-      printf("ERROR: Node with the specified name already exists\n");
       return;
     }
     current = current->next;
@@ -188,7 +187,6 @@ void add_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE
     if (strcmp(current->name, name) == 0)
     {
       strcpy(current->type, type); // Node with the specified name exists
-      printf("\n\nTYPE DONE : %s \n\n", type);
       return;
     }
     current = current->next;
@@ -204,7 +202,6 @@ void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VA
     if (strcmp(current->name, name) == 0)
     {
       strcpy(current->val, value); // Node with the specified name exists
-      printf("\n\nVALUE DONE : %s \n\n", value);
       return;
     }
     current = current->next;
@@ -246,7 +243,7 @@ void displayList_Cst_Idf()
 
   printf("/***************Liste des symboles IDF*************/\n");
   printf("____________________________________________________________________\n");
-  printf("\t| Nom_Entite |  Code_Entite | Type_Entite | Val_Entite\n");
+  printf("\t| Nom_Entite |  Code_Entite | Type_Entite | Val_Entite/taille\n");
   printf("____________________________________________________________________\n");
 
   while (current != NULL)
@@ -271,7 +268,7 @@ void displayList_Sep_MotCle()
     current = current->next;
   }
 }
-
+/*-----------------------------------------------------------------------*/
 char *intToString(int number)
 {
   // Determine the maximum number of digits needed
@@ -285,24 +282,21 @@ char *intToString(int number)
 
   return result;
 }
-
 char *floatToString(float number)
 {
   // Determine the maximum number of digits needed
-  int numDigits = snprintf(NULL, 0, "%f", number);
+  int numDigits = snprintf(NULL, 0, "%g", number);
 
   // Allocate memory for the string representation
   char *result = (char *)malloc((numDigits + 1) * sizeof(char));
 
-  // Convert the float to a string
-  snprintf(result, numDigits + 1, "%f", number);
+  // Convert the float to a string using the %g format specifier
+  snprintf(result, numDigits + 1, "%g", number);
 
   return result;
 }
 
 //----------------------------------------------------------//
-#include <stdio.h>
-#include <stdlib.h>
 
 typedef struct Node
 {
@@ -378,4 +372,31 @@ void freeStack(Stack *stack)
     free(temp);
   }
   free(stack);
+}
+
+void ConcatTaille(int num1, int num2, char *result, size_t result_size)
+{
+  const char *separator = " | ";
+
+  // Convert integers to strings
+  char str1[20]; // Adjust the size based on the expected maximum length of an integer
+  char str2[20];
+  sprintf(str1, "%d", num1);
+  sprintf(str2, "%d", num2);
+
+  size_t len1 = strlen(str1);
+  size_t len2 = strlen(str2);
+  size_t len_sep = strlen(separator);
+  size_t len_result = len1 + len_sep + len2 + 1; // +1 for  \0
+
+  // Ensure the result buffer is large enough
+  if (len_result > result_size)
+  {
+    fprintf(stderr, "Result buffer is too small, %zu\n", result_size);
+    exit(EXIT_FAILURE);
+  }
+
+  strcpy(result, str1);
+  strcat(result, separator);
+  strcat(result, str2);
 }
