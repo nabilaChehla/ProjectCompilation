@@ -1,0 +1,67 @@
+INTEGER ROUTINE what (X,Y,Z)
+% Déclarations
+
+INTEGER A,B; 
+REAL Z=10.0, T= 55555.87; 
+CHARACTER C*20; 
+INTEGER var4 DIMENSION (20); 
+REAL MAT DIMENSION (20, 200);
+LOGICAL D;
+
+% Instructions
+
+
+what = A ; 
+ENDR
+
+CHARACTER ROUTINE testR1 ()
+
+testR1 = 5 ; 
+ENDR
+
+
+CHARACTER ROUTINE testR2 ()
+
+testR2 = 5 ; 
+ENDR
+CHARACTER ROUTINE testR3 ()
+
+testR3 = 5 ; 
+ENDR
+
+LOGICAL ROUTINE testR4 ()
+
+testR4 = 5 ; 
+ENDR
+
+
+
+PROGRAM HelloAcad
+% Déclarations
+INTEGER A,B,C ; 
+REAL Y ; 
+INTEGER TAB DIMENSION (10) ; 
+
+% Instructions
+
+C = 22 + 10*B;
+
+
+DOWHILE (A.LT.10) A = A + 1;
+IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - B ;
+A = TAB(11) + (B * 7);
+B = 30;
+ELSE A = A + B;
+
+WRITE ("Donner la valeur de T:"); 
+READ (T);
+WRITE ("La Valeur de T est ", T, ".");
+ENDIF
+A = 0;
+ENDDO;
+
+
+A = CALL nomroutine (A,B,C);
+EQUIVALENCE (A, B, C), (Y, TAB(3));
+
+END

@@ -9,6 +9,8 @@
  extern char fileName[50];
 Stack *stack_type;
 Stack *stack_value;
+Stack *stack_name_Routine ; 
+  char code [MAX_CODE_LENGTH];
   char Taille [MAX_VAL_LENGTH]; 
   int taille2 = 0 ; 
 %}
@@ -25,11 +27,17 @@ Stack *stack_value;
 %%
 S : Fonction_i PROGRAM_mc idf DEC INSTRUCTIONS END_mc
 ;
-Fonction_i: type_fonc ROUTINE_mc idf par_ouvrante ARG par_fermante DEC INSTRUCTIONS Affectation ENDR_mc Fonction_i 
-                        {add_TYPE_Cst_Idf($3,top(stack_type));pop(stack_type)}
+Fonction_i: type_fonc ROUTINE_mc idf par_ouvrante ARG par_fermante DEC INSTRUCTIONS Affectation_fonction ENDR_mc Fonction_i 
+                        {add_TYPE_Cst_Idf($3,top(stack_type));pop(stack_type);add_CODE_Cst_Idf($3,"ROUTINE");
+                          if(strcmp(top(stack_name_Routine),$3)!=0) yyerrorSemantique("Error: the last line of ROUTINE should be affectation with name of ROUTINE") ;
+                          pop(stack_name_Routine);}
            | 
 ;
-type_fonc: type| CHARACTER_mc {push(stack_type, $1)  }
+Affectation_fonction: idf aff EXPRESSION pvg{push(stack_name_Routine,$1)}
+                    | idf aff character  pvg{push(stack_name_Routine,$1)}
+                    | idf LOGICAL_VALUE  pvg{push(stack_name_Routine,$1)}
+;
+type_fonc: type| CHARACTER_mc {push(stack_type, "CHARACTER")  }
 ;
 ARG : liste_parametres | 
 ; 
@@ -50,39 +58,39 @@ DEC: type SUITE_DEC pvg DEC {pop(stack_type)}
     | DEC_TAB pvg DEC
     |
 ;
-SUITE_DEC:  idf DEC_AFF ver SUITE_DEC  {add_TYPE_Cst_Idf($1,top(stack_type)); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)}  
-          | idf DEC_AFF                {add_TYPE_Cst_Idf($1,top(stack_type)); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)} 
-          | idf ver SUITE_DEC          {add_TYPE_Cst_Idf($1,top(stack_type));}
-          | idf                        {add_TYPE_Cst_Idf($1,top(stack_type));}
+SUITE_DEC:  idf DEC_AFF ver SUITE_DEC  {add_TYPE_Cst_Idf($1,top(stack_type)); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"variable");}  
+          | idf DEC_AFF                {add_TYPE_Cst_Idf($1,top(stack_type)); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"variable");} 
+          | idf ver SUITE_DEC          {add_TYPE_Cst_Idf($1,top(stack_type));add_CODE_Cst_Idf($1,"variable");}
+          | idf                        {add_TYPE_Cst_Idf($1,top(stack_type));add_CODE_Cst_Idf($1,"variable");}
  
 ;
-DEC_TAB: type idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante           {add_TYPE_Cst_Idf($2,top(stack_type));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille) ;taille2= 0}
-        |CHARACTER_mc idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante   {add_TYPE_Cst_Idf($2,"CHARACTER");ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille) ;taille2= 0}
+DEC_TAB: type idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante           {add_TYPE_Cst_Idf($2,top(stack_type));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille) ;taille2= 0;add_CODE_Cst_Idf($2,code);}
+        |CHARACTER_mc idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante   {add_TYPE_Cst_Idf($2,"CHARACTER");ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille) ;taille2= 0;add_CODE_Cst_Idf($2,code);}
 ;
 
-LIST_PAR_TAB : ver cst_int {taille2 = $2} 
-              |
+LIST_PAR_TAB : ver cst_int {taille2 = $2; strcpy(code,"matrice");} 
+              |            {strcpy(code,"tableau");}
               ;
 DEC_AFF: aff cst_int  {push(stack_value, intToString($2)) } 
        | aff cst_real {push(stack_value, floatToString($2))  } 
        | aff  TRUE_mc {push(stack_value, $2)  }
        | aff FALSE_mc {push(stack_value, $2)  }
 ;
-DEC_CHAR :    idf multip cst_int ver   DEC_CHAR            {add_TYPE_Cst_Idf($1, "CHARACTER")}
-          |   idf multip cst_int                           {add_TYPE_Cst_Idf($1, "CHARACTER");}
-          |   idf multip cst_int DEC_CHAR_AFF              {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)}
-          |   idf multip cst_int DEC_CHAR_AFF ver DEC_CHAR {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)}
-          |   idf                                          {add_TYPE_Cst_Idf($1, "CHARACTER");}
-          |   idf ver DEC_CHAR                             {add_TYPE_Cst_Idf($1, "CHARACTER")}
-          |   idf DEC_CHAR_AFF                             {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)}
-          |   idf DEC_CHAR_AFF ver   DEC_CHAR              {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value)}
+DEC_CHAR :    idf multip cst_int ver   DEC_CHAR            {add_TYPE_Cst_Idf($1, "CHARACTER");add_CODE_Cst_Idf($1,"variable");}
+          |   idf multip cst_int                           {add_TYPE_Cst_Idf($1, "CHARACTER");add_CODE_Cst_Idf($1,"variable");}
+          |   idf multip cst_int DEC_CHAR_AFF              {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"variable");}
+          |   idf multip cst_int DEC_CHAR_AFF ver DEC_CHAR {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"variable");}
+          |   idf                                          {add_TYPE_Cst_Idf($1, "CHARACTER");add_CODE_Cst_Idf($1,"variable");}
+          |   idf ver DEC_CHAR                             {add_TYPE_Cst_Idf($1, "CHARACTER");add_CODE_Cst_Idf($1,"variable");}
+          |   idf DEC_CHAR_AFF                             {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"variable");}
+          |   idf DEC_CHAR_AFF ver   DEC_CHAR              {add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"variable");}
 ;
 
 DEC_CHAR_AFF: aff character  {push(stack_value,$2)}
 ;
-type:  INTEGER_mc  {push(stack_type, $1)}
-     | REAL_mc     {push(stack_type, $1)}
-     | LOGICAL_mc  {push(stack_type, $1)}
+type:  INTEGER_mc  {push(stack_type, "INTEGER")}
+     | REAL_mc     {push(stack_type, "REAL")}
+     | LOGICAL_mc  {push(stack_type, "LOGICAL")}
 ;
 
 INSTRUCTIONS: INSTRUCTIONS TYPE_INSTRUCTION
@@ -96,10 +104,10 @@ TYPE_INSTRUCTION : Affectation
                   |INST_CALL
 ;
 
-Affectation: idf aff EXPRESSION pvg 
-            |idf aff character pvg 
-            |idf TAB_PAR aff EXPRESSION pvg 
-            |idf aff LOGICAL_VALUE pvg 
+Affectation: idf aff EXPRESSION pvg             {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0) yyerrorSemantique("affectation a une variable non declare ou afftectation a une fonction\n")}
+            |idf aff character pvg              {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une variable non declare ou afftectation a une fonction\n")}
+            |idf TAB_PAR aff EXPRESSION pvg     {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une variable non declare ou afftectation a une fonction\n")}
+            |idf aff LOGICAL_VALUE pvg          {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une variable non declare ou afftectation a une fonction\n")}
 ;
 
 Entre_Sortie_INST:  WRITE_mc par_ouvrante SORTIE_MESSAGE par_fermante pvg 
@@ -179,6 +187,7 @@ int main(int argc , char *argv[]) {
         else{
               stack_type = initializeStack();
               stack_value = initializeStack();
+              stack_name_Routine = initializeStack();
             yyrestart(fileLex);
 
               //initialisation
@@ -209,5 +218,12 @@ int yyerror ( char*  msg )
       displayList_Cst_Idf();
       exit(EXIT_FAILURE); 
 }
- 
+ int yyerrorSemantique ( char*  msg )  
+{
+      printf("%s",msg);
+      printf("\nFile %s, line %d, character %d: semantic error\n",fileName ,nb_ligne, Col);
+      displayList_Sep_MotCle();
+      displayList_Cst_Idf();
+      exit(EXIT_FAILURE); 
+}
 

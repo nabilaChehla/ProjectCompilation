@@ -1,3 +1,8 @@
+INTEGER ROUTINE R2 (X,Y,Z)
+REAL N = 5 ;
+R2 = 3; 
+ENDR
+
 INTEGER ROUTINE Comp (X,Y,Z)
 % Déclarations
 
@@ -9,29 +14,23 @@ REAL MAT DIMENSION (20, 200);
 LOGICAL D;
 
 % Instructions
+C = 8;
+B = 7;
 A = MAT(5,4) + (B * 5);
 B = 30;
-C = "L3";
 D = TRUE;
+A = 5 ;
 
 WRITE ("Donner la valeur de A :"); 
 READ (A);
 WRITE ("La Valeur de A est ", A, ".");
 
-WRITE ("Donner la valeur de T:"); 
-READ (T);
-WRITE ("La Valeur de T est ", T, ".");
-
-IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - B ;
-ELSE A = A + B;
-ENDIF
-
-A = 0;
-DOWHILE (A.LT.10) A = A + 1;
-ENDDO;
-
 Comp = A ; 
 ENDR
+
+
+
+
 
 PROGRAM HelloAcad
 % Déclarations
@@ -40,11 +39,25 @@ REAL Y ;
 INTEGER TAB DIMENSION (10) ; 
 
 % Instructions
+
+C = 22 + 10*B;
+
+
+DOWHILE (A.LT.10) A = A + 1;
+IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - B ;
 A = TAB(11) + (B * 7);
 B = 30;
-C = 22 + 10*B;
+ELSE A = A + B;
+
+WRITE ("Donner la valeur de T:"); 
+READ (T);
+WRITE ("La Valeur de T est ", T, ".");
+ENDIF
+A = 0;
+ENDDO;
+
 
 A = CALL nomroutine (A,B,C);
 EQUIVALENCE (A, B, C), (Y, TAB(3));
 
-END.
+END
