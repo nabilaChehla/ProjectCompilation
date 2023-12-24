@@ -223,6 +223,20 @@ char *return_CODE_Cst_Idf(const char name[MAX_NAME_LENGTH])
   printf("ERROR : cant find the code node doesnt exist"); // Node with the specified name does not exist
 }
 
+char *return_VALUE_SIZE_Cst_Idf(const char name[MAX_NAME_LENGTH])
+{
+  elt_Cst_Idf_node *current = L_Cst_Idf->head;
+  while (current != NULL)
+  {
+    if (strcmp(current->name, name) == 0)
+    {
+      return current->val;
+    }
+    current = current->next;
+  }
+  printf("ERROR : cant find the val node doesnt exist"); // Node with the specified name does not exist
+}
+
 void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VAL_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
@@ -431,4 +445,14 @@ void ConcatTaille(int num1, int num2, char *result, size_t result_size)
   strcpy(result, str1);
   strcat(result, separator);
   strcat(result, str2);
+}
+
+void extractIntegers_SIZE_TS(const char *sizeTS, int *firstSize, int *secondSize)
+{
+  // Use sscanf to extract two integers separated by '|'
+  if (sscanf(sizeTS, " %d | %d", firstSize, secondSize) != 2)
+  {
+    // Handle error, if the format doesn't match
+    printf("Error: Invalid sizeTS format!\n");
+  }
 }
