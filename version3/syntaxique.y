@@ -16,6 +16,7 @@ Stack *stack_name_Routine ;
   int firstSize;
   int secondSize;
   int nbArg = 0 ; 
+  bool divZero = false ;
 %}
 
 %union {
@@ -37,7 +38,7 @@ Fonction_i: type_fonc ROUTINE_mc idf par_ouvrante ARG par_fermante DEC INSTRUCTI
                           add_VALUE_Cst_Idf($3,top(stack_value)); pop(stack_value);}
            | 
 ;
-Affectation_fonction: idf aff EXPRESSION pvg{push(stack_name_Routine,$1)}
+Affectation_fonction: idf aff EXP pvg{push(stack_name_Routine,$1)}
                     | idf aff character  pvg{push(stack_name_Routine,$1)}
                     | idf LOGICAL_VALUE  pvg{push(stack_name_Routine,$1)}
 ;
@@ -105,9 +106,9 @@ TYPE_INSTRUCTION : Affectation
                   |INST_CALL
 ;
 
-Affectation: idf aff EXPRESSION pvg             {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0) yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")}
+Affectation: idf aff EXP pvg             {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0) yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")}
             |idf aff character pvg              {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")}
-            |TAB_PAR aff EXPRESSION pvg         {/*if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")*/}
+            |TAB_PAR aff EXP pvg         {/*if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")*/}
             |idf aff LOGICAL_VALUE pvg          {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")}
 ;
 
@@ -115,29 +116,32 @@ Entre_Sortie_INST:  WRITE_mc par_ouvrante SORTIE_MESSAGE par_fermante pvg
                   | READ_mc par_ouvrante idf par_fermante pvg  {if(!idf_exist($3) || strcmp(return_CODE_Cst_Idf($3),"ROUTINE")==0) // idf n'existe pas dans TS ou est un nom de routine 
                                                                   yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")}
 ;
-SORTIE_MESSAGE :character ver SORTIE_MESSAGE| EXPRESSION ver SORTIE_MESSAGE | character | EXPRESSION
+SORTIE_MESSAGE :character ver SORTIE_MESSAGE| EXP ver SORTIE_MESSAGE | character | EXP
 ;
 EQUIVALENCE_INST: EQUIVALENCE_mc SUITE_EQUI ver SUITE_EQUI pvg
 ;
 SUITE_EQUI: par_ouvrante liste_parametres par_fermante
 ;
-
-EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1
-           | EXPRESSION moins SUITE_EXPRESSION_1
-           | SUITE_EXPRESSION_1
+EXP :EXPRESSION {divZero=false }
+;
+EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1 {divZero=false }
+           | EXPRESSION moins SUITE_EXPRESSION_1{divZero=false }
+           | SUITE_EXPRESSION_1                 {}
 ;
 
-SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2
-                   | SUITE_EXPRESSION_1 divis SUITE_EXPRESSION_2
-                   | SUITE_EXPRESSION_2
+SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2{divZero=false}
+                   | SUITE_EXPRESSION_1 divis suiteDiv           {divZero=false;}
+                   | SUITE_EXPRESSION_2                          {}              
 ;
-
-SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante
-                   | cst_int
-                   | cst_real
-                   | TAB_PAR
+suiteDiv: SUITE_EXPRESSION_2 {if(divZero==true)yyerrorSemantique("Error: Division sur 0");}
+;
+SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
+                   | cst_int  {if($1==0)divZero=true;else divZero = false }       
+                   | cst_real {if($1==0)divZero=true;else divZero = false }
+                   | TAB_PAR  {  divZero = false  } 
                    | idf {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"VARIABLE")!=0 ) // idf n'existe pas dans TS ou est un nom de routine 
-                        yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")}
+                               yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+                            divZero = false ;}
 ;
 TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"MATRICE")!=0) // idf n'existe pas dans TS ou pas un nom de matrice 
                                                                   yyerrorSemantique("idf n'existe pas dans TS ou n'est pas une MATRICE\n");
@@ -163,7 +167,7 @@ SUITE_COND_2:   EXPRESSION_BOOL
 COND_SIMPLE :   
              EXPRESSION_BOOL  OPERATEUR_LOGIQUE_1  EXPRESSION_BOOL 
 ;
-EXPRESSION_BOOL : EXPRESSION 
+EXPRESSION_BOOL : EXP 
                 | LOGICAL_VALUE 
                 | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante 
                 | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante 
@@ -196,8 +200,8 @@ INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {if(!idf_e
 ARG_CALL : liste_parametres_CALL 
         |                        
 ; 
-liste_parametres_CALL: EXPRESSION ver liste_parametres_CALL {nbArg++}
-                      |EXPRESSION                           {nbArg++}
+liste_parametres_CALL: EXP ver liste_parametres_CALL {nbArg++}
+                      |EXP                           {nbArg++}
 ;
 %%
 

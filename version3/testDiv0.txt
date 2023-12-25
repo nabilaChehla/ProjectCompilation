@@ -1,0 +1,34 @@
+
+PROGRAM HelloAcad
+% Déclarations
+INTEGER A,B,C ; 
+REAL Y ; 
+INTEGER TAB DIMENSION (10) ; 
+REAL MAT DIMENSION (10,9) ;
+% Instructions
+%A = 5/0;  
+%A = 5/0+ 9;
+
+A = 5/(0+ 9);
+%B = A/(0);
+%A = 5/(0); 
+%A=B/5- 9 +C*9- 8 +(0) *90/(0);
+A = 5/ 9*0;
+A = 5/ 45/9;
+A = 5/ 45/9;
+A = A/5;
+A = 0/ Y ; 
+A = 0/ 396;
+A = 0/ TAB(8);
+%A = 5/(0); 
+%A = (0+ 8)/(0+B)/0- 3 ; 
+A=(0) /5 *3 /C; 
+A=TAB(0) /5 *3 /TAB(9); 
+%A=TAB(0)/MAT(0,0)/(0); 
+A=TAB(0)+ 9/(0+TAB(8)); 
+%A = MAT(1,2)/0;
+%A = MAT(1,2)/(0);
+A =5+ A *0+ TAB(8)/(5);
+%A= C/(0);
+%A = 56/(0);
+END
