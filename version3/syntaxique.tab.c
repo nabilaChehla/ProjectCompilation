@@ -85,10 +85,11 @@ Stack *stack_name_Routine ;
   int taille2 = 0 ; 
   int firstSize;
   int secondSize;
+  int nbArg = 0 ; 
 
 
 /* Line 189 of yacc.c  */
-#line 92 "syntaxique.tab.c"
+#line 93 "syntaxique.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -169,7 +170,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 20 "syntaxique.y"
+#line 21 "syntaxique.y"
 
   int     entier;
   char*   str;
@@ -178,7 +179,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 182 "syntaxique.tab.c"
+#line 183 "syntaxique.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -190,7 +191,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 194 "syntaxique.tab.c"
+#line 195 "syntaxique.tab.c"
 
 #ifdef short
 # undef short
@@ -526,17 +527,17 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    30,    30,    32,    36,    38,    39,    40,    42,    42,
-      44,    44,    46,    47,    48,    49,    50,    51,    54,    55,
-      56,    57,    59,    60,    61,    62,    65,    66,    69,    70,
-      72,    73,    74,    75,    77,    78,    79,    80,    81,    82,
-      83,    84,    87,    89,    90,    91,    94,    95,    97,    98,
-      99,   100,   101,   102,   105,   106,   107,   108,   111,   112,
-     115,   115,   115,   115,   117,   119,   122,   123,   124,   127,
-     128,   129,   132,   133,   134,   135,   136,   139,   144,   151,
-     152,   154,   155,   157,   158,   161,   163,   164,   165,   166,
-     167,   168,   170,   170,   170,   170,   170,   170,   172,   172,
-     176,   178,   178,   180,   182,   185,   190,   190,   192,   193
+       0,    31,    31,    33,    38,    40,    41,    42,    44,    44,
+      46,    47,    49,    50,    51,    52,    53,    54,    57,    58,
+      59,    60,    62,    63,    64,    65,    68,    69,    72,    73,
+      75,    76,    77,    78,    80,    81,    82,    83,    84,    85,
+      86,    87,    90,    92,    93,    94,    97,    98,   100,   101,
+     102,   103,   104,   105,   108,   109,   110,   111,   114,   115,
+     118,   118,   118,   118,   120,   122,   125,   126,   127,   130,
+     131,   132,   135,   136,   137,   138,   139,   142,   147,   154,
+     155,   157,   158,   160,   161,   164,   166,   167,   168,   169,
+     170,   171,   173,   173,   173,   173,   173,   173,   175,   175,
+     179,   181,   181,   183,   185,   188,   196,   197,   199,   200
 };
 #endif
 
@@ -1597,247 +1598,304 @@ yyreduce:
         case 3:
 
 /* Line 1455 of yacc.c  */
-#line 33 "syntaxique.y"
+#line 34 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(3) - (11)].str),top(stack_type));pop(stack_type);add_CODE_Cst_Idf((yyvsp[(3) - (11)].str),"ROUTINE");
                           if(strcmp(top(stack_name_Routine),(yyvsp[(3) - (11)].str))!=0) yyerrorSemantique("Error: the last line of ROUTINE should be affectation with name of ROUTINE") ;
-                          pop(stack_name_Routine);;}
+                          pop(stack_name_Routine);
+                          add_VALUE_Cst_Idf((yyvsp[(3) - (11)].str),top(stack_value)); pop(stack_value);;}
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 38 "syntaxique.y"
+#line 40 "syntaxique.y"
     {push(stack_name_Routine,(yyvsp[(1) - (4)].str));}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 39 "syntaxique.y"
+#line 41 "syntaxique.y"
     {push(stack_name_Routine,(yyvsp[(1) - (4)].str));}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 40 "syntaxique.y"
+#line 42 "syntaxique.y"
     {push(stack_name_Routine,(yyvsp[(1) - (3)].str));}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 42 "syntaxique.y"
+#line 44 "syntaxique.y"
     {push(stack_type, "CHARACTER")  ;}
+    break;
+
+  case 10:
+
+/* Line 1455 of yacc.c  */
+#line 46 "syntaxique.y"
+    {push(stack_value,intToString(nbArg)),nbArg=0;;}
+    break;
+
+  case 11:
+
+/* Line 1455 of yacc.c  */
+#line 47 "syntaxique.y"
+    {push(stack_value,intToString(0)),nbArg=0;;}
+    break;
+
+  case 12:
+
+/* Line 1455 of yacc.c  */
+#line 49 "syntaxique.y"
+    {nbArg++;}
+    break;
+
+  case 13:
+
+/* Line 1455 of yacc.c  */
+#line 50 "syntaxique.y"
+    {nbArg++;}
+    break;
+
+  case 14:
+
+/* Line 1455 of yacc.c  */
+#line 51 "syntaxique.y"
+    {nbArg++;}
+    break;
+
+  case 15:
+
+/* Line 1455 of yacc.c  */
+#line 52 "syntaxique.y"
+    {nbArg++;}
+    break;
+
+  case 16:
+
+/* Line 1455 of yacc.c  */
+#line 53 "syntaxique.y"
+    {nbArg++;}
+    break;
+
+  case 17:
+
+/* Line 1455 of yacc.c  */
+#line 54 "syntaxique.y"
+    {nbArg++;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 54 "syntaxique.y"
+#line 57 "syntaxique.y"
     {pop(stack_type);}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 59 "syntaxique.y"
+#line 62 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_type)); add_VALUE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_value));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (4)].str),"VARIABLE");;}
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 60 "syntaxique.y"
+#line 63 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (2)].str),top(stack_type)); add_VALUE_Cst_Idf((yyvsp[(1) - (2)].str),top(stack_value));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (2)].str),"VARIABLE");;}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 61 "syntaxique.y"
+#line 64 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (3)].str),top(stack_type));add_CODE_Cst_Idf((yyvsp[(1) - (3)].str),"VARIABLE");;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 62 "syntaxique.y"
+#line 65 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (1)].str),top(stack_type));add_CODE_Cst_Idf((yyvsp[(1) - (1)].str),"VARIABLE");;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 65 "syntaxique.y"
+#line 68 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(2) - (7)].str),top(stack_type));ConcatTaille((yyvsp[(5) - (7)].entier),taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf((yyvsp[(2) - (7)].str),Taille) ;taille2= 0;add_CODE_Cst_Idf((yyvsp[(2) - (7)].str),code);;}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 66 "syntaxique.y"
+#line 69 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(2) - (7)].str),"CHARACTER");ConcatTaille((yyvsp[(5) - (7)].entier),taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf((yyvsp[(2) - (7)].str),Taille) ;taille2= 0;add_CODE_Cst_Idf((yyvsp[(2) - (7)].str),code);;}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 69 "syntaxique.y"
+#line 72 "syntaxique.y"
     {taille2 = (yyvsp[(2) - (2)].entier); strcpy(code,"MATRICE");;}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 70 "syntaxique.y"
+#line 73 "syntaxique.y"
     {strcpy(code,"TABLEAU");;}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 72 "syntaxique.y"
+#line 75 "syntaxique.y"
     {push(stack_value, intToString((yyvsp[(2) - (2)].entier))) ;}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 73 "syntaxique.y"
+#line 76 "syntaxique.y"
     {push(stack_value, floatToString((yyvsp[(2) - (2)].reel)))  ;}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 74 "syntaxique.y"
+#line 77 "syntaxique.y"
     {push(stack_value, (yyvsp[(2) - (2)].str))  ;}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 75 "syntaxique.y"
+#line 78 "syntaxique.y"
     {push(stack_value, (yyvsp[(2) - (2)].str))  ;}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 77 "syntaxique.y"
+#line 80 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (5)].str), "CHARACTER");add_CODE_Cst_Idf((yyvsp[(1) - (5)].str),"VARIABLE");;}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 78 "syntaxique.y"
+#line 81 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (3)].str), "CHARACTER");add_CODE_Cst_Idf((yyvsp[(1) - (3)].str),"VARIABLE");;}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 79 "syntaxique.y"
+#line 82 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (4)].str), "CHARACTER"); add_VALUE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_value));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (4)].str),"VARIABLE");;}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 80 "syntaxique.y"
+#line 83 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (6)].str), "CHARACTER"); add_VALUE_Cst_Idf((yyvsp[(1) - (6)].str),top(stack_value));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (6)].str),"VARIABLE");;}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 81 "syntaxique.y"
+#line 84 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (1)].str), "CHARACTER");add_CODE_Cst_Idf((yyvsp[(1) - (1)].str),"VARIABLE");;}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 82 "syntaxique.y"
+#line 85 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (3)].str), "CHARACTER");add_CODE_Cst_Idf((yyvsp[(1) - (3)].str),"VARIABLE");;}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 83 "syntaxique.y"
+#line 86 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (2)].str), "CHARACTER"); add_VALUE_Cst_Idf((yyvsp[(1) - (2)].str),top(stack_value));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (2)].str),"VARIABLE");;}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 84 "syntaxique.y"
+#line 87 "syntaxique.y"
     {add_TYPE_Cst_Idf((yyvsp[(1) - (4)].str), "CHARACTER"); add_VALUE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_value));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (4)].str),"VARIABLE");;}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 87 "syntaxique.y"
+#line 90 "syntaxique.y"
     {push(stack_value,(yyvsp[(2) - (2)].str));}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 89 "syntaxique.y"
+#line 92 "syntaxique.y"
     {push(stack_type, "INTEGER");}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 90 "syntaxique.y"
+#line 93 "syntaxique.y"
     {push(stack_type, "REAL");}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 91 "syntaxique.y"
+#line 94 "syntaxique.y"
     {push(stack_type, "LOGICAL");}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 105 "syntaxique.y"
+#line 108 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (4)].str)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str)),"ROUTINE")==0) yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");}
     break;
 
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 106 "syntaxique.y"
+#line 109 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (4)].str)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str)),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 107 "syntaxique.y"
+#line 110 "syntaxique.y"
     {/*if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")*/;}
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 108 "syntaxique.y"
+#line 111 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (4)].str)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str)),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 112 "syntaxique.y"
+#line 115 "syntaxique.y"
     {if(!idf_exist((yyvsp[(3) - (5)].str)) || strcmp(return_CODE_Cst_Idf((yyvsp[(3) - (5)].str)),"ROUTINE")==0) // idf n'existe pas dans TS ou est un nom de routine 
                                                                   yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");}
     break;
@@ -1845,7 +1903,7 @@ yyreduce:
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 136 "syntaxique.y"
+#line 139 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (1)].str)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (1)].str)),"VARIABLE")!=0 ) // idf n'existe pas dans TS ou est un nom de routine 
                         yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");}
     break;
@@ -1853,39 +1911,56 @@ yyreduce:
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 139 "syntaxique.y"
+#line 142 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (6)].str)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (6)].str)),"MATRICE")!=0) // idf n'existe pas dans TS ou pas un nom de matrice 
                                                                   yyerrorSemantique("idf n'existe pas dans TS ou n'est pas une MATRICE\n");
                                                              extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf((yyvsp[(1) - (6)].str)),&firstSize,&secondSize);
-                                                             if(firstSize<(yyvsp[(3) - (6)].entier) || (yyvsp[(3) - (6)].entier)<0 || secondSize < (yyvsp[(5) - (6)].entier) || (yyvsp[(5) - (6)].entier) <0  )
+                                                             if(firstSize<=(yyvsp[(3) - (6)].entier) || (yyvsp[(3) - (6)].entier)<0 || secondSize < (yyvsp[(5) - (6)].entier) || (yyvsp[(5) - (6)].entier) <0  )
                                                                   yyerrorSemantique("Size of matrice incorrect \n");}
     break;
 
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 144 "syntaxique.y"
+#line 147 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (4)].str)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str)),"TABLEAU")!=0) // idf n'existe pas dans TS ou pas un nom de tableau 
                                                                  yyerrorSemantique("idf n'existe pas dans TS ou n'est pas un TABLEAU\n");
                                                             extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf((yyvsp[(1) - (4)].str)),&firstSize,&secondSize);
-                                                            if(firstSize<(yyvsp[(3) - (4)].entier) || (yyvsp[(3) - (4)].entier)<0 )
+                                                            if(firstSize<=(yyvsp[(3) - (4)].entier) || (yyvsp[(3) - (4)].entier)<0 )
                                                                   yyerrorSemantique("Size of matrice incorrect \n");;}
     break;
 
   case 105:
 
 /* Line 1455 of yacc.c  */
-#line 185 "syntaxique.y"
+#line 188 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (8)].str)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (8)].str)),"ROUTINE")==0) // premier idf est une VARIABLE
-                                                                                    yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
-                                                                              if(!idf_exist((yyvsp[(4) - (8)].str)) || strcmp(return_CODE_Cst_Idf((yyvsp[(4) - (8)].str)),"ROUTINE")!=0)  //2 eme idf doit etre une routine
-                                                                                   yyerrorSemantique("L'identifiacteur appelee n'est pas une ROUTINE ou n'existe pas\n");    ;}
+                                                                                   yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+                                                                      if(!idf_exist((yyvsp[(4) - (8)].str)) || strcmp(return_CODE_Cst_Idf((yyvsp[(4) - (8)].str)),"ROUTINE")!=0)  //2 eme idf doit etre une routine
+                                                                                   yyerrorSemantique("L'identifiacteur appelee n'est pas une ROUTINE ou n'existe pas\n");   
+                                                                      if(atoi(return_VALUE_SIZE_Cst_Idf((yyvsp[(4) - (8)].str)))!= nbArg) //signature incorrecte
+                                                                                   yyerrorSemantique("Signature de la fonction incorrecte\n");
+                                                                      nbArg = 0;}
+    break;
+
+  case 108:
+
+/* Line 1455 of yacc.c  */
+#line 199 "syntaxique.y"
+    {nbArg++;}
+    break;
+
+  case 109:
+
+/* Line 1455 of yacc.c  */
+#line 200 "syntaxique.y"
+    {nbArg++;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1889 "syntaxique.tab.c"
+#line 1964 "syntaxique.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2097,7 +2172,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 195 "syntaxique.y"
+#line 202 "syntaxique.y"
 
 
 

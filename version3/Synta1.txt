@@ -57,8 +57,9 @@ A = 0+ TAB(8);
  MAT(5,2)=8;
 ENDDO;
 
-
-A = CALL Comp (A- 5,MAT(9,5),TAB(5),C);
+A = CALL Comp (A- 5,MAT(9,5),A);
+A = CALL Comp (A- 5,MAT(9,5),TAB(5));
+A = CALL Comp (TAB(5));
 EQUIVALENCE (A, B, C), (Y, TAB(3));
 
 END
