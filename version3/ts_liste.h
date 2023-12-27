@@ -223,6 +223,20 @@ char *return_CODE_Cst_Idf(const char name[MAX_NAME_LENGTH])
   printf("ERROR : cant find the code node doesnt exist"); // Node with the specified name does not exist
 }
 
+char *return_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH])
+{
+  elt_Cst_Idf_node *current = L_Cst_Idf->head;
+  while (current != NULL)
+  {
+    if (strcmp(current->name, name) == 0)
+    {
+      return current->type;
+    }
+    current = current->next;
+  }
+  printf("ERROR : cant find the code node doesnt exist"); // Node with the specified name does not exist
+}
+
 char *return_VALUE_SIZE_Cst_Idf(const char name[MAX_NAME_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
