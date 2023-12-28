@@ -3,13 +3,13 @@ REAL N = 5 ;
 R2 = 3; 
 ENDR
 
-INTEGER ROUTINE Comp (X,Y,Z)
+REAL ROUTINE Comp (X,Y,Z)
 % Déclarations
 
 INTEGER A,B; 
-INTEGER A; 
 REAL Z=10.0, T= 55555.87; 
-CHARACTER C*20; 
+%CHARACTER C*20;
+INTEGER C = 5 ; 
 INTEGER var4 DIMENSION (20); 
 REAL MAT DIMENSION (20, 200);
 LOGICAL D;
@@ -17,15 +17,15 @@ LOGICAL D;
 % Instructions
 C = 8;
 B = 7;
-A = MAT(5,4) + (B * 5);
+%A = MAT(5,4) + (B * 5);
 B = 30;
 D = TRUE;
 A = 5 ;
-
+D = 0.2 ;
 WRITE ("Donner la valeur de A :"); 
 READ (A);
 WRITE ("La Valeur de A est ", A, ".");
-
+EQUIVALENCE (A, B, C), (Y, TAB(3));
 Comp = A ; 
 ENDR
 
@@ -35,7 +35,6 @@ ENDR
 
 PROGRAM HelloAcad
 % Déclarations
-INTEGER A,B,C ; 
 REAL Y ; 
 INTEGER TAB DIMENSION (10) ; 
 
@@ -48,11 +47,11 @@ A = 5/(0+ 9);
 %A = 5/(0); 
 A = 5/ 9*0;
 A = 5/ 45/9;
-A = 5/ 45/9;
+A = 5/ 45/9 ;
 A = 0/5;
 DOWHILE (A.LT.10) A = A + 1;
 IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - B ;
-A = TAB(9) + (B * 7);
+%A = TAB(9) + (B * 7);
 B = 30;
 ELSE A = A + B;
 
@@ -61,10 +60,13 @@ READ (T);
 WRITE ("La Valeur de T est ", T, ".");
 ENDIF
 A = 0+ TAB(8);
- MAT(5,2)=8;
+% MAT(5,2)=8;
 ENDDO;
 
 A = CALL Comp (A- 5,MAT(9,5),A);
+
+A = CALL Comp (A,C,A);
+A = CALL j (A,C,A);
 A = CALL Comp (A- 5,MAT(9,5),TAB(5));
 EQUIVALENCE (A, B, C), (Y, TAB(3));
 

@@ -1,12 +1,11 @@
 
 PROGRAM HelloAcad
 % Déclarations
-INTEGER A,B,C =5  ; 
+REAL A,B,C =0.0  ; 
 REAL Y =5.3 ; 
 
 INTEGER TAB DIMENSION (10) ; 
 REAL MAT DIMENSION (10,9) ;
-REAL Y DIMENSION (10,9) ;
 % Instructions
 %A = 5/0;  
 %A = 5/0+ 9;

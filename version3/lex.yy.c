@@ -989,7 +989,7 @@ YY_RULE_SETUP
         Col= Col + strlen(yytext);
         ECHO ; 
         if (yyleng>10) printf ("\nWARNING: identificateur trop long a la ligne %d a la colonne %d (%d characters) \n",nb_ligne, Col,strlen(yytext));
-        insert_Cst_Idf(yytext,"","","0");        
+        insert_Cst_Idf(yytext,"","","0","");        
         return idf;
 }
 	YY_BREAK
@@ -1002,12 +1002,12 @@ YY_RULE_SETUP
         if(atof(yytext) >32767.32767 ||  atof(yytext) < -32768.32768){
         ECHO ; 
         printf("\nWarning :%s real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
-        insert_Cst_Idf(yytext,"REAL","cst_real","0"); 
+        insert_Cst_Idf(yytext,"REAL","cst_real","0",""); 
         return cst_real;
 
     }
     else{
-        insert_Cst_Idf(yytext,"REAL","cst_real","0"); 
+        insert_Cst_Idf(yytext,"REAL","cst_real","0",""); 
         ECHO ;        
         return cst_real;
     }
@@ -1024,7 +1024,7 @@ YY_RULE_SETUP
         ECHO ; 
         printf("\nWarning :%d real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
     }else{
-        insert_Cst_Idf(yytext,"INTEGER","cst_int","0"); 
+        insert_Cst_Idf(yytext,"INTEGER","cst_int","0",""); 
         ECHO ;        
         return cst_int;
     }

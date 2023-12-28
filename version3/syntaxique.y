@@ -31,23 +31,31 @@ Stack *stack_name_Routine ;
 %token <str>PROGRAM_mc <str>END_mc <str>ROUTINE_mc <str>ENDR_mc <str>LOGICAL_mc <str>TRUE_mc <str>FALSE_mc <str>CHARACTER_mc <str>REAL_mc <str>INTEGER_mc <str>DIMENSION_mc <str>READ_mc <str>WRITE_mc <str>IF_mc <str>THEN_mc <str>ELSE_mc <str>ENDIF_mc <str>GT_mc <str>GE_mc <str>EQ_mc <str>NE_mc <str>LE_mc LT_mc OR_mc AND_mc DOWHILE_mc ENDDO_mc EQUIVALENCE_mc CALL_mc <str>idf <entier>cst_int   <reel>cst_real    <str>character aff plus moins divis multip pvg ver point par_ouvrante par_fermante points_sup
 %start S 
 %%
-S : Fonction_i PROGRAM_mc idf DEC INSTRUCTIONS END_mc
+S : Fonction_i  MAIN DEC INSTRUCTIONS END_mc
 ;
-Fonction_i: type_fonc ROUTINE_mc idf par_ouvrante ARG par_fermante DEC INSTRUCTIONS Affectation_fonction ENDR_mc Fonction_i 
-                        {add_TYPE_Cst_Idf($3,top(stack_type));pop(stack_type);add_CODE_Cst_Idf($3,"ROUTINE");
-                          if(strcmp(top(stack_name_Routine),$3)!=0) yyerrorSemantique("Error: the last line of ROUTINE should be affectation with name of ROUTINE") ;
+MAIN: PROGRAM_mc  idf {push(stack_name_Routine,"main")}
+;
+Fonction_i: save_name_func par_ouvrante ARG par_fermante DEC INSTRUCTIONS Affectation_fonction ENDR_mc Fonction_i 
+                        {add_SCOPE_lastIdf(top(stack_name_Routine),top(stack_name_Routine));
+                        add_TYPE_Cst_Idf(top(stack_name_Routine),top(stack_type),top(stack_name_Routine));pop(stack_type);add_CODE_Cst_Idf(top(stack_name_Routine),"ROUTINE",top(stack_name_Routine));
+                          if(strcmp(top(stack_name_Routine),top(stack_name_Routine))!=0) yyerrorSemantique("Error: the last line of ROUTINE should be affectation with name of ROUTINE") ;
                           pop(stack_name_Routine);
-                          add_VALUE_Cst_Idf($3,top(stack_value)); pop(stack_value);}
+                          /*save in ts nombre d'arguments*/
+                          add_VALUE_Cst_Idf(top(stack_name_Routine),top(stack_value),top(stack_name_Routine)); 
+                          pop(stack_value);
+                          nbArg=0;}
            | 
 ;
-Affectation_fonction: idf aff EXP pvg{push(stack_name_Routine,$1)}
-                    | idf aff character  pvg{push(stack_name_Routine,$1)}
-                    | idf LOGICAL_VALUE  pvg{push(stack_name_Routine,$1)}
+save_name_func: type_fonc ROUTINE_mc idf {push(stack_name_Routine,$3);printf("Here name rout :%s\n",top(stack_name_Routine))}
+;
+Affectation_fonction: idf aff EXP pvg //{push(stack_name_Routine,$1)}
+                    | idf aff character// pvg{push(stack_name_Routine,$1)}
+                    | idf LOGICAL_VALUE//  pvg{push(stack_name_Routine,$1)}
 ;
 type_fonc: type| CHARACTER_mc {push(stack_type, "CHARACTER")  }
 ;
-ARG : liste_parametres {push(stack_value,intToString(nbArg)),nbArg=0;}
-      |                {push(stack_value,intToString(0)),nbArg=0;}
+ARG : liste_parametres {push(stack_value,intToString(nbArg));nbArg=0;}
+      |                {push(stack_value,"0");nbArg=0;}
 ; 
 liste_parametres: idf  ver liste_parametres                                                {nbArg++}
                 | idf par_ouvrante cst_int ver cst_int  par_fermante  ver liste_parametres {nbArg++}
@@ -62,14 +70,14 @@ DEC: type SUITE_DEC pvg DEC {pop(stack_type)}
     | DEC_TAB pvg DEC
     |
 ;
-SUITE_DEC:  idf DEC_AFF ver SUITE_DEC  {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1,top(stack_type)); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE");}  
-          | idf DEC_AFF                {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1,top(stack_type)); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE");} 
-          | idf ver SUITE_DEC          {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1,top(stack_type));add_CODE_Cst_Idf($1,"VARIABLE");}
-          | idf                        {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1,top(stack_type));add_CODE_Cst_Idf($1,"VARIABLE");}
+SUITE_DEC:  idf DEC_AFF ver SUITE_DEC  {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1,top(stack_type),top(stack_name_Routine)); add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}  
+          | idf DEC_AFF                {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1,top(stack_type),top(stack_name_Routine)); add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));} 
+          | idf ver SUITE_DEC          {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1,top(stack_type),top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          | idf                        {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1,top(stack_type),top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
  
 ;
-DEC_TAB: type idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante           {if(idf_exist($2))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($2,top(stack_type));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille) ;taille2= 0;add_CODE_Cst_Idf($2,code);}
-        |CHARACTER_mc idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante   {if(idf_exist($2))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($2,"CHARACTER");ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille) ;taille2= 0;add_CODE_Cst_Idf($2,code);}
+DEC_TAB: type idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante           {if(idf_exist($2,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));}
+        |CHARACTER_mc idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante   {if(idf_exist($2,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($2,"CHARACTER",top(stack_name_Routine));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));}
 ;
 
 LIST_PAR_TAB : ver cst_int {taille2 = $2; strcpy(code,"MATRICE");} 
@@ -80,19 +88,19 @@ DEC_AFF: aff cst_int  {push(stack_value, intToString($2)) }
        | aff  TRUE_mc {push(stack_value, $2)  }
        | aff FALSE_mc {push(stack_value, $2)  }
 ;
-DEC_CHAR :    idf multip cst_int ver   DEC_CHAR            {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER");add_CODE_Cst_Idf($1,"VARIABLE");}
-          |   idf multip cst_int                           {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER");add_CODE_Cst_Idf($1,"VARIABLE");}
-          |   idf multip cst_int DEC_CHAR_AFF              {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE");}
-          |   idf multip cst_int DEC_CHAR_AFF ver DEC_CHAR {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE");}
-          |   idf                                          {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER");add_CODE_Cst_Idf($1,"VARIABLE");}
-          |   idf ver DEC_CHAR                             {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER");add_CODE_Cst_Idf($1,"VARIABLE");}
-          |   idf DEC_CHAR_AFF                             {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE");}
-          |   idf DEC_CHAR_AFF ver   DEC_CHAR              {if(idf_exist($1))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER"); add_VALUE_Cst_Idf($1,top(stack_value));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE");}
+DEC_CHAR :    idf multip cst_int ver   DEC_CHAR            {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf multip cst_int                           {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf multip cst_int DEC_CHAR_AFF              {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf multip cst_int DEC_CHAR_AFF ver DEC_CHAR {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf                                          {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf ver DEC_CHAR                             {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf DEC_CHAR_AFF                             {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf DEC_CHAR_AFF ver   DEC_CHAR              {if(idf_exist($1,top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
 ;
 
 DEC_CHAR_AFF: aff character  {push(stack_value,$2)}
 ;
-type:  INTEGER_mc  {push(stack_type, "INTEGER")}
+type:  INTEGER_mc  {push(stack_type, "INTEGER");printf("Here type rout :%s\n",top(stack_type))}
      | REAL_mc     {push(stack_type, "REAL")}
      | LOGICAL_mc  {push(stack_type, "LOGICAL")}
 ;
@@ -108,23 +116,23 @@ TYPE_INSTRUCTION : Affectation
                   |INST_CALL
 ;
 
-Affectation: idf aff EXP pvg             {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0) yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
-                                          if( !strcmp(return_TYPE_Cst_Idf($1),"INTEGER") && strcmp(return_TYPE_Cst_Idf($1),save_type_operateur) && cmpt==1){ 
-                                                      printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,return_TYPE_Cst_Idf($1)); 
+Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0) yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+                                          if( !strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"INTEGER") && strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),save_type_operateur) && cmpt==1){ 
+                                                      printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
                                                       yyerrorSemantique("Incompatibile types\n");
                                           }
                                                 cmpt=0;
                                           }
-            |idf aff character pvg        {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
-                                           if(strcmp(return_TYPE_Cst_Idf($1),"CHARACTER")) yyerrorSemantique("Incompatible types\n")}
-            |TAB_PAR aff EXP pvg          {/*if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")*/}
-            |idf aff LOGICAL_VALUE pvg    {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
-                                           if(strcmp(return_TYPE_Cst_Idf($1),"LOGICAL")) yyerrorSemantique("Incompatible types\n");}
+            |idf aff character pvg        {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+                                           if(strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"CHARACTER")) yyerrorSemantique("Incompatible types\n")}
+            |TAB_PAR aff EXP pvg          {/*if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE",top(stack_name_Routine))==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")*/}
+            |idf aff LOGICAL_VALUE pvg    {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+                                           if(strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"LOGICAL")) yyerrorSemantique("Incompatible types\n");}
 
 ;
 
 Entre_Sortie_INST:  WRITE_mc par_ouvrante SORTIE_MESSAGE par_fermante pvg 
-                  | READ_mc par_ouvrante idf par_fermante pvg  {if(!idf_exist($3) || strcmp(return_CODE_Cst_Idf($3),"ROUTINE")==0) // idf n'existe pas dans TS ou est un nom de routine 
+                  | READ_mc par_ouvrante idf par_fermante pvg  {if(!idf_exist($3,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($3,top(stack_name_Routine)),"ROUTINE")==0) // idf n'existe pas dans TS ou est un nom de routine 
                                                                   yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")}
 ;
 SORTIE_MESSAGE :character ver SORTIE_MESSAGE| EXP ver SORTIE_MESSAGE | character | EXP
@@ -148,43 +156,43 @@ suiteDiv: SUITE_EXPRESSION_2 {if(divZero==true)yyerrorSemantique("Error: Divisio
 ;
 SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
                    | cst_int  {if($1==0)divZero=true;else divZero = false ;    
-                              if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf(intToString($1))); 
+                              if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf(intToString($1),top(stack_name_Routine))); 
                               cmpt++;
                               }      
                    | cst_real {if($1==0)divZero=true;else divZero = false;
-                              if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf(floatToString($1)));            
+                              if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf(floatToString($1),top(stack_name_Routine)));            
                               cmpt++;
                               }
                    | TAB_PAR  {  divZero = false  } 
-                   | idf {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"VARIABLE")!=0 ) // idf n'existe pas dans TS ou est un nom de routine 
+                   | idf {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"VARIABLE")!=0 ) // idf n'existe pas dans TS ou est un nom de routine 
                                     yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
-                              if(atoi(return_VALUE_SIZE_Cst_Idf($1))==0)divZero=true;else divZero = false ;  
-                              if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf($1)); 
+                              if(atof(return_VALUE_SIZE_Cst_Idf($1,top(stack_name_Routine)))==0)divZero=true;else divZero = false ;  
+                              if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
                               cmpt++;
                             }
 ;
-TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"MATRICE")!=0) // idf n'existe pas dans TS ou pas un nom de matrice 
+TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"MATRICE")!=0) // idf n'existe pas dans TS ou pas un nom de matrice 
                                                                   yyerrorSemantique("idf n'existe pas dans TS ou n'est pas une MATRICE\n");
-                                                             extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf($1),&firstSize,&secondSize);
+                                                             extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf($1,top(stack_name_Routine)),&firstSize,&secondSize);
                                                              if(firstSize<=$3 || $3<0 || secondSize < $5 || $5 <0  )
                                                                   yyerrorSemantique("Size of matrice incorrect \n");
                                                              if (cmpt==0) { 
                                                                   
-                                                                  strcpy(save_type_operateur,return_TYPE_Cst_Idf($1)); 
-                                                                  printf("op %s est de type %s\n",$1,save_type_operateur);
+                                                                  strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
+                                                                  yyerrorSemantique("Incompatibilite de types");
                                                              }
                                                              cmpt++;
                                                             }
-        |idf par_ouvrante cst_int  par_fermante             {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"TABLEAU")!=0) // idf n'existe pas dans TS ou pas un nom de tableau 
+        |idf par_ouvrante cst_int  par_fermante             {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"TABLEAU")!=0) // idf n'existe pas dans TS ou pas un nom de tableau 
                                                                  yyerrorSemantique("idf n'existe pas dans TS ou n'est pas un TABLEAU\n");
-                                                            extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf($1),&firstSize,&secondSize);
+                                                            extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf($1,top(stack_name_Routine)),&firstSize,&secondSize);
                                                             if(firstSize<=$3 || $3<0 )
                                                                   yyerrorSemantique("Size of matrice incorrect \n");
                                                             
                                                             if (cmpt==0) { 
                                                                   
-                                                                  strcpy(save_type_operateur,return_TYPE_Cst_Idf($1)); 
-                                                                  printf("op %s est de type %s\n",$1,save_type_operateur);
+                                                                  strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
+                                                                  yyerrorSemantique("Incompatibilite de types");
                                                              }
                                                              cmpt++;
                                                             }
@@ -224,11 +232,12 @@ BOUCLE_INST: DOWHILE_mc  par_ouvrante  COND par_fermante  INSTRUCTIONS ENDDO_mc 
 OPERATEUR_LOGIQUE_1: point SUITE_OPERATEUR_LOGIQUE_1 point
 ;
 
-INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {if(!idf_exist($1) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE")==0) // premier idf est une VARIABLE
+INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0) // premier idf est une VARIABLE
                                                                                    yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
-                                                                      if(!idf_exist($4) || strcmp(return_CODE_Cst_Idf($4),"ROUTINE")!=0)  //2 eme idf doit etre une routine
+                                                                      if(!idf_exist($4,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($4,top(stack_name_Routine)),"ROUTINE")!=0)  //2 eme idf doit etre une routine
                                                                                    yyerrorSemantique("L'identifiacteur appelee n'est pas une ROUTINE ou n'existe pas\n");   
-                                                                      if(atoi(return_VALUE_SIZE_Cst_Idf($4))!= nbArg) //signature incorrecte
+                                                                      if(atoi(return_VALUE_SIZE_Cst_Idf($4,top(stack_name_Routine)))!= nbArg) 
+                                                                      //signature incorrecte
                                                                                    yyerrorSemantique("Signature de la fonction incorrecte\n");
                                                                       nbArg = 0}  
 ;

@@ -11,13 +11,14 @@
 #define MAX_VAL_LENGTH 50
 #define INITIAL_CAPACITY 50
 #define MAX_STRING_SIZE 50
-
+#define MAX_SCOPE_LENGTH 50
 typedef struct elt_Cst_Idf_node
 {
   char name[MAX_NAME_LENGTH];
   char type[MAX_TYPE_LENGTH];
   char val[MAX_VAL_LENGTH];
   char code[MAX_CODE_LENGTH];
+  char scope[MAX_SCOPE_LENGTH];
   struct elt_Cst_Idf_node *next;
 } elt_Cst_Idf_node;
 
@@ -41,7 +42,7 @@ typedef struct list_Sep_MotCle
 list_Cst_Idf *L_Cst_Idf;
 list_Sep_MotCle *L_Sep_MotCle;
 
-elt_Cst_Idf_node *createnode_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH], const char code[MAX_CODE_LENGTH], const char val[MAX_VAL_LENGTH])
+elt_Cst_Idf_node *createnode_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH], const char code[MAX_CODE_LENGTH], const char val[MAX_VAL_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *newNode = (elt_Cst_Idf_node *)malloc(sizeof(elt_Cst_Idf_node));
   if (!newNode)
@@ -52,7 +53,7 @@ elt_Cst_Idf_node *createnode_Cst_Idf(const char name[MAX_NAME_LENGTH], const cha
   strcpy(newNode->type, type);
   strcpy(newNode->val, val);
   strcpy(newNode->code, code);
-
+  strcpy(newNode->scope, scope);
   newNode->next = NULL;
   return newNode;
 }
@@ -119,7 +120,7 @@ void freeList_Sep_MotCle()
   free(L_Sep_MotCle);
 }
 
-void insert_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH], const char code[MAX_CODE_LENGTH], char val[MAX_VAL_LENGTH])
+void insert_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH], const char code[MAX_CODE_LENGTH], char val[MAX_VAL_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
 
@@ -136,7 +137,7 @@ void insert_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_L
   // Name does not exist, proceed with insertion
   if (L_Cst_Idf->head == NULL)
   {
-    L_Cst_Idf->head = createnode_Cst_Idf(name, type, code, val);
+    L_Cst_Idf->head = createnode_Cst_Idf(name, type, code, val, scope);
   }
   else
   {
@@ -145,7 +146,7 @@ void insert_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_L
     {
       current = current->next;
     }
-    current->next = createnode_Cst_Idf(name, type, code, val);
+    current->next = createnode_Cst_Idf(name, type, code, val, scope);
   }
 }
 
@@ -179,12 +180,12 @@ void insert_Sep_MotCle(const char name[MAX_NAME_LENGTH], const char code[MAX_COD
   }
 }
 
-void add_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH])
+void add_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0)
+    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
     {
       strcpy(current->type, type); // Node with the specified name exists
       return;
@@ -194,12 +195,12 @@ void add_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE
   printf("ERROR : cant change the type node doesnt exist"); // Node with the specified name does not exist
 }
 
-void add_CODE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char code[MAX_CODE_LENGTH])
+void add_CODE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char code[MAX_CODE_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0)
+    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
     {
       strcpy(current->code, code); // Node with the specified name exists
       return;
@@ -208,13 +209,12 @@ void add_CODE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char code[MAX_CODE
   }
   printf("ERROR : cant change the code node doesnt exist"); // Node with the specified name does not exist
 }
-
-char *return_CODE_Cst_Idf(const char name[MAX_NAME_LENGTH])
+char *return_CODE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0)
+    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
     {
       return current->code;
     }
@@ -223,12 +223,12 @@ char *return_CODE_Cst_Idf(const char name[MAX_NAME_LENGTH])
   printf("ERROR : cant find the code node doesnt exist"); // Node with the specified name does not exist
 }
 
-char *return_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH])
+char *return_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0)
+    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
     {
       return current->type;
     }
@@ -237,12 +237,12 @@ char *return_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH])
   printf("ERROR : cant find the code node doesnt exist"); // Node with the specified name does not exist
 }
 
-char *return_VALUE_SIZE_Cst_Idf(const char name[MAX_NAME_LENGTH])
+char *return_VALUE_SIZE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0)
+    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
     {
       return current->val;
     }
@@ -251,12 +251,12 @@ char *return_VALUE_SIZE_Cst_Idf(const char name[MAX_NAME_LENGTH])
   printf("ERROR : cant find the val node doesnt exist"); // Node with the specified name does not exist
 }
 
-void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VAL_LENGTH])
+void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VAL_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0)
+    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
     {
       strcpy(current->val, value); // Node with the specified name exists
       return;
@@ -265,13 +265,33 @@ void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VA
   }
   printf("ERROR : cant change the value node doesnt exist"); // Node with the specified name does not exist
 }
+void add_SCOPE_lastIdf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
+{
+  elt_Cst_Idf_node *current = L_Cst_Idf->head;
+  if (current == NULL)
+  {
+    fprintf(stderr, "Empty list\n");
+    exit(EXIT_FAILURE);
+  }
 
-bool idf_exist(const char name[MAX_NAME_LENGTH])
+  // Traverse the list until the last node is reached
+  while (current->next != NULL)
+  {
+    current = current->next;
+  }
+
+  if (strcmp(current->name, name) == 0)
+  {
+    strcpy(current->scope, scope); // Node with the specified name exists
+  }
+}
+
+bool idf_exist(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0)
+    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
     {
       if (strcmp(current->code, "") == 0)
         return false; // donc vbariable existe dans TS mais non declarer dans partie declaration de la syntaxique
@@ -302,13 +322,13 @@ void displayList_Cst_Idf()
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
 
   printf("/***************Liste des symboles IDF*************/\n");
-  printf("____________________________________________________________________\n");
-  printf("\t| Nom_Entite |  Code_Entite | Type_Entite | Val_Entite/taille\n");
-  printf("____________________________________________________________________\n");
+  printf("__________________________________________________________________________________\n");
+  printf("\t| Nom_Entite |  Code_Entite | Type_Entite | Val_Entite/taille/nbArg | scope\n");
+  printf("__________________________________________________________________________________\n");
 
   while (current != NULL)
   {
-    printf("\t|%10s |%15s | %12s | %12s\n", current->name, current->code, current->type, current->val);
+    printf("\t|%10s |%15s | %12s | %20s | %12s\n", current->name, current->code, current->type, current->val, current->scope);
     current = current->next;
   }
 }
