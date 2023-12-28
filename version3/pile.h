@@ -19,18 +19,6 @@ typedef struct
     Node *top;
 } Stack;
 
-Stack *initializeStack()
-{
-    Stack *stack = (Stack *)malloc(sizeof(Stack));
-    if (stack == NULL)
-    {
-        fprintf(stderr, "Memory allocation error\n");
-        exit(EXIT_FAILURE);
-    }
-    stack->top = NULL;
-    return stack;
-}
-
 void push(Stack *stack, const char *value)
 {
     Node *newNode = (Node *)malloc(sizeof(Node));
@@ -43,6 +31,19 @@ void push(Stack *stack, const char *value)
     newNode->data[sizeof(newNode->data) - 1] = '\0'; // Ensure null-termination
     newNode->next = stack->top;
     stack->top = newNode;
+}
+
+Stack *initializeStack()
+{
+    Stack *stack = (Stack *)malloc(sizeof(Stack));
+    if (stack == NULL)
+    {
+        fprintf(stderr, "Memory allocation error\n");
+        exit(EXIT_FAILURE);
+    }
+    stack->top = NULL;
+    push(stack, "");
+    return stack;
 }
 
 void pop(Stack *stack)

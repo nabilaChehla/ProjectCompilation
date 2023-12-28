@@ -531,18 +531,18 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    34,    34,    36,    38,    47,    49,    51,    52,    53,
-      55,    55,    57,    58,    60,    61,    62,    63,    64,    65,
-      68,    69,    70,    71,    73,    74,    75,    76,    79,    80,
-      83,    84,    86,    87,    88,    89,    91,    92,    93,    94,
-      95,    96,    97,    98,   101,   103,   104,   105,   108,   109,
-     111,   112,   113,   114,   115,   116,   119,   126,   128,   129,
-     134,   135,   138,   138,   138,   138,   140,   142,   144,   146,
-     147,   148,   151,   152,   153,   155,   157,   158,   162,   166,
-     167,   174,   186,   201,   202,   204,   205,   207,   208,   211,
-     213,   214,   215,   216,   217,   218,   220,   220,   220,   220,
-     220,   220,   222,   222,   226,   228,   228,   230,   232,   235,
-     244,   245,   247,   248
+       0,    34,    34,    36,    38,    40,    42,    45,    46,    47,
+      49,    49,    51,    52,    54,    55,    56,    57,    58,    59,
+      62,    63,    64,    65,    67,    68,    69,    70,    73,    74,
+      77,    78,    80,    81,    82,    83,    85,    86,    87,    88,
+      89,    90,    91,    92,    95,    97,    98,    99,   102,   103,
+     105,   106,   107,   108,   109,   110,   113,   120,   122,   123,
+     128,   129,   132,   132,   132,   132,   134,   136,   138,   140,
+     141,   142,   145,   146,   147,   149,   151,   152,   156,   160,
+     161,   168,   180,   195,   196,   198,   199,   201,   202,   205,
+     207,   208,   209,   210,   211,   212,   214,   214,   214,   214,
+     214,   214,   216,   216,   220,   222,   222,   224,   226,   229,
+     238,   239,   241,   242
 };
 #endif
 
@@ -1616,269 +1616,284 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 39 "syntaxique.y"
-    {add_SCOPE_lastIdf(top(stack_name_Routine),top(stack_name_Routine));
-                        add_TYPE_Cst_Idf(top(stack_name_Routine),top(stack_type),top(stack_name_Routine));pop(stack_type);add_CODE_Cst_Idf(top(stack_name_Routine),"ROUTINE",top(stack_name_Routine));
-                          if(strcmp(top(stack_name_Routine),top(stack_name_Routine))!=0) yyerrorSemantique("Error: the last line of ROUTINE should be affectation with name of ROUTINE") ;
-                          pop(stack_name_Routine);
-                          /*save in ts nombre d'arguments*/
-                          add_VALUE_Cst_Idf(top(stack_name_Routine),top(stack_value),top(stack_name_Routine)); 
-                          pop(stack_value);
-                          nbArg=0;;}
+    { traitement_Fin_Routine(stack_name_Routine,stack_value,stack_type,&nbArg);;}
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 49 "syntaxique.y"
-    {push(stack_name_Routine,(yyvsp[(3) - (3)].str));printf("Here name rout :%s\n",top(stack_name_Routine));}
+#line 42 "syntaxique.y"
+    {push(stack_name_Routine,(yyvsp[(3) - (3)].str));                       
+                                                 ;}
+    break;
+
+  case 7:
+
+/* Line 1455 of yacc.c  */
+#line 45 "syntaxique.y"
+    {Check_Retour_Routine((yyvsp[(1) - (4)].str), stack_name_Routine);}
+    break;
+
+  case 8:
+
+/* Line 1455 of yacc.c  */
+#line 46 "syntaxique.y"
+    {Check_Retour_Routine((yyvsp[(1) - (3)].str), stack_name_Routine);}
+    break;
+
+  case 9:
+
+/* Line 1455 of yacc.c  */
+#line 47 "syntaxique.y"
+    {Check_Retour_Routine((yyvsp[(1) - (2)].str), stack_name_Routine);}
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 55 "syntaxique.y"
+#line 49 "syntaxique.y"
     {push(stack_type, "CHARACTER")  ;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 57 "syntaxique.y"
-    {push(stack_value,intToString(nbArg));nbArg=0;;}
+#line 51 "syntaxique.y"
+    {push(stack_value,intToString(nbArg)); nbArg=0;;}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 58 "syntaxique.y"
-    {push(stack_value,"0");nbArg=0;;}
+#line 52 "syntaxique.y"
+    {push(stack_value,"0"); nbArg=0;;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 60 "syntaxique.y"
-    {nbArg++;}
+#line 54 "syntaxique.y"
+    {add_SCOPE_Cst_Idf((yyvsp[(1) - (3)].str),top(stack_name_Routine));nbArg++;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 61 "syntaxique.y"
-    {nbArg++;}
+#line 55 "syntaxique.y"
+    {add_SCOPE_Cst_Idf((yyvsp[(1) - (8)].str),top(stack_name_Routine));nbArg++;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 62 "syntaxique.y"
-    {nbArg++;}
+#line 56 "syntaxique.y"
+    {add_SCOPE_Cst_Idf((yyvsp[(1) - (6)].str),top(stack_name_Routine));nbArg++;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 63 "syntaxique.y"
-    {nbArg++;}
+#line 57 "syntaxique.y"
+    {add_SCOPE_Cst_Idf((yyvsp[(1) - (1)].str),top(stack_name_Routine));nbArg++;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 64 "syntaxique.y"
-    {nbArg++;}
+#line 58 "syntaxique.y"
+    {add_SCOPE_Cst_Idf((yyvsp[(1) - (6)].str),top(stack_name_Routine));nbArg++;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 65 "syntaxique.y"
-    {nbArg++;}
+#line 59 "syntaxique.y"
+    {add_SCOPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine));nbArg++;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 68 "syntaxique.y"
+#line 62 "syntaxique.y"
     {pop(stack_type);}
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 73 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_type),top(stack_name_Routine)); add_VALUE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (4)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 67 "syntaxique.y"
+    {Taitement_SUITE_DEC((yyvsp[(1) - (4)].str),stack_name_Routine,stack_type); add_VALUE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_value),top(stack_name_Routine)); pop(stack_value);;}
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 74 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (2)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (2)].str),top(stack_type),top(stack_name_Routine)); add_VALUE_Cst_Idf((yyvsp[(1) - (2)].str),top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (2)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 68 "syntaxique.y"
+    {Taitement_SUITE_DEC((yyvsp[(1) - (2)].str),stack_name_Routine,stack_type); add_VALUE_Cst_Idf((yyvsp[(1) - (2)].str),top(stack_value),top(stack_name_Routine)); pop(stack_value);;}
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 75 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (3)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (3)].str),top(stack_type),top(stack_name_Routine));add_CODE_Cst_Idf((yyvsp[(1) - (3)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 69 "syntaxique.y"
+    {Taitement_SUITE_DEC((yyvsp[(1) - (3)].str),stack_name_Routine,stack_type);}
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 76 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (1)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (1)].str),top(stack_type),top(stack_name_Routine));add_CODE_Cst_Idf((yyvsp[(1) - (1)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 70 "syntaxique.y"
+    {Taitement_SUITE_DEC((yyvsp[(1) - (1)].str),stack_name_Routine,stack_type);}
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 79 "syntaxique.y"
-    {if(idf_exist((yyvsp[(2) - (7)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(2) - (7)].str),top(stack_type),top(stack_name_Routine));ConcatTaille((yyvsp[(5) - (7)].entier),taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf((yyvsp[(2) - (7)].str),Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf((yyvsp[(2) - (7)].str),code,top(stack_name_Routine));;}
+#line 73 "syntaxique.y"
+    {if(idf_exist((yyvsp[(2) - (7)].str),top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf((yyvsp[(2) - (7)].str),top(stack_name_Routine));add_TYPE_Cst_Idf((yyvsp[(2) - (7)].str),top(stack_type),top(stack_name_Routine));ConcatTaille((yyvsp[(5) - (7)].entier),taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf((yyvsp[(2) - (7)].str),Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf((yyvsp[(2) - (7)].str),code,top(stack_name_Routine));;}
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 80 "syntaxique.y"
-    {if(idf_exist((yyvsp[(2) - (7)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(2) - (7)].str),"CHARACTER",top(stack_name_Routine));ConcatTaille((yyvsp[(5) - (7)].entier),taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf((yyvsp[(2) - (7)].str),Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf((yyvsp[(2) - (7)].str),code,top(stack_name_Routine));;}
+#line 74 "syntaxique.y"
+    {if(idf_exist((yyvsp[(2) - (7)].str),top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf((yyvsp[(2) - (7)].str),top(stack_name_Routine));add_TYPE_Cst_Idf((yyvsp[(2) - (7)].str),"CHARACTER",top(stack_name_Routine));ConcatTaille((yyvsp[(5) - (7)].entier),taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf((yyvsp[(2) - (7)].str),Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf((yyvsp[(2) - (7)].str),code,top(stack_name_Routine));;}
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 83 "syntaxique.y"
+#line 77 "syntaxique.y"
     {taille2 = (yyvsp[(2) - (2)].entier); strcpy(code,"MATRICE");;}
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 84 "syntaxique.y"
+#line 78 "syntaxique.y"
     {strcpy(code,"TABLEAU");;}
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 86 "syntaxique.y"
+#line 80 "syntaxique.y"
     {push(stack_value, intToString((yyvsp[(2) - (2)].entier))) ;}
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 87 "syntaxique.y"
+#line 81 "syntaxique.y"
     {push(stack_value, floatToString((yyvsp[(2) - (2)].reel)))  ;}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 88 "syntaxique.y"
+#line 82 "syntaxique.y"
     {push(stack_value, (yyvsp[(2) - (2)].str))  ;}
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 89 "syntaxique.y"
+#line 83 "syntaxique.y"
     {push(stack_value, (yyvsp[(2) - (2)].str))  ;}
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 91 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (5)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (5)].str), "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf((yyvsp[(1) - (5)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 85 "syntaxique.y"
+    {if(idf_exist((yyvsp[(1) - (5)].str),top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf((yyvsp[(1) - (5)].str),top(stack_name_Routine));add_TYPE_Cst_Idf((yyvsp[(1) - (5)].str), "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf((yyvsp[(1) - (5)].str),"VARIABLE",top(stack_name_Routine));;}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 92 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (3)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (3)].str), "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf((yyvsp[(1) - (3)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 86 "syntaxique.y"
+    {if(idf_exist((yyvsp[(1) - (3)].str),top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf((yyvsp[(1) - (3)].str),top(stack_name_Routine));add_TYPE_Cst_Idf((yyvsp[(1) - (3)].str), "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf((yyvsp[(1) - (3)].str),"VARIABLE",top(stack_name_Routine));;}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 93 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (4)].str), "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (4)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 87 "syntaxique.y"
+    {if(idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine));add_TYPE_Cst_Idf((yyvsp[(1) - (4)].str), "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (4)].str),"VARIABLE",top(stack_name_Routine));;}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 94 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (6)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (6)].str), "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf((yyvsp[(1) - (6)].str),top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (6)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 88 "syntaxique.y"
+    {if(idf_exist((yyvsp[(1) - (6)].str),top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf((yyvsp[(1) - (6)].str),top(stack_name_Routine));add_TYPE_Cst_Idf((yyvsp[(1) - (6)].str), "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf((yyvsp[(1) - (6)].str),top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (6)].str),"VARIABLE",top(stack_name_Routine));;}
     break;
 
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 95 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (1)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (1)].str), "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf((yyvsp[(1) - (1)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 89 "syntaxique.y"
+    {if(idf_exist((yyvsp[(1) - (1)].str),top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf((yyvsp[(1) - (1)].str),top(stack_name_Routine));add_TYPE_Cst_Idf((yyvsp[(1) - (1)].str), "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf((yyvsp[(1) - (1)].str),"VARIABLE",top(stack_name_Routine));;}
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 96 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (3)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (3)].str), "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf((yyvsp[(1) - (3)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 90 "syntaxique.y"
+    {if(idf_exist((yyvsp[(1) - (3)].str),top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf((yyvsp[(1) - (3)].str),top(stack_name_Routine));add_TYPE_Cst_Idf((yyvsp[(1) - (3)].str), "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf((yyvsp[(1) - (3)].str),"VARIABLE",top(stack_name_Routine));;}
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 97 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (2)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (2)].str), "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf((yyvsp[(1) - (2)].str),top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (2)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 91 "syntaxique.y"
+    {if(idf_exist((yyvsp[(1) - (2)].str),top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf((yyvsp[(1) - (2)].str),top(stack_name_Routine));add_TYPE_Cst_Idf((yyvsp[(1) - (2)].str), "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf((yyvsp[(1) - (2)].str),top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (2)].str),"VARIABLE",top(stack_name_Routine));;}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 98 "syntaxique.y"
-    {if(idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)))yyerrorSemantique("Double declaration");add_TYPE_Cst_Idf((yyvsp[(1) - (4)].str), "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (4)].str),"VARIABLE",top(stack_name_Routine));;}
+#line 92 "syntaxique.y"
+    {if(idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine));add_TYPE_Cst_Idf((yyvsp[(1) - (4)].str), "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf((yyvsp[(1) - (4)].str),"VARIABLE",top(stack_name_Routine));;}
     break;
 
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 101 "syntaxique.y"
+#line 95 "syntaxique.y"
     {push(stack_value,(yyvsp[(2) - (2)].str));}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 103 "syntaxique.y"
+#line 97 "syntaxique.y"
     {push(stack_type, "INTEGER");printf("Here type rout :%s\n",top(stack_type));}
     break;
 
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 104 "syntaxique.y"
+#line 98 "syntaxique.y"
     {push(stack_type, "REAL");}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 105 "syntaxique.y"
+#line 99 "syntaxique.y"
     {push(stack_type, "LOGICAL");}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 119 "syntaxique.y"
-    {if(!idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"ROUTINE")==0) yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+#line 113 "syntaxique.y"
+    {if(!idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"ROUTINE")==0) semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
                                           if( !strcmp(return_TYPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"INTEGER") && strcmp(return_TYPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),save_type_operateur) && cmpt==1){ 
                                                       printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,return_TYPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine))); 
-                                                      yyerrorSemantique("Incompatibile types\n");
+                                                      semantiqueError("Incompatibile types\n");
                                           }
                                                 cmpt=0;
                                           ;}
@@ -1887,101 +1902,101 @@ yyreduce:
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 126 "syntaxique.y"
-    {if(!idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
-                                           if(strcmp(return_TYPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"CHARACTER")) yyerrorSemantique("Incompatible types\n");}
+#line 120 "syntaxique.y"
+    {if(!idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"ROUTINE")==0)semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+                                           if(strcmp(return_TYPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"CHARACTER")) semantiqueError("Incompatible types\n");}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 128 "syntaxique.y"
-    {/*if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE",top(stack_name_Routine))==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n")*/;}
+#line 122 "syntaxique.y"
+    {/*if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE",top(stack_name_Routine))==0)semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n")*/;}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 129 "syntaxique.y"
-    {if(!idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"ROUTINE")==0)yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
-                                           if(strcmp(return_TYPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"LOGICAL")) yyerrorSemantique("Incompatible types\n");;}
+#line 123 "syntaxique.y"
+    {if(!idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"ROUTINE")==0)semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+                                           if(strcmp(return_TYPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"LOGICAL")) semantiqueError("Incompatible types\n");;}
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 135 "syntaxique.y"
+#line 129 "syntaxique.y"
     {if(!idf_exist((yyvsp[(3) - (5)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(3) - (5)].str),top(stack_name_Routine)),"ROUTINE")==0) // idf n'existe pas dans TS ou est un nom de routine 
-                                                                  yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");}
+                                                                  semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");}
     break;
 
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 144 "syntaxique.y"
+#line 138 "syntaxique.y"
     {divZero=false ;}
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 146 "syntaxique.y"
+#line 140 "syntaxique.y"
     {divZero=false ;}
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 147 "syntaxique.y"
+#line 141 "syntaxique.y"
     {divZero=false ;}
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 148 "syntaxique.y"
+#line 142 "syntaxique.y"
     {;}
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 151 "syntaxique.y"
+#line 145 "syntaxique.y"
     {divZero=false;}
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 152 "syntaxique.y"
+#line 146 "syntaxique.y"
     {divZero=false;;}
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 153 "syntaxique.y"
+#line 147 "syntaxique.y"
     {;}
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 155 "syntaxique.y"
-    {if(divZero==true)yyerrorSemantique("Error: Division sur 0");;}
+#line 149 "syntaxique.y"
+    {if(divZero==true)semantiqueError("Error: Division sur 0");;}
     break;
 
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 157 "syntaxique.y"
+#line 151 "syntaxique.y"
     {;}
     break;
 
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 158 "syntaxique.y"
+#line 152 "syntaxique.y"
     {if((yyvsp[(1) - (1)].entier)==0)divZero=true;else divZero = false ;    
                               if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf(intToString((yyvsp[(1) - (1)].entier)),top(stack_name_Routine))); 
                               cmpt++;
@@ -1991,7 +2006,7 @@ yyreduce:
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 162 "syntaxique.y"
+#line 156 "syntaxique.y"
     {if((yyvsp[(1) - (1)].reel)==0)divZero=true;else divZero = false;
                               if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf(floatToString((yyvsp[(1) - (1)].reel)),top(stack_name_Routine)));            
                               cmpt++;
@@ -2001,16 +2016,16 @@ yyreduce:
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 166 "syntaxique.y"
+#line 160 "syntaxique.y"
     {  divZero = false  ;}
     break;
 
   case 80:
 
 /* Line 1455 of yacc.c  */
-#line 167 "syntaxique.y"
+#line 161 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (1)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (1)].str),top(stack_name_Routine)),"VARIABLE")!=0 ) // idf n'existe pas dans TS ou est un nom de routine 
-                                    yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+                                    semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
                               if(atof(return_VALUE_SIZE_Cst_Idf((yyvsp[(1) - (1)].str),top(stack_name_Routine)))==0)divZero=true;else divZero = false ;  
                               if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf((yyvsp[(1) - (1)].str),top(stack_name_Routine))); 
                               cmpt++;
@@ -2020,16 +2035,16 @@ yyreduce:
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 174 "syntaxique.y"
+#line 168 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (6)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (6)].str),top(stack_name_Routine)),"MATRICE")!=0) // idf n'existe pas dans TS ou pas un nom de matrice 
-                                                                  yyerrorSemantique("idf n'existe pas dans TS ou n'est pas une MATRICE\n");
+                                                                  semantiqueError("idf n'existe pas dans TS ou n'est pas une MATRICE\n");
                                                              extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf((yyvsp[(1) - (6)].str),top(stack_name_Routine)),&firstSize,&secondSize);
                                                              if(firstSize<=(yyvsp[(3) - (6)].entier) || (yyvsp[(3) - (6)].entier)<0 || secondSize < (yyvsp[(5) - (6)].entier) || (yyvsp[(5) - (6)].entier) <0  )
-                                                                  yyerrorSemantique("Size of matrice incorrect \n");
+                                                                  semantiqueError("Size of matrice incorrect \n");
                                                              if (cmpt==0) { 
                                                                   
                                                                   strcpy(save_type_operateur,return_TYPE_Cst_Idf((yyvsp[(1) - (6)].str),top(stack_name_Routine))); 
-                                                                  yyerrorSemantique("Incompatibilite de types");
+                                                                  semantiqueError("Incompatibilite de types");
                                                              }
                                                              cmpt++;
                                                             ;}
@@ -2038,17 +2053,17 @@ yyreduce:
   case 82:
 
 /* Line 1455 of yacc.c  */
-#line 186 "syntaxique.y"
+#line 180 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (4)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),"TABLEAU")!=0) // idf n'existe pas dans TS ou pas un nom de tableau 
-                                                                 yyerrorSemantique("idf n'existe pas dans TS ou n'est pas un TABLEAU\n");
+                                                                 semantiqueError("idf n'existe pas dans TS ou n'est pas un TABLEAU\n");
                                                             extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine)),&firstSize,&secondSize);
                                                             if(firstSize<=(yyvsp[(3) - (4)].entier) || (yyvsp[(3) - (4)].entier)<0 )
-                                                                  yyerrorSemantique("Size of matrice incorrect \n");
+                                                                  semantiqueError("Size of matrice incorrect \n");
                                                             
                                                             if (cmpt==0) { 
                                                                   
                                                                   strcpy(save_type_operateur,return_TYPE_Cst_Idf((yyvsp[(1) - (4)].str),top(stack_name_Routine))); 
-                                                                  yyerrorSemantique("Incompatibilite de types");
+                                                                  semantiqueError("Incompatibilite de types");
                                                              }
                                                              cmpt++;
                                                             ;}
@@ -2057,35 +2072,35 @@ yyreduce:
   case 109:
 
 /* Line 1455 of yacc.c  */
-#line 235 "syntaxique.y"
+#line 229 "syntaxique.y"
     {if(!idf_exist((yyvsp[(1) - (8)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(1) - (8)].str),top(stack_name_Routine)),"ROUTINE")==0) // premier idf est une VARIABLE
-                                                                                   yyerrorSemantique("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+                                                                                   semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
                                                                       if(!idf_exist((yyvsp[(4) - (8)].str),top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf((yyvsp[(4) - (8)].str),top(stack_name_Routine)),"ROUTINE")!=0)  //2 eme idf doit etre une routine
-                                                                                   yyerrorSemantique("L'identifiacteur appelee n'est pas une ROUTINE ou n'existe pas\n");   
+                                                                                   semantiqueError("L'identifiacteur appelee n'est pas une ROUTINE ou n'existe pas\n");   
                                                                       if(atoi(return_VALUE_SIZE_Cst_Idf((yyvsp[(4) - (8)].str),top(stack_name_Routine)))!= nbArg) 
                                                                       //signature incorrecte
-                                                                                   yyerrorSemantique("Signature de la fonction incorrecte\n");
+                                                                                   semantiqueError("Signature de la fonction incorrecte\n");
                                                                       nbArg = 0;}
     break;
 
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 247 "syntaxique.y"
+#line 241 "syntaxique.y"
     {nbArg++;}
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 248 "syntaxique.y"
+#line 242 "syntaxique.y"
     {nbArg++;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2089 "syntaxique.tab.c"
+#line 2104 "syntaxique.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2297,7 +2312,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 250 "syntaxique.y"
+#line 244 "syntaxique.y"
 
 
 
@@ -2339,14 +2354,6 @@ yywrap ()
 int yyerror ( char*  msg )  
 {
       printf("\nFile %s, line %d, character %d: Syntaxic error\n",fileName ,nb_ligne, Col);
-      displayList_Sep_MotCle();
-      displayList_Cst_Idf();
-      exit(EXIT_FAILURE); 
-}
- int yyerrorSemantique ( char*  msg )  
-{
-      printf("%s",msg);
-      printf("\nFile %s, line %d, character %d: semantic error\n",fileName ,nb_ligne, Col);
       displayList_Sep_MotCle();
       displayList_Cst_Idf();
       exit(EXIT_FAILURE); 

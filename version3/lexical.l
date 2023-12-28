@@ -1,9 +1,9 @@
 
 %{
    #include "syntaxique.tab.h"
-    int nb_ligne =1;
-    int  Col = 1;
-    char fileName[50];
+    extern nb_ligne ;
+    extern  Col ;
+    extern fileName[50];
     extern YYSTYPE yylval;
 %}
 
@@ -208,13 +208,11 @@ commantaire %[^\n]*
         Col= Col + strlen(yytext);
         if(atof(yytext) >32767.32767 ||  atof(yytext) < -32768.32768){
         ECHO ; 
-        printf("\nWarning :%s real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
-        insert_Cst_Idf(yytext,"REAL","cst_real","0",""); 
+        printf("\nWarning :%s real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col); 
         return cst_real;
 
     }
-    else{
-        insert_Cst_Idf(yytext,"REAL","cst_real","0",""); 
+    else{ 
         ECHO ;        
         return cst_real;
     }
@@ -228,7 +226,6 @@ commantaire %[^\n]*
         ECHO ; 
         printf("\nWarning :%d real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
     }else{
-        insert_Cst_Idf(yytext,"INTEGER","cst_int","0",""); 
         ECHO ;        
         return cst_int;
     }

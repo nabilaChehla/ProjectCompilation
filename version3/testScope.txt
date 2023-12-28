@@ -1,0 +1,20 @@
+
+
+LOGICAL ROUTINE Comp (X,Y,Z)
+REAL A,B,X;
+Comp = 5 ; 
+ENDR
+
+INTEGER ROUTINE R2 (X,Y,Z,i,n)
+REAL A,B; 
+R2 = 3; 
+ENDR
+
+
+PROGRAM HelloAcad
+% Déclarations
+REAL S ; 
+LOGICAL A,B; 
+S= 1 + 2 ;
+
+END

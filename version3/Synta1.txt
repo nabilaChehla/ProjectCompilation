@@ -1,12 +1,9 @@
-INTEGER ROUTINE R2 (X,Y,Z)
-REAL N = 5 ;
-R2 = 3; 
-ENDR
+
 
 REAL ROUTINE Comp (X,Y,Z)
 % Déclarations
 
-INTEGER A,B; 
+REAL A,B; 
 REAL Z=10.0, T= 55555.87; 
 %CHARACTER C*20;
 INTEGER C = 5 ; 
@@ -15,8 +12,8 @@ REAL MAT DIMENSION (20, 200);
 LOGICAL D;
 
 % Instructions
-C = 8;
-B = 7;
+%C = 8;
+B = 7.3;
 %A = MAT(5,4) + (B * 5);
 B = 30;
 D = TRUE;
@@ -29,7 +26,9 @@ EQUIVALENCE (A, B, C), (Y, TAB(3));
 Comp = A ; 
 ENDR
 
-
+INTEGER ROUTINE R2 (X,Y,Z)
+R2 = 3; 
+ENDR
 
 
 
@@ -37,7 +36,7 @@ PROGRAM HelloAcad
 % Déclarations
 REAL Y ; 
 INTEGER TAB DIMENSION (10) ; 
-
+REAL A ,C; 
 % Instructions
 A = 5+ 9 + 0- 0 *0 - 60 +(0);
 C = 22 + 10*B;

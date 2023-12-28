@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
-
+#include "pile.h"
 // Constants
 #define MAX_NAME_LENGTH 50
 #define MAX_TYPE_LENGTH 50
@@ -12,6 +12,11 @@
 #define INITIAL_CAPACITY 50
 #define MAX_STRING_SIZE 50
 #define MAX_SCOPE_LENGTH 50
+
+int nb_ligne = 1;
+int Col = 1;
+char fileName[50];
+
 typedef struct elt_Cst_Idf_node
 {
   char name[MAX_NAME_LENGTH];
@@ -127,7 +132,7 @@ void insert_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_L
   // Check if the name already exists
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0)
+    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
     {
       return;
     }
@@ -265,25 +270,19 @@ void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VA
   }
   printf("ERROR : cant change the value node doesnt exist"); // Node with the specified name does not exist
 }
-void add_SCOPE_lastIdf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
+void add_SCOPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
-  if (current == NULL)
+  while (current != NULL)
   {
-    fprintf(stderr, "Empty list\n");
-    exit(EXIT_FAILURE);
-  }
-
-  // Traverse the list until the last node is reached
-  while (current->next != NULL)
-  {
+    if (strcmp(current->name, name) == 0 && strcmp(current->scope, "") == 0)
+    {
+      strcpy(current->scope, scope); // Node with the specified name exists
+      return;
+    }
     current = current->next;
   }
-
-  if (strcmp(current->name, name) == 0)
-  {
-    strcpy(current->scope, scope); // Node with the specified name exists
-  }
+  printf("ERROR : cant change the scope, node doesnt exist"); // Node with the specified name does not exist
 }
 
 bool idf_exist(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
@@ -328,7 +327,7 @@ void displayList_Cst_Idf()
 
   while (current != NULL)
   {
-    printf("\t|%10s |%15s | %12s | %20s | %12s\n", current->name, current->code, current->type, current->val, current->scope);
+    printf("\t|%10s |%15s | %12s | %20s | %1s\n", current->name, current->code, current->type, current->val, current->scope);
     current = current->next;
   }
 }
@@ -376,84 +375,6 @@ char *floatToString(float number)
   return result;
 }
 
-//----------------------------------------------------------//
-
-typedef struct Node
-{
-  char data[MAX_STRING_SIZE];
-  struct Node *next;
-} Node;
-
-typedef struct
-{
-  Node *top;
-} Stack;
-
-Stack *initializeStack()
-{
-  Stack *stack = (Stack *)malloc(sizeof(Stack));
-  if (stack == NULL)
-  {
-    fprintf(stderr, "Memory allocation error\n");
-    exit(EXIT_FAILURE);
-  }
-  stack->top = NULL;
-  return stack;
-}
-
-void push(Stack *stack, const char *value)
-{
-  Node *newNode = (Node *)malloc(sizeof(Node));
-  if (newNode == NULL)
-  {
-    fprintf(stderr, "Memory allocation error\n");
-    exit(EXIT_FAILURE);
-  }
-  strncpy(newNode->data, value, sizeof(newNode->data) - 1);
-  newNode->data[sizeof(newNode->data) - 1] = '\0'; // Ensure null-termination
-  newNode->next = stack->top;
-  stack->top = newNode;
-}
-
-void pop(Stack *stack)
-{
-  if (stack->top == NULL)
-  {
-    fprintf(stderr, "Error: Stack underflow\n");
-    exit(EXIT_FAILURE);
-  }
-
-  Node *temp = stack->top;
-  stack->top = stack->top->next;
-  free(temp);
-}
-
-const char *top(Stack *stack)
-{
-  if (stack->top == NULL)
-  {
-    fprintf(stderr, "Error: Stack is empty\n");
-    exit(EXIT_FAILURE);
-  }
-  return stack->top->data;
-}
-
-int isEmpty(const Stack *stack)
-{
-  return stack->top == NULL;
-}
-
-void freeStack(Stack *stack)
-{
-  while (stack->top != NULL)
-  {
-    Node *temp = stack->top;
-    stack->top = stack->top->next;
-    free(temp);
-  }
-  free(stack);
-}
-
 void ConcatTaille(int num1, int num2, char *result, size_t result_size)
 {
   const char *separator = " | ";
@@ -489,4 +410,42 @@ void extractIntegers_SIZE_TS(const char *sizeTS, int *firstSize, int *secondSize
     // Handle error, if the format doesn't match
     printf("Error: Invalid sizeTS format!\n");
   }
+}
+int semantiqueError(char *msg)
+{
+  printf("%s", msg);
+  printf("\nFile %s, line %d, character %d: semantic error\n", fileName, nb_ligne, Col);
+  displayList_Sep_MotCle();
+  displayList_Cst_Idf();
+  exit(EXIT_FAILURE);
+}
+
+void traitement_Fin_Routine(Stack *stack_name_Routine, Stack *stack_value, Stack *stack_type, int *nbArg)
+{
+  add_TYPE_Cst_Idf(top(stack_name_Routine), top(stack_type), "");
+  add_CODE_Cst_Idf(top(stack_name_Routine), "ROUTINE", "");
+  if (strcmp(top(stack_name_Routine), top(stack_name_Routine)) != 0)
+    semantiqueError("Error: the last line of ROUTINE should be affectation with name of ROUTINE");
+  /*save in ts nombre d'arguments*/
+  add_VALUE_Cst_Idf(top(stack_name_Routine), top(stack_value), "");
+  pop(stack_type);
+  pop(stack_value);
+  pop(stack_name_Routine);
+  nbArg = 0;
+}
+
+void Check_Retour_Routine(const char nomVariable_Retour[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (strcmp(nomVariable_Retour, top(stack_name_Routine)) != 0)
+    semantiqueError("Le nom de cette variable doit etre le meme que cele de la routine");
+}
+
+void Taitement_SUITE_DEC(const char nomVariable[MAX_NAME_LENGTH], Stack *stack_name_Routine, Stack *stack_type)
+{
+  if (idf_exist(nomVariable, top(stack_name_Routine)))
+    semantiqueError("Double declaration");
+  add_SCOPE_Cst_Idf(nomVariable, top(stack_name_Routine));
+  add_TYPE_Cst_Idf(nomVariable, top(stack_type), top(stack_name_Routine));
+
+  add_CODE_Cst_Idf(nomVariable, "VARIABLE", top(stack_name_Routine));
 }

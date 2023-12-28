@@ -451,9 +451,9 @@ char *yytext;
 #define INITIAL 0
 #line 3 "lexical.l"
    #include "syntaxique.tab.h"
-    int nb_ligne =1;
-    int  Col = 1;
-    char fileName[50];
+    extern nb_ligne ;
+    extern  Col ;
+    extern fileName[50];
     extern YYSTYPE yylval;
 #line 459 "lex.yy.c"
 
@@ -1001,13 +1001,11 @@ YY_RULE_SETUP
         Col= Col + strlen(yytext);
         if(atof(yytext) >32767.32767 ||  atof(yytext) < -32768.32768){
         ECHO ; 
-        printf("\nWarning :%s real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
-        insert_Cst_Idf(yytext,"REAL","cst_real","0",""); 
+        printf("\nWarning :%s real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col); 
         return cst_real;
 
     }
-    else{
-        insert_Cst_Idf(yytext,"REAL","cst_real","0",""); 
+    else{ 
         ECHO ;        
         return cst_real;
     }
@@ -1016,7 +1014,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 224 "lexical.l"
+#line 222 "lexical.l"
 {
     yylval.entier=atoi(yytext);
     Col= Col + strlen(yytext);
@@ -1024,7 +1022,6 @@ YY_RULE_SETUP
         ECHO ; 
         printf("\nWarning :%d real const hors de l'intervale dans File %s, line %d, character %d\n",yytext,fileName,nb_ligne, Col);
     }else{
-        insert_Cst_Idf(yytext,"INTEGER","cst_int","0",""); 
         ECHO ;        
         return cst_int;
     }
@@ -1033,7 +1030,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 237 "lexical.l"
+#line 234 "lexical.l"
 {yylval.str=strdup(yytext);
                 Col= Col + strlen(yytext);
                 ECHO;        
@@ -1042,7 +1039,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 242 "lexical.l"
+#line 239 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1052,7 +1049,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 248 "lexical.l"
+#line 245 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1062,7 +1059,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 254 "lexical.l"
+#line 251 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1072,7 +1069,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 260 "lexical.l"
+#line 257 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1082,7 +1079,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 266 "lexical.l"
+#line 263 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1092,7 +1089,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 272 "lexical.l"
+#line 269 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1102,7 +1099,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 278 "lexical.l"
+#line 275 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1112,7 +1109,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 284 "lexical.l"
+#line 281 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1122,7 +1119,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 290 "lexical.l"
+#line 287 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1132,7 +1129,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 296 "lexical.l"
+#line 293 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1142,7 +1139,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 302 "lexical.l"
+#line 299 "lexical.l"
 {yylval.str=strdup(yytext);
         insert_Sep_MotCle( yytext,"Mot Clef");
         Col= Col + strlen(yytext);
@@ -1152,7 +1149,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 308 "lexical.l"
+#line 305 "lexical.l"
 {
     Col= Col + strlen(yytext);
         ECHO ;        
@@ -1160,14 +1157,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 312 "lexical.l"
+#line 309 "lexical.l"
 {Col= Col + strlen(yytext);
         ECHO;
 }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 317 "lexical.l"
+#line 314 "lexical.l"
 {
     Col = 1;
     nb_ligne++;
@@ -1176,7 +1173,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 323 "lexical.l"
+#line 320 "lexical.l"
 {
     Col = Col + yyleng;
     printf("\nFile %s, line %d, character %d: lexical error: %s\n",fileName ,nb_ligne, Col, yytext);
@@ -1184,10 +1181,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 330 "lexical.l"
+#line 327 "lexical.l"
 ECHO;
 	YY_BREAK
-#line 1191 "lex.yy.c"
+#line 1188 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2073,4 +2070,4 @@ int main()
 	return 0;
 	}
 #endif
-#line 330 "lexical.l"
+#line 327 "lexical.l"
