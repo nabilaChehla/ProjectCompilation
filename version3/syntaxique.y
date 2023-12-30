@@ -13,6 +13,8 @@ Stack *stack_name_Routine ;
   char code [MAX_CODE_LENGTH];
   char Taille [MAX_VAL_LENGTH]; 
   char save_type_operateur [MAX_TYPE_LENGTH];
+  char TAB_reference[50];
+  char Type_routine[50];
   int taille2 = 0 ; 
   int firstSize;
   int secondSize;
@@ -35,18 +37,42 @@ S : Fonction_i  MAIN DEC INSTRUCTIONS END_mc
 ;
 MAIN: PROGRAM_mc  idf {push(stack_name_Routine,"main")}
 ;
-Fonction_i: save_name_func par_ouvrante ARG par_fermante DEC INSTRUCTIONS Affectation_fonction ENDR_mc Fonction_i 
-                        { traitement_Fin_Routine(stack_name_Routine,stack_value,stack_type,&nbArg);}
+Fonction_i: fonc  Fonction_i 
+                        { traitement_Fin_Routine(stack_name_Routine,stack_value,stack_type);  nbArg = 0;
+                        
+                        }
            | 
 ;
-save_name_func: type_fonc ROUTINE_mc idf {push(stack_name_Routine,$3);                       
-                                                 }
+fonc: save_name_func par_ouvrante ARG par_fermante DEC INSTRUCTIONS Affectation_fonction ENDR_mc
+                 {      if( strcmp(top(stack_type),save_type_operateur) && cmpt==2){ 
+                              if(!strcmp(top(stack_type),"REAL")){
+                                   if(strcmp(save_type_operateur,"INTEGER")){
+                                          printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,top(stack_type)); 
+                                          semantiqueError("Incompatibile types\n");}
+                                    }else{
+                                          printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,top(stack_type)); 
+                                          semantiqueError("Incompatibile types\n");
+                                    }
+                                    cmpt=0;
+                          }
+                  }
+
 ;
-Affectation_fonction: idf aff EXP pvg  {Check_Retour_Routine($1, stack_name_Routine)}
-                    | idf aff character{Check_Retour_Routine($1, stack_name_Routine)}
-                    | idf LOGICAL_VALUE{Check_Retour_Routine($1, stack_name_Routine)}
+save_name_func: type_fonc ROUTINE_mc idf {push(stack_name_Routine,$3);}
 ;
-type_fonc: type| CHARACTER_mc {push(stack_type, "CHARACTER")  }
+Affectation_fonction: idf aff EXP pvg      {Check_Retour_Routine($1, stack_name_Routine);
+                                                
+                                          }
+                    | idf aff character pvg {Check_Retour_Routine($1, stack_name_Routine);
+                                             strcpy(save_type_operateur,"CHARACTER");
+                                             cmpt=cmpt+2;
+                                            }
+                    | idf LOGICAL_VALUE pvg {Check_Retour_Routine($1, stack_name_Routine);
+                                             strcpy(save_type_operateur,"LOGICAL");
+                                              cmpt=cmpt+2;
+                                            }
+;
+type_fonc: type | CHARACTER_mc {push(stack_type, "CHARACTER")  }
 ;
 ARG : liste_parametres {push(stack_value,intToString(nbArg)); nbArg=0;}
       |                {push(stack_value,"0"); nbArg=0;}
@@ -70,7 +96,7 @@ SUITE_DEC:  idf DEC_AFF ver SUITE_DEC  {Taitement_SUITE_DEC($1,stack_name_Routin
           | idf                        {Taitement_SUITE_DEC($1,stack_name_Routine,stack_type)} 
  
 ;
-DEC_TAB: type idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante           {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf($2,top(stack_name_Routine));add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));}
+DEC_TAB: type idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante           {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf($2,top(stack_name_Routine));add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));pop(stack_type)}
         |CHARACTER_mc idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante   {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf($2,top(stack_name_Routine));add_TYPE_Cst_Idf($2,"CHARACTER",top(stack_name_Routine));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));}
 ;
 
@@ -111,15 +137,35 @@ TYPE_INSTRUCTION : Affectation
 ;
 
 Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0) semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
-                                          if( !strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"INTEGER") && strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),save_type_operateur) && cmpt==1){ 
-                                                      printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
-                                                      semantiqueError("Incompatibile types\n");
+                                          if( strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),save_type_operateur) && cmpt==2 ){ 
+                                                if(!strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"REAL")){
+                                                      if(strcmp(save_type_operateur,"INTEGER")){
+                                                            printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,top(stack_type)); 
+                                                            semantiqueError("Incompatibile types\n");}
+                                                      }else{
+                                                            printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,top(stack_type)); 
+                                                            semantiqueError("Incompatibile types\n");
+                                                      }
                                           }
                                                 cmpt=0;
                                           }
             |idf aff character pvg        {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0)semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
                                            if(strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"CHARACTER")) semantiqueError("Incompatible types\n")}
-            |TAB_PAR aff EXP pvg          {/*if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE",top(stack_name_Routine))==0)semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n")*/}
+            |TAB_PAR aff EXP pvg          {/*if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE",top(stack_name_Routine))==0)semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n")*/
+                                           if( strcmp(TAB_reference,save_type_operateur) && (cmpt==3 || cmpt==2)){
+                                                if(!strcmp(TAB_reference,"REAL")){
+                                                      if(strcmp(save_type_operateur,"INTEGER")){
+                                                            printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,TAB_reference); 
+                                                            semantiqueError("Incompatibile types\n");}
+                                                }else{
+                                                      printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,TAB_reference); 
+                                                            semantiqueError("Incompatibile types\n");
+                                                }
+                                                
+                                           }
+                                                cmpt=0; 
+                                          }                                   
+            
             |idf aff LOGICAL_VALUE pvg    {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0)semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
                                            if(strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"LOGICAL")) semantiqueError("Incompatible types\n");}
 
@@ -129,11 +175,14 @@ Entre_Sortie_INST:  WRITE_mc par_ouvrante SORTIE_MESSAGE par_fermante pvg
                   | READ_mc par_ouvrante idf par_fermante pvg  {if(!idf_exist($3,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($3,top(stack_name_Routine)),"ROUTINE")==0) // idf n'existe pas dans TS ou est un nom de routine 
                                                                   semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n")}
 ;
-SORTIE_MESSAGE :character ver SORTIE_MESSAGE| EXP ver SORTIE_MESSAGE | character | EXP
+SORTIE_MESSAGE :character ver SORTIE_MESSAGE
+               | EXP ver SORTIE_MESSAGE       { cmpt=0; }
+               | character 
+               | EXP                          { cmpt=0; }
 ;
 EQUIVALENCE_INST: EQUIVALENCE_mc SUITE_EQUI ver SUITE_EQUI pvg
 ;
-SUITE_EQUI: par_ouvrante liste_parametres par_fermante
+SUITE_EQUI: par_ouvrante liste_parametres_Eq par_fermante 
 ;
 EXP :EXPRESSION {divZero=false }
 ;
@@ -150,19 +199,21 @@ suiteDiv: SUITE_EXPRESSION_2 {if(divZero==true)semantiqueError("Error: Division 
 ;
 SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
                    | cst_int  {if($1==0)divZero=true;else divZero = false ;    
-                              if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf(intToString($1),top(stack_name_Routine))); 
-                              cmpt++;
+                              if (cmpt==0 || cmpt==1) strcpy(save_type_operateur,"INTEGER"); 
+                              cmpt=cmpt+2;
+
                               }      
                    | cst_real {if($1==0)divZero=true;else divZero = false;
-                              if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf(floatToString($1),top(stack_name_Routine)));            
-                              cmpt++;
+                              if (cmpt==0 || cmpt==1) strcpy(save_type_operateur,"REAL");            
+                              cmpt=cmpt+2;
                               }
                    | TAB_PAR  {  divZero = false  } 
                    | idf {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"VARIABLE")!=0 ) // idf n'existe pas dans TS ou est un nom de routine 
                                     semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
                               if(atof(return_VALUE_SIZE_Cst_Idf($1,top(stack_name_Routine)))==0)divZero=true;else divZero = false ;  
-                              if (cmpt==0) strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
-                              cmpt++;
+                              if (cmpt==0 || cmpt==1) strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
+                              cmpt=cmpt+2;
+
                             }
 ;
 TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"MATRICE")!=0) // idf n'existe pas dans TS ou pas un nom de matrice 
@@ -170,10 +221,13 @@ TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,to
                                                              extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf($1,top(stack_name_Routine)),&firstSize,&secondSize);
                                                              if(firstSize<=$3 || $3<0 || secondSize < $5 || $5 <0  )
                                                                   semantiqueError("Size of matrice incorrect \n");
-                                                             if (cmpt==0) { 
+                                                            if (cmpt ==0)
+                                                              strcpy(TAB_reference,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
+
+                                                            if (cmpt==1 ) { 
                                                                   
                                                                   strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
-                                                                  semantiqueError("Incompatibilite de types");
+                                                                  
                                                              }
                                                              cmpt++;
                                                             }
@@ -182,11 +236,11 @@ TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,to
                                                             extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf($1,top(stack_name_Routine)),&firstSize,&secondSize);
                                                             if(firstSize<=$3 || $3<0 )
                                                                   semantiqueError("Size of matrice incorrect \n");
-                                                            
-                                                            if (cmpt==0) { 
+                                                            if (cmpt==0)
+                                                                  strcpy(TAB_reference,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
+                                                            if (cmpt==1 ) { 
                                                                   
                                                                   strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
-                                                                  semantiqueError("Incompatibilite de types");
                                                              }
                                                              cmpt++;
                                                             }
@@ -204,7 +258,7 @@ SUITE_COND_2:   EXPRESSION_BOOL
 COND_SIMPLE :   
              EXPRESSION_BOOL  OPERATEUR_LOGIQUE_1  EXPRESSION_BOOL 
 ;
-EXPRESSION_BOOL : EXP 
+EXPRESSION_BOOL : EXP            {cmpt=0;} 
                 | LOGICAL_VALUE 
                 | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante 
                 | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante 
@@ -228,18 +282,28 @@ OPERATEUR_LOGIQUE_1: point SUITE_OPERATEUR_LOGIQUE_1 point
 
 INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0) // premier idf est une VARIABLE
                                                                                    semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
-                                                                      if(!idf_exist($4,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($4,top(stack_name_Routine)),"ROUTINE")!=0)  //2 eme idf doit etre une routine
-                                                                                   semantiqueError("L'identifiacteur appelee n'est pas une ROUTINE ou n'existe pas\n");   
+                                                                      CheckRoutineExiste ($4);
                                                                       if(atoi(return_VALUE_SIZE_Cst_Idf($4,top(stack_name_Routine)))!= nbArg) 
                                                                       //signature incorrecte
                                                                                    semantiqueError("Signature de la fonction incorrecte\n");
-                                                                      nbArg = 0}  
+                                                                       if( strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),return_TYPE_Cst_Idf($4,top(stack_name_Routine)))){ 
+                                                                              if(!strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"REAL")){
+                                                                                    if(strcmp(return_TYPE_Cst_Idf($4,top(stack_name_Routine)),"INTEGER")){
+                                                                                          semantiqueError("Incompatibile types\n");}
+                                                                               }else{
+                                                                                          semantiqueError("Incompatibile types\n");
+                                                                              }
+                                                                        }
+                                                                      nbArg = 0;}  
 ;
 ARG_CALL : liste_parametres_CALL 
         |                        
 ; 
-liste_parametres_CALL: EXP ver liste_parametres_CALL {nbArg++}
-                      |EXP                           {nbArg++}
+liste_parametres_CALL: EXP ver liste_parametres_CALL {nbArg++; cmpt=0; }
+                      |EXP                           {nbArg++; cmpt=0; }
+;
+liste_parametres_Eq: EXP ver liste_parametres_Eq      { cmpt=0; }
+                      |EXP                            { cmpt=0; }   
 ;
 %%
 

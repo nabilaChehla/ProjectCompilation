@@ -1,0 +1,44 @@
+REAL ROUTINE nomfonction1 (N,A,B,mat(8,2),tab(5),C)
+REAL A, BIL;
+REAL F=5;
+LOGICAL V= TRUE;
+REAL B=5;
+CHARACTER  T  , SMILE , L *5 , N *9 = "MELI THE BEST" ;
+CHARACTER NPL="j";
+LOGICAL D;
+CHARACTER C;
+
+B =  5-(6);
+A =  (B * 5);
+C = "L3";
+D = TRUE; 
+nomfonction1 = 5*A ;
+ENDR 
+
+INTEGER ROUTINE nomfonction2 (A,B)
+
+INTEGER X, Z;
+CHARACTER M ;
+
+
+INTEGER B,A;
+CHARACTER C ;
+
+nomfonction2 = 5 ;
+ENDR 
+
+CHARACTER ROUTINE nomfonction3 (A,B)
+INTEGER X3 , Z3 ; 
+X3 = 3 ; 
+%nomfonction3 =x3/ 25*36 + 528+ -5744+ -5  ;
+nomfonction3= "NILO"; 
+ENDR 
+
+
+
+PROGRAM nomprogral 
+INTEGER A,B ;
+CHARACTER C*20;
+LOGICAL D,X;
+
+END

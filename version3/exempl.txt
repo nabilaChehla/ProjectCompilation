@@ -1,0 +1,93 @@
+INTEGER ROUTINE nomfonction1 (N,A,B,mat(8,2),tab(5),C)
+
+REAL A, BIL;
+REAL F=5;
+LOGICAL V= TRUE;
+REAL B=5;
+CHARACTER  T  , SMILE , L *5 , N *9 = "MELI THE BEST" ;
+CHARACTER NPL="j";
+LOGICAL D;
+CHARACTER C;
+INTEGER MAT DIMENSION (8);
+B =  5-(6);
+A =  (B * 5);
+C = "L3";
+D = TRUE; 
+nomfonction1 = 5*A ;
+ENDR 
+
+REAL ROUTINE nomfonction2 (A,mat(1,2),B)
+INTEGER X, Z;
+CHARACTER C ;
+LOGICAL D;
+INTEGER MAT DIMENSION (8, 95);
+INTEGER B,A;
+
+B =  5-(6);
+A =  (B * 5);
+C = "L3";
+D = FALSE; 
+nomfonction2 = 25*36 + 528+ -5744+ -5  ;
+ENDR 
+
+CHARACTER ROUTINE nomfonction3 (A,B)
+INTEGER X3 , Z3 ; 
+X3 = 3 ; 
+%nomfonction3 =x3/ 25*36 + 528+ -5744+ -5  ;
+nomfonction3= "NILO"; 
+ENDR 
+
+PROGRAM nomprogral 
+INTEGER A,B ;
+CHARACTER C*20;
+LOGICAL D,X;
+CHARACTER char,pi;
+INTEGER MAT DIMENSION (30,10);
+LOGICAL MATLOG DIMENSION (50);
+LOGICAL TAB DIMENSION (50);
+REAL S ; 
+B = A;
+A = MAT(5,4) + (B * 5) ;
+C = "L3 acad c meli bila";
+D = TRUE;
+WRITE ("Donner la valeur de A :");
+    READ (A); 
+WRITE ("La Valeur de A est ", A, "et i am heppy yaaay",80+ 96  +MAT(10,3),"io");
+
+
+DOWHILE (A.LT.10) 
+A = A + 1; 
+IF ((A.EQ.( 123)).OR.(C.EQ.TRUE)) THEN A = 5 + X ; 
+ELSE 
+
+A = CALL nomfonction1 (50 , -60 , pi , TAB(0), MAT(7,9),A);
+ENDIF
+A = A + B; 
+
+ENDDO;
+
+IF(((MAT(1,2).NE.pi).OR.TRUE).NE.(FALSE.OR.TRUE)) THEN A=A-MAT(8,8); ENDIF
+IF(A+B.LT.B-C.OR.(A+B.LT.B-C.AND.TRUE)) THEN A=A-MAT(8,8); ENDIF
+IF(A+B.LT.B-C) THEN A=A-MAT(8,8); ENDIF
+
+IF(A+B.AND.B) THEN A=A-MAT(8,8); ENDIF
+IF((TRUE).AND.B) THEN A=A-MAT(8,8); ENDIF
+
+ S= CALL nomfonction2 (A,MAT(2,2),MATLOG(5)); 
+
+EQUIVALENCE (S,X), (D);
+
+IF (A.EQ.B) THEN A = (A* B + 5 + +8 - 9 + -3 - +6 -(-9)) ; 
+ELSE 
+A = A +( B); 
+ ENDIF
+IF (((S.NE.pi).OR.TRUE ).NE.(FALSE.OR.TRUE )) THEN A = (A* B + 5 + +8 - 9 + -3 - +6 -(-9)) ; 
+ELSE 
+A = A +( B); 
+ ENDIF
+
+A = TAB(5) + D - 89 ; 
+EQUIVALENCE (A, S, MAT(5,6)), (D, X); 
+
+END
+

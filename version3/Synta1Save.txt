@@ -1,16 +1,32 @@
 PROGRAM HelloAcad
 % Déclarations
 INTEGER A,B,C ; 
-REAL Y ; 
+REAL Y,U ; 
+CHARACTER X*20;
+LOGICAL D;
 INTEGER TAB DIMENSION (10) ; 
+REAL MAT DIMENSION (10,60) ; 
 
 % Instructions
 
-B=25+Y;
 
-A = 8;
-C= Y - 6;
-C= Y;
-C= 3.5;
+C= U;
 
+%Y=TRUE;
+X="Hello Acad";
+%X=C;
+%X= Y;
+%X= D;
+D=FALSE;
+%D="Hii meliiii";
+%MAT(9,6)="ISLAM"; ajouter syntaxique une affictation d'une chaine dans une matrice/tableau
+%MAT(9,6)=TRUE;
+MAT(9,4)=C;
+%MAT(9,4) = D ;
+MAT(9,4)=TAB(4);
+%TAB(4)=MAT(4,6);
+%TAB(3)=U;
+%A="meliiii";
+%A=TRUE;
+%A=X;
 END

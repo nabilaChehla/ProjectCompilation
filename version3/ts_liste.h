@@ -124,18 +124,31 @@ void freeList_Sep_MotCle()
   }
   free(L_Sep_MotCle);
 }
-
-void insert_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH], const char code[MAX_CODE_LENGTH], char val[MAX_VAL_LENGTH], const char scope[MAX_SCOPE_LENGTH])
+bool RoutineExiste(const char name[MAX_NAME_LENGTH])
+{
+  elt_Cst_Idf_node *current = L_Cst_Idf->head;
+  while (current != NULL)
+  {
+    if ((strcmp(current->name, name) == 0 && strcmp(current->code, "ROUTINE") == 0))
+    {
+      return true; // Node with the specified name exists
+    }
+    current = current->next;
+  }
+  return false;
+}
+void insert_Cst_Idf(const char name[MAX_NAME_LENGTH], const char type[MAX_TYPE_LENGTH], const char code[MAX_CODE_LENGTH], char val[MAX_VAL_LENGTH], const char scope[MAX_SCOPE_LENGTH], Stack *stack_name_Routine)
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
 
   // Check if the name already exists
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
+    if (strcmp(current->name, name) == 0 && (strcmp(current->code, "ROUTINE") == 0 || strcmp(top(stack_name_Routine), current->scope) == 0))
     {
       return;
     }
+
     current = current->next;
   }
 
@@ -219,7 +232,7 @@ char *return_CODE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
+    if (strcmp(current->name, name) == 0 && (strcmp(current->scope, scope) == 0 || strcmp(current->code, "ROUTINE") == 0))
     {
       return current->code;
     }
@@ -233,7 +246,7 @@ char *return_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
+    if (strcmp(current->name, name) == 0 && (strcmp(current->scope, scope) == 0 || strcmp(current->code, "ROUTINE") == 0))
     {
       return current->type;
     }
@@ -242,12 +255,13 @@ char *return_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX
   printf("ERROR : cant find the code node doesnt exist"); // Node with the specified name does not exist
 }
 
+
 char *return_VALUE_SIZE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
+    if (strcmp(current->name, name) == 0 && (strcmp(current->scope, scope) == 0 || strcmp(current->code, "ROUTINE") == 0))
     {
       return current->val;
     }
@@ -261,7 +275,7 @@ void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VA
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if (strcmp(current->name, name) == 0 && strcmp(current->scope, scope) == 0)
+    if ( strcmp(current->name, name) == 0 && (strcmp(current->scope, scope) == 0 || strcmp(current->code, "ROUTINE") == 0))
     {
       strcpy(current->val, value); // Node with the specified name exists
       return;
@@ -282,7 +296,6 @@ void add_SCOPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SC
     }
     current = current->next;
   }
-  printf("ERROR : cant change the scope, node doesnt exist"); // Node with the specified name does not exist
 }
 
 bool idf_exist(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
@@ -300,6 +313,20 @@ bool idf_exist(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENG
     current = current->next;
   }
   return false; // Node with the specified name does not exist
+}
+
+void CheckRoutineExiste(const char name[MAX_NAME_LENGTH])
+{
+  elt_Cst_Idf_node *current = L_Cst_Idf->head;
+  while (current != NULL)
+  {
+    if ((strcmp(current->name, name) == 0 && strcmp(current->code, "ROUTINE") == 0))
+    {
+      return; // Node with the specified name exists
+    }
+    current = current->next;
+  }
+  semantiqueError("La routine appelee n'existe pas"); // Node with the specified name does not exist
 }
 
 bool nodeExists_Sep_MotCle(const char name[MAX_NAME_LENGTH])
@@ -420,7 +447,7 @@ int semantiqueError(char *msg)
   exit(EXIT_FAILURE);
 }
 
-void traitement_Fin_Routine(Stack *stack_name_Routine, Stack *stack_value, Stack *stack_type, int *nbArg)
+void traitement_Fin_Routine(Stack *stack_name_Routine, Stack *stack_value, Stack *stack_type)
 {
   add_TYPE_Cst_Idf(top(stack_name_Routine), top(stack_type), "");
   add_CODE_Cst_Idf(top(stack_name_Routine), "ROUTINE", "");
@@ -431,7 +458,6 @@ void traitement_Fin_Routine(Stack *stack_name_Routine, Stack *stack_value, Stack
   pop(stack_type);
   pop(stack_value);
   pop(stack_name_Routine);
-  nbArg = 0;
 }
 
 void Check_Retour_Routine(const char nomVariable_Retour[MAX_NAME_LENGTH], Stack *stack_name_Routine)
