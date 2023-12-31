@@ -15,6 +15,7 @@
 
 int nb_ligne = 1;
 int Col = 1;
+int actTemp = 1;
 char fileName[50];
 
 typedef struct elt_Cst_Idf_node
@@ -255,7 +256,6 @@ char *return_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX
   printf("ERROR : cant find the code node doesnt exist"); // Node with the specified name does not exist
 }
 
-
 char *return_VALUE_SIZE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
@@ -275,7 +275,7 @@ void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VA
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
   while (current != NULL)
   {
-    if ( strcmp(current->name, name) == 0 && (strcmp(current->scope, scope) == 0 || strcmp(current->code, "ROUTINE") == 0))
+    if (strcmp(current->name, name) == 0 && (strcmp(current->scope, scope) == 0 || strcmp(current->code, "ROUTINE") == 0))
     {
       strcpy(current->val, value); // Node with the specified name exists
       return;
@@ -443,7 +443,6 @@ int semantiqueError(char *msg)
   printf("%s", msg);
   printf("\nFile %s, line %d, character %d: semantic error\n", fileName, nb_ligne, Col);
   displayList_Sep_MotCle();
-  displayList_Cst_Idf();
   exit(EXIT_FAILURE);
 }
 

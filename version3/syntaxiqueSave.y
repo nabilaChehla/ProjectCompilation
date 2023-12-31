@@ -4,24 +4,17 @@
 #include <stdlib.h>
 #include <string.h>
 #include "ts_liste.h"
-#include "quad.h"
  extern  nb_ligne;
  extern Col;
- int qc=0;
  extern char fileName[50];
 Stack *stack_type;
 Stack *stack_value;
 Stack *stack_name_Routine ; 
-Stack *stack_variable ; 
   char code [MAX_CODE_LENGTH];
   char Taille [MAX_VAL_LENGTH]; 
   char save_type_operateur [MAX_TYPE_LENGTH];
-  char op1 [MAX_STRING_SIZE];
-  char op2 [MAX_STRING_SIZE];
-
-
-  char TAB_reference[MAX_STRING_SIZE];
-  char Type_routine[MAX_TYPE_LENGTH];
+  char TAB_reference[50];
+  char Type_routine[50];
   int taille2 = 0 ; 
   int firstSize;
   int secondSize;
@@ -67,12 +60,14 @@ fonc: save_name_func par_ouvrante ARG par_fermante DEC INSTRUCTIONS Affectation_
 ;
 save_name_func: type_fonc ROUTINE_mc idf {push(stack_name_Routine,$3);}
 ;
-Affectation_fonction: idf aff EXP pvg       {Check_Retour_Routine($1, stack_name_Routine);}
+Affectation_fonction: idf aff EXP pvg      {Check_Retour_Routine($1, stack_name_Routine);
+                                                
+                                          }
                     | idf aff character pvg {Check_Retour_Routine($1, stack_name_Routine);
                                              strcpy(save_type_operateur,"CHARACTER");
                                              cmpt=cmpt+2;
                                             }
-                    | idf aff LOGICAL_VALUE pvg {Check_Retour_Routine($1, stack_name_Routine);
+                    | idf LOGICAL_VALUE pvg {Check_Retour_Routine($1, stack_name_Routine);
                                              strcpy(save_type_operateur,"LOGICAL");
                                               cmpt=cmpt+2;
                                             }
@@ -101,7 +96,7 @@ SUITE_DEC:  idf DEC_AFF ver SUITE_DEC  {Taitement_SUITE_DEC($1,stack_name_Routin
           | idf                        {Taitement_SUITE_DEC($1,stack_name_Routine,stack_type)} 
  
 ;
-DEC_TAB: type idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante           {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf($2,top(stack_name_Routine));add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));pop(stack_type);}
+DEC_TAB: type idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante           {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf($2,top(stack_name_Routine));add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));pop(stack_type)}
         |CHARACTER_mc idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante   {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf($2,top(stack_name_Routine));add_TYPE_Cst_Idf($2,"CHARACTER",top(stack_name_Routine));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));}
 ;
 
@@ -145,10 +140,10 @@ Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routin
                                           if( strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),save_type_operateur) && cmpt==2 ){ 
                                                 if(!strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"REAL")){
                                                       if(strcmp(save_type_operateur,"INTEGER")){
-                                                            printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
+                                                            printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,top(stack_type)); 
                                                             semantiqueError("Incompatibile types\n");}
                                                       }else{
-                                                            printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
+                                                            printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,top(stack_type)); 
                                                             semantiqueError("Incompatibile types\n");
                                                       }
                                           }
@@ -191,16 +186,14 @@ SUITE_EQUI: par_ouvrante liste_parametres_Eq par_fermante
 ;
 EXP :EXPRESSION {divZero=false }
 ;
-EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1 {divZero=false;quadExpression(stack_variable,"+",op1,op2);}
-           | EXPRESSION moins SUITE_EXPRESSION_1{divZero=false;quadExpression(stack_variable,"-",op1,op2);}
-           | SUITE_EXPRESSION_1                
+EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1 {divZero=false }
+           | EXPRESSION moins SUITE_EXPRESSION_1{divZero=false }
+           | SUITE_EXPRESSION_1                 {}
 ;
 
-SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2{divZero=false;quadExpression(stack_variable,"*",op1,op2);
-
-                                                                    }
-                   | SUITE_EXPRESSION_1 divis suiteDiv           {divZero=false;quadExpression(stack_variable,"/",op1,op2);}
-                   | SUITE_EXPRESSION_2                                       
+SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2{divZero=false}
+                   | SUITE_EXPRESSION_1 divis suiteDiv           {divZero=false;}
+                   | SUITE_EXPRESSION_2                          {}              
 ;
 suiteDiv: SUITE_EXPRESSION_2 {if(divZero==true)semantiqueError("Error: Division sur 0");}
 ;
@@ -208,12 +201,11 @@ SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
                    | cst_int  {if($1==0)divZero=true;else divZero = false ;    
                               if (cmpt==0 || cmpt==1) strcpy(save_type_operateur,"INTEGER"); 
                               cmpt=cmpt+2;
-                              push(stack_variable,intToString($1));
+
                               }      
                    | cst_real {if($1==0)divZero=true;else divZero = false;
                               if (cmpt==0 || cmpt==1) strcpy(save_type_operateur,"REAL");            
                               cmpt=cmpt+2;
-                              push(stack_variable, floatToString($1));
                               }
                    | TAB_PAR  {  divZero = false  } 
                    | idf {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"VARIABLE")!=0 ) // idf n'existe pas dans TS ou est un nom de routine 
@@ -221,7 +213,7 @@ SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
                               if(atof(return_VALUE_SIZE_Cst_Idf($1,top(stack_name_Routine)))==0)divZero=true;else divZero = false ;  
                               if (cmpt==0 || cmpt==1) strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
                               cmpt=cmpt+2;
-                              push(stack_variable,$1);
+
                             }
 ;
 TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"MATRICE")!=0) // idf n'existe pas dans TS ou pas un nom de matrice 
@@ -238,9 +230,8 @@ TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,to
                                                                   
                                                              }
                                                              cmpt++;
-                                                                  Tab_idfInStack_Quad(stack_variable,$1,$3,$5);
                                                             }
-      |idf par_ouvrante cst_int  par_fermante             {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"TABLEAU")!=0) // idf n'existe pas dans TS ou pas un nom de tableau 
+        |idf par_ouvrante cst_int  par_fermante             {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"TABLEAU")!=0) // idf n'existe pas dans TS ou pas un nom de tableau 
                                                                  semantiqueError("idf n'existe pas dans TS ou n'est pas un TABLEAU\n");
                                                             extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf($1,top(stack_name_Routine)),&firstSize,&secondSize);
                                                             if(firstSize<=$3 || $3<0 )
@@ -252,7 +243,6 @@ TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,to
                                                                   strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
                                                              }
                                                              cmpt++;
-                                                             Tab_idfInStack_Quad(stack_variable,$1,$3,0);
                                                             }
 
 ;
@@ -330,7 +320,6 @@ int main(int argc , char *argv[]) {
               stack_type = initializeStack();
               stack_value = initializeStack();
               stack_name_Routine = initializeStack();
-              stack_variable = initializeStack();
             yyrestart(fileLex);
 
               //initialisation
@@ -340,7 +329,6 @@ int main(int argc , char *argv[]) {
               printf("syntaxe correcte \n");
               displayList_Sep_MotCle();
               displayList_Cst_Idf();
-              afficher_qdr();
             fclose(fileLex); 
              return EXIT_SUCCESS;
         }
@@ -360,7 +348,6 @@ int yyerror ( char*  msg )
       printf("\nFile %s, line %d, character %d: Syntaxic error\n",fileName ,nb_ligne, Col);
       displayList_Sep_MotCle();
       displayList_Cst_Idf();
-      afficher_qdr();
       exit(EXIT_FAILURE); 
 }
 
