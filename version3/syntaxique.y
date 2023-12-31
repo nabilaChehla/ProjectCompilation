@@ -273,26 +273,28 @@ TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,to
                                                             }
 
 ;
-COND:   COND  OR_mc   SUITE_COND_1
+COND:   COND  OR_mc   SUITE_COND_1                {quadExpression(stack_variable,"OR",op1,op2);}
       | SUITE_COND_1
 ;
-SUITE_COND_1:  SUITE_COND_1  AND_mc  SUITE_COND_2
+SUITE_COND_1:  SUITE_COND_1  AND_mc  SUITE_COND_2 {quadExpression(stack_variable,"AND",op1,op2);}
              | SUITE_COND_2
 ;
 SUITE_COND_2:   EXPRESSION_BOOL
               | COND_SIMPLE 
 ;
-COND_SIMPLE :   
-             EXPRESSION_BOOL  OPERATEUR_LOGIQUE_1  EXPRESSION_BOOL 
+COND_SIMPLE :EXPRESSION_BOOL  point LT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LT",op1,op2);}
+            |EXPRESSION_BOOL  point GT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GT",op1,op2);}
+            |EXPRESSION_BOOL  point NE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"NE",op1,op2);}
+            |EXPRESSION_BOOL  point LE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LE",op1,op2);}
+            |EXPRESSION_BOOL  point GE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GE",op1,op2);}
+            |EXPRESSION_BOOL  point EQ_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"EQ",op1,op2);}
 ;
-EXPRESSION_BOOL : EXP            {cmpt=0;} 
+EXPRESSION_BOOL : EXP                                                          {cmpt=0;} 
                 | LOGICAL_VALUE 
-                | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante 
-                | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante 
-                | par_ouvrante COND_SIMPLE par_fermante  
+                | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante         {quadExpression(stack_variable,"OR",op1,op2);}
+                | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante{quadExpression(stack_variable,"AND",op1,op2);} 
+                | par_ouvrante COND_SIMPLE par_fermante                                   
                 | par_ouvrante LOGICAL_VALUE par_fermante
-;
-SUITE_OPERATEUR_LOGIQUE_1: LT_mc | GT_mc | NE_mc | LE_mc | GE_mc |EQ_mc 
 ;
 LOGICAL_VALUE: TRUE_mc {push(stack_variable,$1);}| FALSE_mc{push(stack_variable,$1);}
 ;
@@ -303,8 +305,6 @@ IF_INST: IF_mc par_ouvrante  COND par_fermante THEN_mc INSTRUCTIONS SUITE_IF_INS
 SUITE_IF_INST: ELSE_mc INSTRUCTIONS | 
 ;
 BOUCLE_INST: DOWHILE_mc  par_ouvrante  COND par_fermante  INSTRUCTIONS ENDDO_mc pvg
-;
-OPERATEUR_LOGIQUE_1: point SUITE_OPERATEUR_LOGIQUE_1 point
 ;
 
 INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0) // premier idf est une VARIABLE

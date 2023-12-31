@@ -9,7 +9,17 @@ INTEGER TAB DIMENSION (10) ;
 REAL MAT DIMENSION (10,9) ;
 % Instructions
 
-MAT(4,0)= Y*MAT(5,6)+A - (50*9 /90 + C *B); 
+IF (((D.NE.A).OR.TRUE ).NE.(Y.OR.C )) THEN A = (A* B + 5 + +8 - 9 + -3 - +6 -(-9)) ; 
+ELSE 
+A = A +( B); 
+ ENDIF
+
+
+IF(((MAT(1,2).NE.D).OR.TRUE).NE.(FALSE.OR.5)) THEN A=A-MAT(8,8); ENDIF
+IF(A+B.LT.B-C.OR.(A+B.LT.B-C.AND.TRUE)) THEN A=A-MAT(8,8); ENDIF
+IF(A+B.LT.B-C) THEN A=A-MAT(8,8); ENDIF
+
+MAT(5,2)= Y*MAT(5,6)+A - (50*9 /90 + C *B); 
 D = TRUE ; 
 P = "I am wonderful";
 TAB(5) = Y - A *0 + 5 /C +Y * TAB(8) ;

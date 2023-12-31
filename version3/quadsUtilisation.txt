@@ -1,0 +1,48 @@
+# Arithmetic Operations*------------------------- DONE 
+(ADD, A, B, C)      # C = A + B
+(SUB, D, E, F)      # F = D - E
+(MUL, X, Y, Z)      # Z = X * Y
+
+# Conditional Statements
+(IF_EQ, A, 0, L1)    # Jump to L1 if A equals 0
+(JUMP, L2, -, -)     # Unconditional jump to L2
+
+# Function Calls
+(CALL, func, param1, param2)  # Call function 'func' with parameters param1 and param2
+(RETURN, -, -, result)        # Return with the result
+
+# Memory Operations*-------------------------------DONE
+(:=, 5, -, A)    # Assign the constant value 5 to variable A
+(ARRAY_ACCESS, arr, index, temp)  # Access array element at index and store in temp
+
+# Logical Operations------------------------------DONE
+(AND, P, Q, R)      # R = P AND Q
+(OR, X, Y, Z)       # Z = X OR Y
+
+# Relational Operations--------------------------DONE
+(GTE, A, B, C)      # C = (A >= B)
+(EQ, D, E, F)       # F = (D == E)
+
+# Looping Constructs
+(WHILE, A, -, -)    # Start of a while loop with condition A
+(EXIT_LOOP, -, -, -)  # Exit the current loop
+
+# String Operations DECLARATION 
+
+# Function Parameters and Return Values
+(PARAM, param1, -, -)    # Declare parameter 'param1'
+(RETURN, -, -, result)  # Return from the current function with 'result'
+# Function Entry and Exit
+(FUNC_ENTRY, "function_name", -, -)  # Entry point of a function
+(FUNC_EXIT, -, -, -)  # Exit point of a function
+
+
+# Error Handling
+(ERROR, "Division by zero", -, -)  # Report an error during compilation or runtime
+
+# Input/Output
+(READ, -, -, variable)    # Read input and store in 'variable'
+(WRITE, "Hello, World!", -, -)  # Write the string "Hello, World!" to output
+
+
+
