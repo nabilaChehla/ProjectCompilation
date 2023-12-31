@@ -69,7 +69,7 @@ void Tab_idfInStack_Quad(Stack *stack_variable, const char idf[MAX_NAME_LENGTH],
   strcpy(SaveTabIdf, idf);
   strcat(SaveTabIdf, "(");
   strcat(SaveTabIdf, intToString(taille1));
-  if (taille2 > 0)
+  if (taille2 != -1)
   {
     strcat(SaveTabIdf, ",");
     strcat(SaveTabIdf, intToString(taille2));
