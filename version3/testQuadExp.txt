@@ -8,12 +8,14 @@ ENDR
 REAL ROUTINE nomfonction2 (A,B)
 REAL X2 ;
 INTEGER Z2 ; 
+Z2 = 5 ; 
 X2 = Z2;
 nomfonction2= X2 + Z2 *A ; 
 ENDR 
 
 LOGICAL ROUTINE nomfonction1 (TAB1(5),MAT1(50),B)
 INTEGER Y1 ; 
+Y1 = 0 ; 
 Y1= Y1 + 58 * 9 ; 
 nomfonction1= TRUE; 
 ENDR 
@@ -24,12 +26,14 @@ PROGRAM HelloAcad
 CHARACTER HERE ; 
 REAL A,B = 9,C =5.0  ; 
 REAL Y =5.3 ; 
-LOGICAL D ; 
-CHARACTER P ; 
+LOGICAL D,N ; 
+CHARACTER P ,Ch; 
 INTEGER TAB DIMENSION (10) ; 
 REAL MAT DIMENSION (10,9) ;
 % Instructions
-
+D = TRUE;
+N= FALSE ;
+A=45.36;
 IF (((D.NE.A).OR.TRUE ).NE.(Y.OR.C )) THEN A = (A* B + 5 + +8 - 9 + -3 - +6 -(-9)) ; 
 ELSE 
 A = A +( B); 
@@ -43,6 +47,7 @@ IF(A+B.LT.B-C) THEN A=A-MAT(8,8); ENDIF
 MAT(5,2)= Y*MAT(5,6)+A - (50*9 /90 + C *B); 
 D = TRUE ; 
 P = "I am wonderful";
+P = Ch; 
 TAB(5) = Y - A *0 + 5 /C +Y * TAB(8) ;
 Y = TAB(4) + TAB (9) ;  
 

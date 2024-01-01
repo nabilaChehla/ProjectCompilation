@@ -990,7 +990,7 @@ YY_RULE_SETUP
         Col= Col + strlen(yytext);
         ECHO ; 
         if (yyleng>10) printf ("\nWARNING: identificateur trop long a la ligne %d a la colonne %d (%d characters) \n",nb_ligne, Col,strlen(yytext));
-        insert_Cst_Idf(yytext,"","","0","",stack_name_Routine);        
+        insert_Cst_Idf(yytext,"","","","",stack_name_Routine);        
         return idf;
 }
 	YY_BREAK

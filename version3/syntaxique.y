@@ -72,6 +72,7 @@ Affectation_fonction: idf aff EXP pvg       {Check_Retour_Routine($1, stack_name
                                              cmpt=cmpt+2;
                                              quadr(":=",$3,"vide",$1);
                                              quadr("return",$1,"vide","vide");
+                                             
                                             }
                     | idf aff LOGICAL_VALUE pvg {Check_Retour_Routine($1, stack_name_Routine);
                                              strcpy(save_type_operateur,"LOGICAL");
@@ -80,17 +81,18 @@ Affectation_fonction: idf aff EXP pvg       {Check_Retour_Routine($1, stack_name
                                               quadr(":=",strg,"vide",$1);
                                               pop(stack_variable);
                                               quadr("return",$1,"vide","vide");
+                                              pop(stack_value);
                                             }
 ;
 type_fonc: type | CHARACTER_mc {push(stack_type, "CHARACTER")  }
 ;
-ARG : liste_parametres {push(stack_value,intToString(nbArg)); quadParametre(stack_variable,nbArg);nbArg=0; }
+ARG : liste_parametres {push(stack_value,intToString(nbArg));quadParametre(stack_variable,nbArg);nbArg=0; }
       |                {push(stack_value,"0"); nbArg=0;}
 ; 
-liste_parametres: idf  ver liste_parametres                                                {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));nbArg++;push(stack_variable,$1);}                                      
+liste_parametres: idf  ver liste_parametres                                                {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));nbArg++;push(stack_variable,$1);initVar($1,stack_name_Routine);}                                      
                 | idf par_ouvrante cst_int ver cst_int  par_fermante  ver liste_parametres {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"MATRICE",top(stack_name_Routine));add_Taille_Tab_Mat($1,$3,$5,stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,$5);}
                 | idf par_ouvrante cst_int  par_fermante ver liste_parametres              {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"TABLEAU",top(stack_name_Routine));add_Taille_Tab_Mat($1,$3,0,stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,-1);}
-                | idf                                                                      {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));nbArg++;push(stack_variable,$1);}
+                | idf                                                                      {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));nbArg++;push(stack_variable,$1);initVar($1,stack_name_Routine);}
                 | idf par_ouvrante cst_int ver cst_int  par_fermante                       {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"MATRICE",top(stack_name_Routine));add_Taille_Tab_Mat($1,$3,$5,stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,$5);}
                 | idf par_ouvrante cst_int  par_fermante                                   {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"TABLEAU",top(stack_name_Routine));add_Taille_Tab_Mat($1,$3,0,stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,-1);}
 ;
@@ -161,12 +163,14 @@ Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routin
                                                 strcpy(strg,top(stack_variable));
                                                 quadr(":=",strg,"vide",$1);
                                                 pop(stack_variable);
+                                                initVar($1,stack_name_Routine);
                                           }
             |idf aff character pvg        {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0)semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
                                            if(strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"CHARACTER")) semantiqueError("Incompatible types\n");
                                            quadr(":=",$3,"vide",$1);
+                                           add_VALUE_Cst_Idf($1,$3,top(stack_name_Routine));
                                                }
-            |TAB_PAR aff EXP pvg          {/*if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1),"ROUTINE",top(stack_name_Routine))==0)semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n")*/
+            |TAB_PAR aff EXP pvg          {
                                            if( strcmp(TAB_reference,save_type_operateur) && (cmpt==3 || cmpt==2)){
                                                 if(!strcmp(TAB_reference,"REAL")){
                                                       if(strcmp(save_type_operateur,"INTEGER")){
@@ -190,7 +194,11 @@ Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routin
                                            if(strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"LOGICAL")) semantiqueError("Incompatible types\n");
                                            strcpy(strg,top(stack_variable));
                                            quadr(":=",strg,"vide",$1);
-                                           pop(stack_variable);}
+                                           pop(stack_variable);
+                                           printf("\ntop(stack_value):%s\n",top(stack_value));
+                                           add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));
+                                           pop(stack_value);
+                                           }
 
 ;
 
@@ -207,7 +215,7 @@ EQUIVALENCE_INST: EQUIVALENCE_mc SUITE_EQUI ver SUITE_EQUI pvg
 ;
 SUITE_EQUI: par_ouvrante liste_parametres_Eq par_fermante 
 ;
-EXP :EXPRESSION {divZero=false }
+EXP :EXPRESSION {divZero=false; }
 ;
 EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1 {divZero=false;quadExpression(stack_variable,"+",op1,op2);}
            | EXPRESSION moins SUITE_EXPRESSION_1{divZero=false;quadExpression(stack_variable,"-",op1,op2);}
@@ -223,11 +231,11 @@ SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2{divZero=false;
 suiteDiv: SUITE_EXPRESSION_2 {if(divZero==true)semantiqueError("Error: Division sur 0");}
 ;
 SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
-                   | cst_int  {if($1==0)divZero=true;else divZero = false ;    
+                   | cst_int  {if($1==0)divZero=true;else divZero = false ; 
                               if (cmpt==0 || cmpt==1) strcpy(save_type_operateur,"INTEGER"); 
                               cmpt=cmpt+2;
                               push(stack_variable,intToString($1));
-                              }      
+                              }     
                    | cst_real {if($1==0)divZero=true;else divZero = false;
                               if (cmpt==0 || cmpt==1) strcpy(save_type_operateur,"REAL");            
                               cmpt=cmpt+2;
@@ -236,6 +244,7 @@ SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
                    | TAB_PAR  {  divZero = false  } 
                    | idf {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"VARIABLE")!=0 ) // idf n'existe pas dans TS ou est un nom de routine 
                                     semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+                              checkInit($1,stack_name_Routine); // verifier que la variable est initialisee 
                               if(atof(return_VALUE_SIZE_Cst_Idf($1,top(stack_name_Routine)))==0)divZero=true;else divZero = false ;  
                               if (cmpt==0 || cmpt==1) strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
                               cmpt=cmpt+2;
@@ -291,13 +300,13 @@ COND_SIMPLE :EXPRESSION_BOOL  point LT_mc point  EXPRESSION_BOOL {quadExpression
             |EXPRESSION_BOOL  point EQ_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"EQ",op1,op2);}
 ;
 EXPRESSION_BOOL : EXP                                                          {cmpt=0;} 
-                | LOGICAL_VALUE 
+                | LOGICAL_VALUE                                                {pop(stack_value);}
                 | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante         {quadExpression(stack_variable,"OR",op1,op2);}
                 | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante{quadExpression(stack_variable,"AND",op1,op2);} 
                 | par_ouvrante COND_SIMPLE par_fermante                                   
-                | par_ouvrante LOGICAL_VALUE par_fermante
+                | par_ouvrante LOGICAL_VALUE par_fermante                      {pop(stack_value);}
 ;
-LOGICAL_VALUE: TRUE_mc {push(stack_variable,$1);}| FALSE_mc{push(stack_variable,$1);}
+LOGICAL_VALUE: TRUE_mc {push(stack_variable,$1);push(stack_value,$1);}| FALSE_mc{push(stack_variable,$1);push(stack_value,$1);}
 ;
 
 
@@ -325,6 +334,7 @@ INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {if(!idf_e
                                                                      
                                                                       quadr("CALL",$4,intToString(nbArg),"vide");//(call, nomFonc, nbArg, vide )
                                                                        nbArg = 0;
+                                                                       initVar($1,stack_name_Routine);
                                                                       }  
 ;
 ARG_CALL : liste_parametres_CALL 

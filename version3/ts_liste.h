@@ -481,3 +481,19 @@ void Taitement_SUITE_DEC(const char nomVariable[MAX_NAME_LENGTH], Stack *stack_n
 
   add_CODE_Cst_Idf(nomVariable, "VARIABLE", top(stack_name_Routine));
 }
+
+void checkInit(char nomIdf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{ // si on a "" dans valeur dans TS donc non initalise sauf si c'est un character
+  if (strcmp(return_VALUE_SIZE_Cst_Idf(nomIdf, top(stack_name_Routine)), "") == 0 && strcmp(return_TYPE_Cst_Idf(nomIdf, top(stack_name_Routine)), "CHARACTER") != 0)
+  {
+    semantiqueError("Utilisation d'une variable non initialise\n");
+  }
+}
+void initVar(char nomIdf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (strcmp(return_VALUE_SIZE_Cst_Idf(nomIdf, top(stack_name_Routine)), "") == 0 && strcmp(return_TYPE_Cst_Idf(nomIdf, top(stack_name_Routine)), "CHARACTER") != 0)
+  { // si on a "" dans valeur dans TS donc non initalise sauf si c'est un character
+    add_VALUE_Cst_Idf(nomIdf, "-", top(stack_name_Routine));
+    printf("\n %s initialisee \n", nomIdf);
+  }
+}
