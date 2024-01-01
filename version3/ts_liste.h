@@ -342,11 +342,42 @@ bool nodeExists_Sep_MotCle(const char name[MAX_NAME_LENGTH])
   }
   return false; // Node with the specified code does not exist
 }
+void removeEmptyStrings(list_Cst_Idf *myList)
+{
+  elt_Cst_Idf_node *current = myList->head;
+  elt_Cst_Idf_node *prev = NULL;
 
+  while (current != NULL)
+  {
+    if (
+        strcmp(current->type, "") == 0 &&
+        strcmp(current->val, "") == 0 &&
+        strcmp(current->code, "") == 0 &&
+        strcmp(current->scope, "") == 0)
+    {
+      if (prev == NULL)
+      {
+        myList->head = current->next;
+      }
+      else
+      {
+        prev->next = current->next;
+      }
+
+      free(current);
+      current = (prev == NULL) ? myList->head : prev->next;
+    }
+    else
+    {
+      prev = current;
+      current = current->next;
+    }
+  }
+}
 void displayList_Cst_Idf()
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
-
+  removeEmptyStrings(L_Cst_Idf);
   printf("/***************Liste des symboles IDF*************/\n");
   printf("__________________________________________________________________________________\n");
   printf("\t| Nom_Entite |  Code_Entite | Type_Entite | Val_Entite/taille/nbArg | scope\n");
