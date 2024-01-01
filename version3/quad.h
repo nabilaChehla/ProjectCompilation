@@ -1,5 +1,4 @@
 
-
 typedef struct qdr
 {
 
@@ -77,4 +76,16 @@ void Tab_idfInStack_Quad(Stack *stack_variable, const char idf[MAX_NAME_LENGTH],
   strcat(SaveTabIdf, ")");
 
   push(stack_variable, SaveTabIdf);
+}
+void quadParametre(Stack *stack_variable, int nbParametres)
+{
+  while (nbParametres > 0)
+  {
+    char strg[MAX_STRING_SIZE];
+    strcpy(strg, top(stack_variable));
+    quadr("parametre", strg, "vide", "vide");
+    pop(stack_variable);
+    printf("\nnbParametres: %d\n", nbParametres);
+    nbParametres--;
+  }
 }

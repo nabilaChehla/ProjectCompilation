@@ -14,7 +14,6 @@ Stack *stack_value;
 Stack *stack_name_Routine ; 
 Stack *stack_variable ; 
   char code [MAX_CODE_LENGTH];
-  char Taille [MAX_VAL_LENGTH]; 
   char save_type_operateur [MAX_TYPE_LENGTH];
   char op1 [MAX_STRING_SIZE];
   char op2 [MAX_STRING_SIZE];
@@ -26,7 +25,7 @@ Stack *stack_variable ;
   int firstSize;
   int secondSize;
   int nbArg = 0 ; 
-  int cmpt= 0;
+  int cmpt= 0; 
   bool divZero = false ;
 %}
 
@@ -67,11 +66,12 @@ fonc: save_name_func par_ouvrante ARG par_fermante DEC INSTRUCTIONS Affectation_
 ;
 save_name_func: type_fonc ROUTINE_mc idf {push(stack_name_Routine,$3);}
 ;
-Affectation_fonction: idf aff EXP pvg       {Check_Retour_Routine($1, stack_name_Routine);strcpy(strg,top(stack_variable));quadr(":=",strg,"vide",$1);pop(stack_variable)}
+Affectation_fonction: idf aff EXP pvg       {Check_Retour_Routine($1, stack_name_Routine);strcpy(strg,top(stack_variable));quadr(":=",strg,"vide",$1);pop(stack_variable);quadr("return",$1,"vide","vide");}
                     | idf aff character pvg {Check_Retour_Routine($1, stack_name_Routine);
                                              strcpy(save_type_operateur,"CHARACTER");
                                              cmpt=cmpt+2;
                                              quadr(":=",$3,"vide",$1);
+                                             quadr("return",$1,"vide","vide");
                                             }
                     | idf aff LOGICAL_VALUE pvg {Check_Retour_Routine($1, stack_name_Routine);
                                              strcpy(save_type_operateur,"LOGICAL");
@@ -79,19 +79,20 @@ Affectation_fonction: idf aff EXP pvg       {Check_Retour_Routine($1, stack_name
                                               strcpy(strg,top(stack_variable));
                                               quadr(":=",strg,"vide",$1);
                                               pop(stack_variable);
+                                              quadr("return",$1,"vide","vide");
                                             }
 ;
 type_fonc: type | CHARACTER_mc {push(stack_type, "CHARACTER")  }
 ;
-ARG : liste_parametres {push(stack_value,intToString(nbArg)); nbArg=0;}
+ARG : liste_parametres {push(stack_value,intToString(nbArg)); nbArg=0;quadParametre(stack_variable,nbArg); }
       |                {push(stack_value,"0"); nbArg=0;}
 ; 
-liste_parametres: idf  ver liste_parametres                                                {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));nbArg++}                                      
-                | idf par_ouvrante cst_int ver cst_int  par_fermante  ver liste_parametres {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));nbArg++}
-                | idf par_ouvrante cst_int  par_fermante ver liste_parametres              {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));nbArg++}
-                | idf                                                                      {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));nbArg++}
-                | idf par_ouvrante cst_int ver cst_int  par_fermante                       {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));nbArg++}
-                | idf par_ouvrante cst_int  par_fermante                                   {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));nbArg++}
+liste_parametres: idf  ver liste_parametres                                                {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));nbArg++;push(stack_variable,$1);}                                      
+                | idf par_ouvrante cst_int ver cst_int  par_fermante  ver liste_parametres {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"MATRICE",top(stack_name_Routine));add_Taille_Tab_Mat($1,$3,$5,stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,$5);}
+                | idf par_ouvrante cst_int  par_fermante ver liste_parametres              {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"TABLEAU",top(stack_name_Routine));add_Taille_Tab_Mat($1,$3,0,stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,-1);}
+                | idf                                                                      {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));nbArg++;push(stack_variable,$1);}
+                | idf par_ouvrante cst_int ver cst_int  par_fermante                       {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"MATRICE",top(stack_name_Routine));add_Taille_Tab_Mat($1,$3,$5,stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,$5);}
+                | idf par_ouvrante cst_int  par_fermante                                   {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"TABLEAU",top(stack_name_Routine));add_Taille_Tab_Mat($1,$3,0,stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,-1);}
 ;
 
 DEC: type SUITE_DEC pvg DEC {pop(stack_type)}
@@ -105,8 +106,8 @@ SUITE_DEC:  idf DEC_AFF ver SUITE_DEC  {Taitement_SUITE_DEC($1,stack_name_Routin
           | idf                        {Taitement_SUITE_DEC($1,stack_name_Routine,stack_type)} 
  
 ;
-DEC_TAB: type idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante           {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf($2,top(stack_name_Routine));add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));pop(stack_type);}
-        |CHARACTER_mc idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante   {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf($2,top(stack_name_Routine));add_TYPE_Cst_Idf($2,"CHARACTER",top(stack_name_Routine));ConcatTaille($5,taille2,Taille,sizeof(Taille));add_VALUE_Cst_Idf($2,Taille,top(stack_name_Routine)) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));}
+DEC_TAB: type idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante           {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf($2,top(stack_name_Routine));add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));add_Taille_Tab_Mat($2,$5,taille2,stack_name_Routine) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));pop(stack_type);}
+        |CHARACTER_mc idf DIMENSION_mc par_ouvrante cst_int LIST_PAR_TAB par_fermante   {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");add_SCOPE_Cst_Idf($2,top(stack_name_Routine));add_TYPE_Cst_Idf($2,"CHARACTER",top(stack_name_Routine));add_Taille_Tab_Mat($2,$5,taille2,stack_name_Routine) ;taille2= 0;add_CODE_Cst_Idf($2,code,top(stack_name_Routine));}
 ;
 
 LIST_PAR_TAB : ver cst_int {taille2 = $2; strcpy(code,"MATRICE");} 

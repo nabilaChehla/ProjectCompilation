@@ -429,6 +429,13 @@ void ConcatTaille(int num1, int num2, char *result, size_t result_size)
   strcat(result, str2);
 }
 
+void add_Taille_Tab_Mat(const char *idf, int taille1, int taille2, Stack *stack_name_Routine)
+{
+  char Taille[MAX_VAL_LENGTH];
+  ConcatTaille(taille1, taille2, Taille, sizeof(Taille));
+  add_VALUE_Cst_Idf(idf, Taille, top(stack_name_Routine));
+}
+
 void extractIntegers_SIZE_TS(const char *sizeTS, int *firstSize, int *secondSize)
 {
   // Use sscanf to extract two integers separated by '|'

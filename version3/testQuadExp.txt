@@ -1,6 +1,27 @@
 
+CHARACTER ROUTINE nomfonction3 (MAT3(50,1),A,B,MAT33(7,3))
+INTEGER X3 , Z3 ; 
+X3 = 3 ; 
+nomfonction3= "NILO"; 
+ENDR 
+
+REAL ROUTINE nomfonction2 (A,B)
+REAL X2 ;
+INTEGER Z2 ; 
+X2 = Z2;
+nomfonction2= X2 + Z2 *A ; 
+ENDR 
+
+LOGICAL ROUTINE nomfonction1 (TAB1(5),MAT1(50),B)
+INTEGER Y1 ; 
+Y1= Y1 + 58 * 9 ; 
+nomfonction1= TRUE; 
+ENDR 
+
+
 PROGRAM HelloAcad
 % Déclarations
+CHARACTER HERE ; 
 REAL A,B = 9,C =5.0  ; 
 REAL Y =5.3 ; 
 LOGICAL D ; 
