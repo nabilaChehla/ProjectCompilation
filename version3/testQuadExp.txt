@@ -46,4 +46,6 @@ P = "I am wonderful";
 TAB(5) = Y - A *0 + 5 /C +Y * TAB(8) ;
 Y = TAB(4) + TAB (9) ;  
 
+D = CALL nomfonction1 (MAT(2,2)*A/5,TAB(5)- 10 *MAT(5,1),A*2);  TAB(1)= TAB (2) ; 
+
 END

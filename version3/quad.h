@@ -83,9 +83,15 @@ void quadParametre(Stack *stack_variable, int nbParametres)
   {
     char strg[MAX_STRING_SIZE];
     strcpy(strg, top(stack_variable));
-    quadr("parametre", strg, "vide", "vide");
+    quadr("Parametre", strg, "vide", "vide");
     pop(stack_variable);
-    printf("\nnbParametres: %d\n", nbParametres);
     nbParametres--;
   }
+}
+void quadArgument(Stack *stack_variable)
+{
+  char strg[MAX_STRING_SIZE];
+  strcpy(strg, top(stack_variable));
+  quadr("Argument", strg, "vide", "vide");
+  pop(stack_variable);
 }

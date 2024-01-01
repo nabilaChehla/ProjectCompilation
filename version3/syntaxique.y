@@ -84,7 +84,7 @@ Affectation_fonction: idf aff EXP pvg       {Check_Retour_Routine($1, stack_name
 ;
 type_fonc: type | CHARACTER_mc {push(stack_type, "CHARACTER")  }
 ;
-ARG : liste_parametres {push(stack_value,intToString(nbArg)); nbArg=0;quadParametre(stack_variable,nbArg); }
+ARG : liste_parametres {push(stack_value,intToString(nbArg)); quadParametre(stack_variable,nbArg);nbArg=0; }
       |                {push(stack_value,"0"); nbArg=0;}
 ; 
 liste_parametres: idf  ver liste_parametres                                                {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));nbArg++;push(stack_variable,$1);}                                      
@@ -183,7 +183,7 @@ Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routin
                                                 pop(stack_variable);
                                                 strcpy(strg2,top(stack_variable));
                                                 pop(stack_variable);
-                                                quadr(":=",strg2,"vide",strg);
+                                                quadr(":=",strg,"vide",strg2 );
                                           }                                   
             
             |idf aff LOGICAL_VALUE pvg    {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0)semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
@@ -322,16 +322,18 @@ INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {if(!idf_e
                                                                                           semantiqueError("Incompatibile types\n");
                                                                               }
                                                                         }
-                                                                      nbArg = 0;}  
+                                                                      nbArg = 0;
+                                                                      quadr("CALL",$4,"vide","vide");
+                                                                      }  
 ;
 ARG_CALL : liste_parametres_CALL 
         |                        
 ; 
-liste_parametres_CALL: EXP ver liste_parametres_CALL {nbArg++; cmpt=0; }
-                      |EXP                           {nbArg++; cmpt=0; }
+liste_parametres_CALL: liste_parametres_CALL ver EXP {nbArg++; cmpt=0;quadArgument(stack_variable); }
+                      |EXP                           {nbArg++; cmpt=0;quadArgument(stack_variable);  }
 ;
 liste_parametres_Eq: EXP ver liste_parametres_Eq      { cmpt=0; }
-                      |EXP                            { cmpt=0; }   
+                    |EXP                            { cmpt=0; }   
 ;
 %%
 
