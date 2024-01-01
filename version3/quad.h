@@ -48,8 +48,10 @@ void afficher_qdr()
   }
 }
 
-void quadExpression(Stack *stack_variable, char opr[], char op1[MAX_STRING_SIZE], char op2[MAX_STRING_SIZE])
+void quadExpression(Stack *stack_variable, char opr[MAX_STRING_SIZE])
 {
+  char op1[MAX_STRING_SIZE];
+  char op2[MAX_STRING_SIZE];
   char temp[10];
   strcpy(temp, "temp");
   strcpy(op2, top(stack_variable));
@@ -59,6 +61,19 @@ void quadExpression(Stack *stack_variable, char opr[], char op1[MAX_STRING_SIZE]
   strcat(temp, intToString(actTemp));
   actTemp++;
   quadr(opr, op1, op2, temp);
+  push(stack_variable, temp);
+}
+
+void quadOpUnaire(Stack *stack_variable, char opr[MAX_STRING_SIZE])
+{
+  char op1[MAX_STRING_SIZE];
+  char temp[10];
+  strcpy(temp, "temp");
+  strcpy(op1, top(stack_variable));
+  pop(stack_variable);
+  strcat(temp, intToString(actTemp));
+  actTemp++;
+  quadr(opr, op1, "vide", temp);
   push(stack_variable, temp);
 }
 

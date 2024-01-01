@@ -2,6 +2,8 @@
 CHARACTER ROUTINE nomfonction3 (MAT3(50,1),A,B,MAT33(7,3))
 INTEGER X3 , Z3 ; 
 X3 = 3 ; 
+Z3 = -X3;
+Z3 = -5;
 nomfonction3= "NILO"; 
 ENDR 
 

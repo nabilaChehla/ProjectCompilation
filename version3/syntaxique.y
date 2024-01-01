@@ -217,15 +217,16 @@ SUITE_EQUI: par_ouvrante liste_parametres_Eq par_fermante
 ;
 EXP :EXPRESSION {divZero=false; }
 ;
-EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1 {divZero=false;quadExpression(stack_variable,"+",op1,op2);}
-           | EXPRESSION moins SUITE_EXPRESSION_1{divZero=false;quadExpression(stack_variable,"-",op1,op2);}
+EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1 {divZero=false;quadExpression(stack_variable,"+");}
+           | EXPRESSION moins SUITE_EXPRESSION_1{divZero=false;quadExpression(stack_variable,"-");}
            | SUITE_EXPRESSION_1                
 ;
 
-SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2{divZero=false;quadExpression(stack_variable,"*",op1,op2);
+SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2{divZero=false;quadExpression(stack_variable,"*");
 
                                                                     }
-                   | SUITE_EXPRESSION_1 divis suiteDiv           {divZero=false;quadExpression(stack_variable,"/",op1,op2);}
+                   | SUITE_EXPRESSION_1 divis suiteDiv           {divZero=false;quadExpression(stack_variable,"/");}
+                   | moins SUITE_EXPRESSION_2                    {divZero=false;quadOpUnaire(stack_variable,"Moins Unaire")}
                    | SUITE_EXPRESSION_2                                       
 ;
 suiteDiv: SUITE_EXPRESSION_2 {if(divZero==true)semantiqueError("Error: Division sur 0");}
@@ -250,6 +251,7 @@ SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
                               cmpt=cmpt+2;
                               push(stack_variable,$1);
                             }
+                  
 ;
 TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"MATRICE")!=0) // idf n'existe pas dans TS ou pas un nom de matrice 
                                                                   semantiqueError("idf n'existe pas dans TS ou n'est pas une MATRICE\n");
@@ -283,26 +285,26 @@ TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,to
                                                             }
 
 ;
-COND:   COND  OR_mc   SUITE_COND_1                {quadExpression(stack_variable,"OR",op1,op2);}
+COND:   COND  OR_mc   SUITE_COND_1                {quadExpression(stack_variable,"OR");}
       | SUITE_COND_1
 ;
-SUITE_COND_1:  SUITE_COND_1  AND_mc  SUITE_COND_2 {quadExpression(stack_variable,"AND",op1,op2);}
+SUITE_COND_1:  SUITE_COND_1  AND_mc  SUITE_COND_2 {quadExpression(stack_variable,"AND");}
              | SUITE_COND_2
 ;
 SUITE_COND_2:   EXPRESSION_BOOL
               | COND_SIMPLE 
 ;
-COND_SIMPLE :EXPRESSION_BOOL  point LT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LT",op1,op2);}
-            |EXPRESSION_BOOL  point GT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GT",op1,op2);}
-            |EXPRESSION_BOOL  point NE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"NE",op1,op2);}
-            |EXPRESSION_BOOL  point LE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LE",op1,op2);}
-            |EXPRESSION_BOOL  point GE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GE",op1,op2);}
-            |EXPRESSION_BOOL  point EQ_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"EQ",op1,op2);}
+COND_SIMPLE :EXPRESSION_BOOL  point LT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LT");}
+            |EXPRESSION_BOOL  point GT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GT");}
+            |EXPRESSION_BOOL  point NE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"NE");}
+            |EXPRESSION_BOOL  point LE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LE");}
+            |EXPRESSION_BOOL  point GE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GE");}
+            |EXPRESSION_BOOL  point EQ_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"EQ");}
 ;
 EXPRESSION_BOOL : EXP                                                          {cmpt=0;} 
                 | LOGICAL_VALUE                                                {pop(stack_value);}
-                | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante         {quadExpression(stack_variable,"OR",op1,op2);}
-                | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante{quadExpression(stack_variable,"AND",op1,op2);} 
+                | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante         {quadExpression(stack_variable,"OR");}
+                | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante{quadExpression(stack_variable,"AND");} 
                 | par_ouvrante COND_SIMPLE par_fermante                                   
                 | par_ouvrante LOGICAL_VALUE par_fermante                      {pop(stack_value);}
 ;
