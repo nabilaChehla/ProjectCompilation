@@ -322,8 +322,9 @@ INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {if(!idf_e
                                                                                           semantiqueError("Incompatibile types\n");
                                                                               }
                                                                         }
-                                                                      nbArg = 0;
-                                                                      quadr("CALL",$4,"vide","vide");
+                                                                     
+                                                                      quadr("CALL",$4,intToString(nbArg),"vide");//(call, nomFonc, nbArg, vide )
+                                                                       nbArg = 0;
                                                                       }  
 ;
 ARG_CALL : liste_parametres_CALL 

@@ -88,6 +88,7 @@ void quadParametre(Stack *stack_variable, int nbParametres)
     nbParametres--;
   }
 }
+
 void quadArgument(Stack *stack_variable)
 {
   char strg[MAX_STRING_SIZE];

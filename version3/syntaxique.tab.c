@@ -552,8 +552,8 @@ static const yytype_uint16 yyrline[] =
      212,   213,   214,   217,   220,   221,   223,   225,   226,   231,
      236,   237,   245,   261,   277,   278,   280,   281,   283,   284,
      286,   287,   288,   289,   290,   291,   293,   294,   295,   296,
-     297,   298,   300,   300,   304,   306,   306,   308,   311,   329,
-     330,   332,   333,   335,   336
+     297,   298,   300,   300,   304,   306,   306,   308,   311,   330,
+     331,   333,   334,   336,   337
 };
 #endif
 
@@ -2269,43 +2269,44 @@ yyreduce:
                                                                                           semantiqueError("Incompatibile types\n");
                                                                               }
                                                                         }
-                                                                      nbArg = 0;
-                                                                      quadr("CALL",(yyvsp[(4) - (8)].str),"vide","vide");
+                                                                     
+                                                                      quadr("CALL",(yyvsp[(4) - (8)].str),intToString(nbArg),"vide");//(call, nomFonc, nbArg, vide )
+                                                                       nbArg = 0;
                                                                       ;}
     break;
 
   case 111:
 
 /* Line 1455 of yacc.c  */
-#line 332 "syntaxique.y"
+#line 333 "syntaxique.y"
     {nbArg++; cmpt=0;quadArgument(stack_variable); ;}
     break;
 
   case 112:
 
 /* Line 1455 of yacc.c  */
-#line 333 "syntaxique.y"
+#line 334 "syntaxique.y"
     {nbArg++; cmpt=0;quadArgument(stack_variable);  ;}
     break;
 
   case 113:
 
 /* Line 1455 of yacc.c  */
-#line 335 "syntaxique.y"
+#line 336 "syntaxique.y"
     { cmpt=0; ;}
     break;
 
   case 114:
 
 /* Line 1455 of yacc.c  */
-#line 336 "syntaxique.y"
+#line 337 "syntaxique.y"
     { cmpt=0; ;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2309 "syntaxique.tab.c"
+#line 2310 "syntaxique.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2517,7 +2518,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 338 "syntaxique.y"
+#line 339 "syntaxique.y"
 
 
 
