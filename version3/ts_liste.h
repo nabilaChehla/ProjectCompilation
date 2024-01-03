@@ -527,3 +527,42 @@ void initVar(char nomIdf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
     add_VALUE_Cst_Idf(nomIdf, "-", top(stack_name_Routine));
   }
 }
+
+char *extractTableName(const char *input)
+{
+  // Find the opening parenthesis
+  const char *openParen = strchr(input, '(');
+
+  // Check if the opening parenthesis is found
+  if (openParen != NULL)
+  {
+    // Calculate the length of the table name
+    size_t length = openParen - input;
+
+    // Allocate memory for the table name
+    char *tableName = (char *)malloc(length + 1);
+
+    // Copy the table name into the allocated memory
+    strncpy(tableName, input, length);
+    tableName[length] = '\0'; // Null-terminate the string
+
+    return tableName;
+  }
+  else
+  {
+    // Return NULL if the opening parenthesis is not found
+    return NULL;
+  }
+}
+
+void checkIdfRead_Variable_elem(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (!idf_exist(idf, top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf(idf, top(stack_name_Routine)), "VARIABLE") != 0) // idf n'existe pas dans TS ou est un nom de routine
+    semantiqueError("Lecture d'une VARIABLE non declare ou lecture d'une variable nom elementaire\n");
+}
+
+void checkIdfRead_Variable_Tableau(Stack *stack_variable, Stack *stack_name_Routine)
+{
+  if (!idf_exist(extractTableName(top(stack_variable)), top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf(extractTableName(top(stack_variable)), top(stack_name_Routine)), "ROUTINE") == 0) // idf n'existe pas dans TS ou est un nom de routine
+    semantiqueError("Lecture d'un tableau non declare ou lecture d'une fonction\n");
+}

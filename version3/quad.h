@@ -31,9 +31,12 @@ void ajour_quad(int num_quad, int colon_quad, char val[])
 {
   if (colon_quad == 0)
     strcpy(quad[num_quad].oper, val);
-  else if (colon_quad == 1){
-    printf("val %s  ",val);
-    strcpy(quad[num_quad].op1, val);  printf("quad op1 %s  ",quad[num_quad].op1);}
+  else if (colon_quad == 1)
+  {
+    printf("val %s  ", val);
+    strcpy(quad[num_quad].op1, val);
+    printf("quad op1 %s  ", quad[num_quad].op1);
+  }
   else if (colon_quad == 2)
     strcpy(quad[num_quad].op2, val);
   else if (colon_quad == 3)
@@ -54,11 +57,11 @@ void afficher_qdr()
   }
 }
 
-void quadExpression(Stack *stack_variable, char opr[MAX_STRING_SIZE],char *temp)
+void quadExpression(Stack *stack_variable, char opr[MAX_STRING_SIZE], char *temp)
 {
   char op1[MAX_STRING_SIZE];
   char op2[MAX_STRING_SIZE];
-  
+
   strcpy(temp, "temp");
   strcpy(op2, top(stack_variable));
   pop(stack_variable);
@@ -69,7 +72,6 @@ void quadExpression(Stack *stack_variable, char opr[MAX_STRING_SIZE],char *temp)
   quadr(opr, op1, op2, temp);
   push(stack_variable, temp);
 }
-
 
 void quadOpUnaire(Stack *stack_variable, char opr[MAX_STRING_SIZE])
 {
@@ -117,4 +119,9 @@ void quadArgument(Stack *stack_variable)
   strcpy(strg, top(stack_variable));
   quadr("Argument", strg, "vide", "vide");
   pop(stack_variable);
+}
+void quadRead(char idf_Argument[MAX_NAME_LENGTH])
+{
+  quadr("Argument", idf_Argument, "vide", "vide");
+  quadr("CALL", "READ", "1", "vide"); //(call, READ, nbArg, vide )
 }

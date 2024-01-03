@@ -205,8 +205,20 @@ Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routin
 ;
 
 Entre_Sortie_INST:  WRITE_mc par_ouvrante SORTIE_MESSAGE par_fermante pvg 
-                  | READ_mc par_ouvrante idf par_fermante pvg  {if(!idf_exist($3,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($3,top(stack_name_Routine)),"ROUTINE")==0) // idf n'existe pas dans TS ou est un nom de routine 
-                                                                  semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n")}
+                  | READ_mc par_ouvrante idf par_fermante pvg  {        //verifier si c'est le bon idf : 
+                                                                  checkIdfRead_Variable_elem($3, stack_name_Routine);
+                                                                  // remlir quadruplets
+                                                                  quadRead($3);
+                                                                  // La variable devient initialise apres la lecture 
+                                                                  initVar($3,stack_name_Routine);
+                                                                  }
+                 | READ_mc par_ouvrante TAB_PAR par_fermante pvg  { //verifier si c'est le bon idf : 
+                                                                  checkIdfRead_Variable_Tableau(stack_variable,stack_name_Routine);
+                                                                  // remlir quadruplets
+                                                                  strcpy(strg, top(stack_variable));
+                                                                  quadRead(strg);
+                                                                  pop(stack_variable);
+                                                                  }
 ;
 SORTIE_MESSAGE :character ver SORTIE_MESSAGE
                | EXP ver SORTIE_MESSAGE       { cmpt=0; }

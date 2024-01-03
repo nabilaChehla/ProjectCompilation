@@ -1,0 +1,61 @@
+
+CHARACTER ROUTINE nomfonction3 (MAT3(50,1),A,B,MAT33(7,30))
+INTEGER X3  , Z3, M ;  
+X3 = 1 ; 
+Z3 = X3;
+READ (MAT3(3,0));
+READ(A);
+MAT33(0,0)=MAT33(1,2)+MAT33(3,4);
+Z3 = 5 ; 
+nomfonction3= "MELI"; 
+ENDR 
+
+REAL ROUTINE nomfonction2 (A,B)
+REAL X2 ;
+INTEGER Z2 , C ; 
+Z2 = 5 ; 
+X2 = Z2;
+nomfonction2= X2 + Z2 *A ; 
+ENDR 
+
+LOGICAL ROUTINE nomfonction1 (TAB1(5),MAT1(50),B)
+INTEGER Y1 ; 
+Y1 = 0 ; 
+Y1= Y1 + 58 * 9 ; 
+nomfonction1= TRUE; 
+ENDR 
+
+
+PROGRAM HelloAcad
+% Déclarations
+CHARACTER HERE ; 
+REAL A,B = 9,C =5.0  ; 
+REAL Y =5.3 ; 
+LOGICAL D,N ; 
+CHARACTER P ,Ch; 
+INTEGER TAB DIMENSION (10) ; 
+REAL MAT DIMENSION (10,9) ;
+% Instructions
+D = TRUE;
+N= FALSE ;
+A=45.36;
+IF (((D.NE.A).OR.TRUE ).NE.(Y.OR.C )) THEN A = (A* B + 5 + +8 - 9 + -3 - +6 -(-9)) ; 
+ELSE 
+A = A +( B); 
+ ENDIF
+
+
+IF(((MAT(1,2).NE.D).OR.TRUE).NE.(FALSE.OR.5)) THEN A=A-MAT(8,8); ENDIF
+IF(A+B.LT.B-C.OR.(A+B.LT.B-C.AND.TRUE)) THEN A=A-MAT(8,8); ENDIF
+IF(A+B.LT.B-C) THEN A=A-MAT(8,8); ENDIF
+
+MAT(5,2)= Y*MAT(5,6)+A - (50*9 /90 + C *B); 
+D = TRUE ; 
+P = "I am wonderful";
+P = Ch; 
+TAB(5) = Y - A *0 + 5 /C +Y * TAB(8) ;
+Y = TAB(4) + TAB (9) ;  
+
+D = CALL nomfonction1 (MAT(2,2)*A/5,TAB(5)- 10 *MAT(5,1),A*2);  TAB(1)= TAB (2) ; 
+
+END

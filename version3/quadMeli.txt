@@ -1,0 +1,55 @@
+
+PROGRAM HelloAcad
+% Déclarations
+REAL A=0,B = 9,C =5.0  ; 
+REAL Y =5.3 ; 
+LOGICAL D ; 
+CHARACTER P ; 
+INTEGER TAB DIMENSION (10) ; 
+REAL MAT DIMENSION (10,9) ;
+% Instructions
+
+
+
+
+MAT(4,0)= Y*MAT(5,6)+A - (50*9 /90 + C *B); 
+D = TRUE ; 
+P = "I am wonderful";
+TAB(5) = Y - A *0 + 5 /C +Y * TAB(8) ;
+Y = TAB(4) + TAB (9) ;  
+
+IF(A.EQ.B) THEN
+    A = A - B ;
+    IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - B ;
+        A = TAB(9) + (B * 7);
+        B = 30;
+    ELSE
+        A = A + B;
+    ENDIF
+ELSE A=B;
+ENDIF
+
+DOWHILE (Y.GT.B) 
+    A = A - B ;
+    IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - B ;
+        A = TAB(9) + (B * 7);
+        B = 30;
+    ELSE
+        A = A + B;
+    ENDIF
+ENDDO
+
+DOWHILE (A.LT.B) 
+  DOWHILE(B.GT.C)
+   A= A+B;
+  ENDDO
+   IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - B ;
+        A = TAB(9) + (B * 7);
+        B = 30;
+    ELSE
+        A = A + B;
+    ENDIF
+ENDDO
+
+
+END
