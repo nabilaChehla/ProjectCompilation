@@ -1,10 +1,18 @@
 
-CHARACTER ROUTINE nomfonction3 (MAT3(50,1),A,B,MAT33(7,30))
+CHARACTER ROUTINE nomfonction3 (MAT3(50,100),A,B,MAT33(7,30))
 INTEGER X3  , Z3, M ;  
 X3 = 1 ; 
 Z3 = X3;
+M = Z3 ; 
 READ (MAT3(3,0));
 READ(A);
+
+EQUIVALENCE (Z3+X3, X3, MAT3(5,6)- 1); 
+
+EQUIVALENCE (M, X3*2, MAT3(5,6)), (X3, M) , (M, X3, MAT33(5,6)) ; 
+
+EQUIVALENCE (X3, M, MAT33(5,6)), (MAT33(0,0), X3); 
+
 WRITE(A+Z3,"this is me",X3,"HI");
 WRITE("I am here", MAT3(5,1)+ 1,"done");
 MAT33(0,0)=MAT33(1,2)+MAT33(3,4);

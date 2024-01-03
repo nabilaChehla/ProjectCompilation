@@ -30,7 +30,8 @@ Stack *stack_deb_cond;
   int secondSize;
   int nbArg = 0 ; 
   int cmpt= 0; 
-  int nbPar_Write=0 ; 
+  int nbArg_Write=0 ; 
+  int nbArg_Eqv =0 ; 
   int sauv_BR,Fin_inst_cond, deb_cond,sauv_BZ;
   bool divZero = false ;
 %}
@@ -205,7 +206,7 @@ Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routin
 
 ;
 
-Entre_Sortie_INST:  WRITE_mc par_ouvrante SORTIE_MESSAGE par_fermante pvg {quadr("CALL", "WRITE", intToString(nbPar_Write), "vide");nbPar_Write=0; }
+Entre_Sortie_INST:  WRITE_mc par_ouvrante SORTIE_MESSAGE par_fermante pvg {quadr("CALL", "WRITE", intToString(nbArg_Write), "vide");nbArg_Write=0; }
                   | READ_mc par_ouvrante idf par_fermante pvg  {        //verifier si c'est le bon idf : 
                                                                   checkIdfRead_Variable_elem($3, stack_name_Routine);
                                                                   // remlir quadruplets
@@ -222,17 +223,23 @@ Entre_Sortie_INST:  WRITE_mc par_ouvrante SORTIE_MESSAGE par_fermante pvg {quadr
                                                                   }
 ;
 SORTIE_MESSAGE :SORTIE_MESSAGE ver char_niv1   {quadArgument(stack_variable);}
-               |SORTIE_MESSAGE  ver EXP       { cmpt=0;nbPar_Write++; quadArgument(stack_variable);}
+               |SORTIE_MESSAGE  ver EXP       { cmpt=0;nbArg_Write++; quadArgument(stack_variable);}
                | char_niv1                    {quadArgument(stack_variable);}
-               | EXP                          { cmpt=0; nbPar_Write++;quadArgument(stack_variable);}
+               | EXP                          { cmpt=0; nbArg_Write++;quadArgument(stack_variable);}
 ;
-char_niv4:character {push(stack_variable,$1);nbPar_Write++;}
+char_niv4:character {push(stack_variable,$1);nbArg_Write++;}
 ;
 
 
-EQUIVALENCE_INST: EQUIVALENCE_mc SUITE_EQUI ver SUITE_EQUI pvg
+EQUIVALENCE_INST: EQUIVALENCE_mc liste_Equivalance pvg
 ;
-SUITE_EQUI: par_ouvrante liste_parametres_Eq par_fermante 
+liste_Equivalance:liste_Equivalance ver SUITE_EQUI
+                  |SUITE_EQUI                      
+;
+SUITE_EQUI: par_ouvrante liste_parametres_Eq par_fermante {quadr("CALL","EQUIVALENCE",intToString(nbArg_Eqv),"vide");nbArg_Eqv=0}
+;
+liste_parametres_Eq:liste_parametres_Eq ver EXP        { cmpt=0; quadArgument(stack_variable);nbArg_Eqv++;}
+                    |EXP                              { cmpt=0; quadArgument(stack_variable);nbArg_Eqv++; }   
 ;
 EXP :EXPRESSION {divZero=false; }
 ;
@@ -390,9 +397,7 @@ ARG_CALL : liste_parametres_CALL
 liste_parametres_CALL: liste_parametres_CALL ver EXP {nbArg++; cmpt=0;quadArgument(stack_variable); }
                       |EXP                           {nbArg++; cmpt=0;quadArgument(stack_variable);  }
 ;
-liste_parametres_Eq: EXP ver liste_parametres_Eq      { cmpt=0; }
-                    |EXP                              { cmpt=0; }   
-;
+
 char_niv1: char_niv2
 ;
 char_niv2: char_niv3
