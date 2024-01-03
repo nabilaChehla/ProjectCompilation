@@ -566,3 +566,144 @@ void checkIdfRead_Variable_Tableau(Stack *stack_variable, Stack *stack_name_Rout
   if (!idf_exist(extractTableName(top(stack_variable)), top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf(extractTableName(top(stack_variable)), top(stack_name_Routine)), "ROUTINE") == 0) // idf n'existe pas dans TS ou est un nom de routine
     semantiqueError("Lecture d'un tableau non declare ou lecture d'une fonction\n");
 }
+
+void checkDoubleDeclaration(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (idf_exist(idf, top(stack_name_Routine)))
+    semantiqueError("Double declaration");
+}
+
+void check_idf_Variable_Existe(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (!idf_exist(idf, top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf(idf, top(stack_name_Routine)), "VARIABLE") != 0)
+    semantiqueError("Utilisation de VARIABLE non declare ou afftectation a une fonction\n");
+}
+void check_idf_Matrice_Existe(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (!idf_exist(idf, top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf(idf, top(stack_name_Routine)), "MATRICE") != 0) // idf n'existe pas dans TS ou pas un nom de matrice
+    semantiqueError("idf n'existe pas dans TS ou n'est pas une MATRICE\n");
+}
+void check_idf_Tableau_Existe(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (!idf_exist(idf, top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf(idf, top(stack_name_Routine)), "TABLEAU") != 0) // idf n'existe pas dans TS ou pas un nom de matrice
+    semantiqueError("idf n'existe pas dans TS ou n'est pas un Tableau\n");
+}
+
+void check_idf_Aff_Call(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (!idf_exist(idf, top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf(idf, top(stack_name_Routine)), "ROUTINE") == 0) // premier idf est une VARIABLE
+    semantiqueError("affectation a une VARIABLE non declare ou afftectation a une fonction\n");
+}
+void check_Routine_Signature(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine, int nbArg)
+{
+  if (atoi(return_VALUE_SIZE_Cst_Idf(idf, top(stack_name_Routine))) != nbArg)
+    // signature incorrecte
+    semantiqueError("Signature de la fonction incorrecte\n");
+}
+
+void check_TypeRetour_compatible(char nomVar[MAX_NAME_LENGTH], char nomRoutine[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (strcmp(return_TYPE_Cst_Idf(nomVar, top(stack_name_Routine)), return_TYPE_Cst_Idf(nomRoutine, top(stack_name_Routine))))
+  {
+    if (!strcmp(return_TYPE_Cst_Idf(nomVar, top(stack_name_Routine)), "REAL"))
+    {
+      if (strcmp(return_TYPE_Cst_Idf(nomRoutine, top(stack_name_Routine)), "INTEGER"))
+      {
+        semantiqueError("Incompatibile types\n");
+      }
+    }
+    else
+    {
+      semantiqueError("Incompatibile types\n");
+    }
+  }
+}
+
+void check_Affectation_fin_Routine(Stack *stack_type, char save_type_operateur[MAX_TYPE_LENGTH], int *cmpt)
+{
+  if (strcmp(top(stack_type), save_type_operateur) && (*cmpt) == 2)
+  {
+    if (!strcmp(top(stack_type), "REAL"))
+    {
+      if (strcmp(save_type_operateur, "INTEGER"))
+      {
+        printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, top(stack_type));
+        semantiqueError("Incompatibile types\n");
+      }
+    }
+    else
+    {
+      printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, top(stack_type));
+      semantiqueError("Incompatibile types\n");
+    }
+    (*cmpt) = 0;
+  }
+}
+
+void checkSize(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine, int taille1, int taille2)
+{
+  int firstSize;
+  int secondSize;
+  extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf(idf, top(stack_name_Routine)), &firstSize, &secondSize);
+  if (firstSize <= taille1 || taille1 < 0 || secondSize < taille2 || taille2 < 0)
+    semantiqueError("Size of matrice incorrect \n");
+}
+
+void checkType_affectation_idf(char idf[MAX_NAME_LENGTH], char save_type_operateur[MAX_TYPE_LENGTH], Stack *stack_name_Routine, int cmpt)
+{
+  if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), save_type_operateur) && cmpt == 2)
+  {
+    if (!strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "REAL"))
+    {
+      if (strcmp(save_type_operateur, "INTEGER"))
+      {
+        printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, return_TYPE_Cst_Idf(idf, top(stack_name_Routine)));
+        semantiqueError("Incompatibile types\n");
+      }
+    }
+    else
+    {
+      printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, return_TYPE_Cst_Idf(idf, top(stack_name_Routine)));
+      semantiqueError("Incompatibile types\n");
+    }
+  }
+}
+
+void checkType_affectation_TAB(char TAB_reference[MAX_STRING_SIZE], char save_type_operateur[MAX_TYPE_LENGTH], Stack *stack_name_Routine, int cmpt)
+{
+  if (strcmp(TAB_reference, save_type_operateur) && (cmpt == 3 || cmpt == 2))
+  {
+    if (!strcmp(TAB_reference, "REAL"))
+    {
+      if (strcmp(save_type_operateur, "INTEGER"))
+      {
+        printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, TAB_reference);
+        semantiqueError("Incompatibile types\n");
+      }
+    }
+    else
+    {
+      printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, TAB_reference);
+      semantiqueError("Incompatibile types\n");
+    }
+  }
+}
+void checkType_affectation_idf_Logical(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "LOGICAL"))
+    semantiqueError("Incompatible types\n");
+}
+
+bool activerDivPar0(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (atof(return_VALUE_SIZE_Cst_Idf(idf, top(stack_name_Routine))) == 0)
+    return true;
+  else
+    return false;
+}
+
+void checkDivPar0(bool divZero)
+{
+  if (divZero == true)
+    semantiqueError("Error: Division sur 0");
+}
