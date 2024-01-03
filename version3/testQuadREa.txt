@@ -5,6 +5,8 @@ X3 = 1 ;
 Z3 = X3;
 READ (MAT3(3,0));
 READ(A);
+WRITE(A+Z3,"this is me",X3,"HI");
+WRITE("I am here", MAT3(5,1)+ 1,"done");
 MAT33(0,0)=MAT33(1,2)+MAT33(3,4);
 Z3 = 5 ; 
 nomfonction3= "MELI"; 
