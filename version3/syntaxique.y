@@ -13,6 +13,8 @@ Stack *stack_type;
 Stack *stack_value;
 Stack *stack_name_Routine ; 
 Stack *stack_variable ; 
+Stack *stack_BZ;
+Stack *stack_deb_cond;
   char code [MAX_CODE_LENGTH];
   char save_type_operateur [MAX_TYPE_LENGTH];
   char op1 [MAX_STRING_SIZE];
@@ -21,11 +23,14 @@ Stack *stack_variable ;
   char strg2[MAX_STRING_SIZE];    
   char TAB_reference[MAX_STRING_SIZE];
   char Type_routine[MAX_TYPE_LENGTH];
+  char temp[10];
+  char sauv_BZ1;
   int taille2 = 0 ; 
   int firstSize;
   int secondSize;
   int nbArg = 0 ; 
   int cmpt= 0; 
+  int sauv_BR,Fin_inst_cond, deb_cond,sauv_BZ;
   bool divZero = false ;
 %}
 
@@ -44,19 +49,17 @@ S : Fonction_i  MAIN DEC INSTRUCTIONS END_mc
 MAIN: PROGRAM_mc  idf {push(stack_name_Routine,"main")}
 ;
 Fonction_i: fonc  Fonction_i 
-                        { traitement_Fin_Routine(stack_name_Routine,stack_value,stack_type);  nbArg = 0;
-                        
-                        }
+                        { traitement_Fin_Routine(stack_name_Routine,stack_value,stack_type);  nbArg = 0;}
            | 
 ;
 fonc: save_name_func par_ouvrante ARG par_fermante DEC INSTRUCTIONS Affectation_fonction ENDR_mc
                  {      if( strcmp(top(stack_type),save_type_operateur) && cmpt==2){ 
                               if(!strcmp(top(stack_type),"REAL")){
                                    if(strcmp(save_type_operateur,"INTEGER")){
-                                          printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,top(stack_type)); 
+                                          printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,top(stack_type)); 
                                           semantiqueError("Incompatibile types\n");}
                                     }else{
-                                          printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,top(stack_type)); 
+                                          printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,top(stack_type)); 
                                           semantiqueError("Incompatibile types\n");
                                     }
                                     cmpt=0;
@@ -132,7 +135,7 @@ DEC_CHAR :    idf multip cst_int ver   DEC_CHAR            {if(idf_exist($1,top(
 
 DEC_CHAR_AFF: aff character  {push(stack_value,$2);push(stack_variable,$2);}
 ;
-type:  INTEGER_mc  {push(stack_type, "INTEGER");printf("Here type rout :%s\n",top(stack_type))}
+type:  INTEGER_mc  {push(stack_type, "INTEGER");}
      | REAL_mc     {push(stack_type, "REAL")}
      | LOGICAL_mc  {push(stack_type, "LOGICAL")}
 ;
@@ -152,10 +155,10 @@ Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routin
                                           if( strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),save_type_operateur) && cmpt==2 ){ 
                                                 if(!strcmp(return_TYPE_Cst_Idf($1,top(stack_name_Routine)),"REAL")){
                                                       if(strcmp(save_type_operateur,"INTEGER")){
-                                                            printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
+                                                            printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
                                                             semantiqueError("Incompatibile types\n");}
                                                       }else{
-                                                            printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
+                                                            printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
                                                             semantiqueError("Incompatibile types\n");
                                                       }
                                           }
@@ -174,10 +177,10 @@ Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routin
                                            if( strcmp(TAB_reference,save_type_operateur) && (cmpt==3 || cmpt==2)){
                                                 if(!strcmp(TAB_reference,"REAL")){
                                                       if(strcmp(save_type_operateur,"INTEGER")){
-                                                            printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,TAB_reference); 
+                                                            printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,TAB_reference); 
                                                             semantiqueError("Incompatibile types\n");}
                                                 }else{
-                                                      printf("affectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,TAB_reference); 
+                                                      printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n",save_type_operateur,TAB_reference); 
                                                             semantiqueError("Incompatibile types\n");
                                                 }
                                                 
@@ -195,7 +198,6 @@ Affectation: idf aff EXP pvg             {if(!idf_exist($1,top(stack_name_Routin
                                            strcpy(strg,top(stack_variable));
                                            quadr(":=",strg,"vide",$1);
                                            pop(stack_variable);
-                                           printf("\ntop(stack_value):%s\n",top(stack_value));
                                            add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));
                                            pop(stack_value);
                                            }
@@ -217,15 +219,15 @@ SUITE_EQUI: par_ouvrante liste_parametres_Eq par_fermante
 ;
 EXP :EXPRESSION {divZero=false; }
 ;
-EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1 {divZero=false;quadExpression(stack_variable,"+");}
-           | EXPRESSION moins SUITE_EXPRESSION_1{divZero=false;quadExpression(stack_variable,"-");}
+EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1 {divZero=false;quadExpression(stack_variable,"+",temp);}
+           | EXPRESSION moins SUITE_EXPRESSION_1{divZero=false;quadExpression(stack_variable,"-",temp);}
            | SUITE_EXPRESSION_1                
 ;
 
-SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2{divZero=false;quadExpression(stack_variable,"*");
+SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2{divZero=false;quadExpression(stack_variable,"*",temp);
 
                                                                     }
-                   | SUITE_EXPRESSION_1 divis suiteDiv           {divZero=false;quadExpression(stack_variable,"/");}
+                   | SUITE_EXPRESSION_1 divis suiteDiv           {divZero=false;quadExpression(stack_variable,"/",temp);}
                    | moins SUITE_EXPRESSION_2                    {divZero=false;quadOpUnaire(stack_variable,"Moins Unaire")}
                    | SUITE_EXPRESSION_2                                       
 ;
@@ -285,38 +287,64 @@ TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,to
                                                             }
 
 ;
-COND:   COND  OR_mc   SUITE_COND_1                {quadExpression(stack_variable,"OR");}
+COND:   COND  OR_mc   SUITE_COND_1                {quadExpression(stack_variable,"OR",temp);}
       | SUITE_COND_1
 ;
-SUITE_COND_1:  SUITE_COND_1  AND_mc  SUITE_COND_2 {quadExpression(stack_variable,"AND");}
+SUITE_COND_1:  SUITE_COND_1  AND_mc  SUITE_COND_2 {quadExpression(stack_variable,"AND",temp);}
              | SUITE_COND_2
 ;
 SUITE_COND_2:   EXPRESSION_BOOL
               | COND_SIMPLE 
 ;
-COND_SIMPLE :EXPRESSION_BOOL  point LT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LT");}
-            |EXPRESSION_BOOL  point GT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GT");}
-            |EXPRESSION_BOOL  point NE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"NE");}
-            |EXPRESSION_BOOL  point LE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LE");}
-            |EXPRESSION_BOOL  point GE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GE");}
-            |EXPRESSION_BOOL  point EQ_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"EQ");}
+COND_SIMPLE :EXPRESSION_BOOL  point LT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LT",temp);}
+            |EXPRESSION_BOOL  point GT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GT",temp);}
+            |EXPRESSION_BOOL  point NE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"NE",temp);}
+            |EXPRESSION_BOOL  point LE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LE",temp);}
+            |EXPRESSION_BOOL  point GE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GE",temp);}
+            |EXPRESSION_BOOL  point EQ_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"EQ",temp);}
 ;
 EXPRESSION_BOOL : EXP                                                          {cmpt=0;} 
                 | LOGICAL_VALUE                                                {pop(stack_value);}
-                | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante         {quadExpression(stack_variable,"OR");}
-                | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante{quadExpression(stack_variable,"AND");} 
+                | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante         {quadExpression(stack_variable,"OR",temp);}
+                | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante{quadExpression(stack_variable,"AND",temp);} 
                 | par_ouvrante COND_SIMPLE par_fermante                                   
                 | par_ouvrante LOGICAL_VALUE par_fermante                      {pop(stack_value);}
 ;
 LOGICAL_VALUE: TRUE_mc {push(stack_variable,$1);push(stack_value,$1);}| FALSE_mc{push(stack_variable,$1);push(stack_value,$1);}
 ;
+IF_INST: DEBUT_INST_IF INSTRUCTIONS ENDIF_mc {
+                                             ajour_quad(sauv_BR,1,intToString(qc));
+						         }
+
+      | DEBUT_IF INSTRUCTIONS ENDIF_mc    {  sprintf(strg,"%d",qc);
+                                             ajour_quad(atoi(top(stack_BZ)),1,intToString(qc));
+                                             pop(stack_BZ);
+						      }
+;
+DEBUT_INST_IF: DEBUT_IF  INSTRUCTIONS ELSE_mc {sauv_BR=qc;
+                                               quadr("BR","","vide","vide");   
+                                               ajour_quad(atoi(top(stack_BZ)),1,intToString(qc));
+                                               pop(stack_BZ);}
+;
+
+DEBUT_IF:  IF_mc par_ouvrante  COND par_fermante THEN_mc {
+                                                           push(stack_BZ,intToString(qc));
+                                                           quadr("BZ", "",temp, "vide"); }
+;
 
 
-IF_INST: IF_mc par_ouvrante  COND par_fermante THEN_mc INSTRUCTIONS SUITE_IF_INST ENDIF_mc
+
+
+BOUCLE_INST: BOUCLE_INST1 INSTRUCTIONS ENDDO_mc {strcpy(strg,top(stack_deb_cond));
+                                                quadr("BR", strg ,"vide", "vide"); 
+                                                pop(stack_deb_cond);
+                                                ajour_quad(atoi(top(stack_BZ)),1,intToString(qc));
+                                                pop(stack_BZ);}
 ;
-SUITE_IF_INST: ELSE_mc INSTRUCTIONS | 
+BOUCLE_INST1: BOUCLE_INST2 par_ouvrante  COND par_fermante {push(stack_BZ,intToString(qc)); // J'ai laisser le champs 2 vide. Je dois le remplir apres
+                                                            quadr("BZ", "",temp, "vide"); }
 ;
-BOUCLE_INST: DOWHILE_mc  par_ouvrante  COND par_fermante  INSTRUCTIONS ENDDO_mc pvg
+BOUCLE_INST2: DOWHILE_mc  {push(stack_deb_cond,intToString(qc));}
 ;
 
 INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"ROUTINE")==0) // premier idf est une VARIABLE
@@ -346,7 +374,7 @@ liste_parametres_CALL: liste_parametres_CALL ver EXP {nbArg++; cmpt=0;quadArgume
                       |EXP                           {nbArg++; cmpt=0;quadArgument(stack_variable);  }
 ;
 liste_parametres_Eq: EXP ver liste_parametres_Eq      { cmpt=0; }
-                    |EXP                            { cmpt=0; }   
+                    |EXP                              { cmpt=0; }   
 ;
 %%
 
@@ -361,6 +389,8 @@ int main(int argc , char *argv[]) {
         }
         else{
               stack_type = initializeStack();
+              stack_BZ = initializeStack();
+              stack_deb_cond = initializeStack();
               stack_value = initializeStack();
               stack_name_Routine = initializeStack();
               stack_variable = initializeStack();

@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <math.h>
 
 typedef struct qdr
 {
@@ -26,8 +31,9 @@ void ajour_quad(int num_quad, int colon_quad, char val[])
 {
   if (colon_quad == 0)
     strcpy(quad[num_quad].oper, val);
-  else if (colon_quad == 1)
-    strcpy(quad[num_quad].op1, val);
+  else if (colon_quad == 1){
+    printf("val %s  ",val);
+    strcpy(quad[num_quad].op1, val);  printf("quad op1 %s  ",quad[num_quad].op1);}
   else if (colon_quad == 2)
     strcpy(quad[num_quad].op2, val);
   else if (colon_quad == 3)
@@ -48,11 +54,11 @@ void afficher_qdr()
   }
 }
 
-void quadExpression(Stack *stack_variable, char opr[MAX_STRING_SIZE])
+void quadExpression(Stack *stack_variable, char opr[MAX_STRING_SIZE],char *temp)
 {
   char op1[MAX_STRING_SIZE];
   char op2[MAX_STRING_SIZE];
-  char temp[10];
+  
   strcpy(temp, "temp");
   strcpy(op2, top(stack_variable));
   pop(stack_variable);
@@ -63,6 +69,7 @@ void quadExpression(Stack *stack_variable, char opr[MAX_STRING_SIZE])
   quadr(opr, op1, op2, temp);
   push(stack_variable, temp);
 }
+
 
 void quadOpUnaire(Stack *stack_variable, char opr[MAX_STRING_SIZE])
 {

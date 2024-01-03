@@ -83,7 +83,7 @@ void initList_Cst_Idf()
   list_Cst_Idf *list = (list_Cst_Idf *)malloc(sizeof(list_Cst_Idf));
   if (!list)
   {
-    printf("error: initList_Cst_Idf");
+    printf("\nERROR: initList_Cst_Idf");
     exit(EXIT_FAILURE);
   }
   list->head = NULL;
@@ -478,7 +478,7 @@ void extractIntegers_SIZE_TS(const char *sizeTS, int *firstSize, int *secondSize
 }
 int semantiqueError(char *msg)
 {
-  printf("%s", msg);
+  printf("\n%s", msg);
   printf("\nFile %s, line %d, character %d: semantic error\n", fileName, nb_ligne, Col);
   displayList_Sep_MotCle();
   exit(EXIT_FAILURE);
@@ -525,6 +525,5 @@ void initVar(char nomIdf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
   if (strcmp(return_VALUE_SIZE_Cst_Idf(nomIdf, top(stack_name_Routine)), "") == 0 && strcmp(return_TYPE_Cst_Idf(nomIdf, top(stack_name_Routine)), "CHARACTER") != 0)
   { // si on a "" dans valeur dans TS donc non initalise sauf si c'est un character
     add_VALUE_Cst_Idf(nomIdf, "-", top(stack_name_Routine));
-    printf("\n %s initialisee \n", nomIdf);
   }
 }
