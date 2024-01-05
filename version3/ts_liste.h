@@ -645,26 +645,26 @@ void checkSize(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine, int taille1
   char firstSize[MAX_STRING_SIZE];
   char secondSize[MAX_STRING_SIZE];
   extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf(idf, top(stack_name_Routine)), firstSize, secondSize);
-  if (strcmp(firstSize, "-"))
+  if (strcmp(firstSize, "-") != 0)
   {
     printf("%s | %s", firstSize, secondSize);
-    if (strcmp(secondSize, "-"))
+    if (strcmp(secondSize, "-") != 0)
     {
       if (atoi(firstSize) <= taille1 || taille1 < 0 || atoi(secondSize) < taille2 || taille2 < 0)
-        semantiqueError("Size of matrice incorrect \n");
+        semantiqueError("Size of TABLEAU / MATRICE incorrect \n");
     }
     else
     {
       if (atoi(firstSize) <= taille1 || taille1 < 0)
-        semantiqueError("Size of matrice incorrect \n");
+        semantiqueError("Size of TABLEAU / MATRICE incorrect \n");
     }
   }
   else
   {
     printf("%s | %s", firstSize, secondSize);
-    if (strcmp(secondSize, "-"))
+    if (strcmp(secondSize, "-") != 0)
       if (atoi(secondSize) < taille2 || taille2 < 0)
-        semantiqueError("Size of matrice incorrect \n");
+        semantiqueError("Size of TABLEAU / MATRICE incorrect \n");
   }
 }
 
@@ -851,13 +851,25 @@ void check_Type_operateurs(Stack *stack_variable, Stack *stack_name_Routine, boo
   char op1[MAX_NAME_LENGTH];
   char op2[MAX_NAME_LENGTH];
   strcpy(op1, top(stack_variable));
+
+  // if op1 est un tableau : dans pile TAB(5) -> on doit retirer TAB seulement
+  if (strchr(op1, '(') != NULL && strchr(op1, ')') != NULL) // if is it tableau or matrice it containes ()
+  {
+    strcpy(op1, extractTableName(op1));
+  }
   pop(stack_variable);
   strcpy(op2, top(stack_variable));
-  if ((binaire && (idf_exist(op1, top(stack_name_Routine))) && (strcmp(return_CODE_Cst_Idf(op1, top(stack_name_Routine)), "VARIABLE") == 0 && strcmp(return_TYPE_Cst_Idf(op1, top(stack_name_Routine)), "CHARACTER") == 0)) || ((idf_exist(op2, top(stack_name_Routine))) && strcmp(return_CODE_Cst_Idf(op2, top(stack_name_Routine)), "VARIABLE") == 0 && strcmp(return_TYPE_Cst_Idf(op2, top(stack_name_Routine)), "CHARACTER") == 0))
+  // if op1 est un tableau : dans pile TAB(5) -> on doit retirer TAB seulement
+  if (strchr(op2, '(') != NULL && strchr(op2, ')') != NULL) // if is it tableau or matrice it containes ()
+  {
+    strcpy(op2, extractTableName(op2));
+  }
+
+  if ((binaire && (idf_exist(op1, top(stack_name_Routine))) && (strcmp(return_TYPE_Cst_Idf(op1, top(stack_name_Routine)), "CHARACTER") == 0)) || ((idf_exist(op2, top(stack_name_Routine))) && strcmp(return_TYPE_Cst_Idf(op2, top(stack_name_Routine)), "CHARACTER") == 0))
   {
     semantiqueError("Cette operation ne se fait pas au type CHARACTER");
   }
-  if ((binaire && (idf_exist(op1, top(stack_name_Routine))) && (strcmp(return_CODE_Cst_Idf(op1, top(stack_name_Routine)), "VARIABLE") == 0 && strcmp(return_TYPE_Cst_Idf(op1, top(stack_name_Routine)), "LOGICAL") == 0)) || ((idf_exist(op2, top(stack_name_Routine))) && strcmp(return_CODE_Cst_Idf(op2, top(stack_name_Routine)), "VARIABLE") == 0 && strcmp(return_TYPE_Cst_Idf(op2, top(stack_name_Routine)), "LOGICAL") == 0))
+  if (((binaire && (idf_exist(op1, top(stack_name_Routine)) && strcmp(return_TYPE_Cst_Idf(op1, top(stack_name_Routine)), "LOGICAL") == 0))) || ((idf_exist(op2, top(stack_name_Routine))) && strcmp(return_TYPE_Cst_Idf(op2, top(stack_name_Routine)), "LOGICAL") == 0))
   {
     semantiqueError("Cette operation ne se fait pas au type LOGICAL");
   }

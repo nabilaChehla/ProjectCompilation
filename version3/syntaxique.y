@@ -104,12 +104,9 @@ SUITE_DEC:  idf DEC_AFF ver SUITE_DEC  {Taitement_SUITE_DEC($1,stack_name_Routin
           | idf                        {Taitement_SUITE_DEC($1,stack_name_Routine,stack_type)} 
  
 ;
-DEC_TAB: type idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante       {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");
-                                                                                 //if(strcmp(save_type_operateur,"INTEGER"))semantiqueError("the Size must be an integer");
-                                                                                    add_SCOPE_Cst_Idf($2,top(stack_name_Routine));
+DEC_TAB: type idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante       {   checkDoubleDeclaration($2,stack_name_Routine);                                                                                    add_SCOPE_Cst_Idf($2,top(stack_name_Routine));
                                                                                     add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));
                                                                                     strcpy(taille1,top(stack_variable));
-                                                                                    
                                                                                     add_CODE_Cst_Idf($2,code,top(stack_name_Routine));
                                                                                     Traitement_taille_TAB_MAT($2,taille1,taille2,save_type_operateur,stack_name_Routine,SiIDF1);
                                                                                     pop(stack_type);
@@ -117,7 +114,7 @@ DEC_TAB: type idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante       
                                                                                     quadr("ADEC",$2,"vide","vide");
                                                                                     cmpt=0;   
                                                                                     }
-        |CHARACTER_mc idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante   {if(idf_exist($2,top(stack_name_Routine)))semantiqueError("Double declaration");
+        |CHARACTER_mc idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante   {checkDoubleDeclaration($2,stack_name_Routine);
                                                                                     if(strcmp(save_type_operateur,"INTEGER"))semantiqueError("the Size 2 must be an integer");
                                                                                     add_SCOPE_Cst_Idf($2,top(stack_name_Routine));
                                                                                     add_TYPE_Cst_Idf($2,"CHARACTER",top(stack_name_Routine));
@@ -279,8 +276,7 @@ SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
                             }
                   
 ;
-TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {if(!idf_exist($1,top(stack_name_Routine)) || strcmp(return_CODE_Cst_Idf($1,top(stack_name_Routine)),"MATRICE")!=0) // idf n'existe pas dans TS ou pas un nom de matrice 
-                                                                  semantiqueError("idf n'existe pas dans TS ou n'est pas une MATRICE\n");
+TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {check_idf_Matrice_Existe($1,stack_name_Routine);// idf n'existe pas dans TS ou pas un nom de matrice 
                                                              checkSize($1,stack_name_Routine,$3,$5);
                                                             if (cmpt ==0)
                                                               strcpy(TAB_reference,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
