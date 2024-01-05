@@ -1,57 +1,65 @@
+INTEGER ROUTINE A1 (X,Y)
+INTEGER A;
+A=9;
+A1=A;
+ENDR
 
-CHARACTER ROUTINE nomfonction3 (MAT3(50,1),A,B,MAT33(7,3))
-INTEGER X3  , Z3 ;  
-X3 = 1 ; 
-Z3 = X3;
-nomfonction3= "MELI"; 
-ENDR 
-
-REAL ROUTINE nomfonction2 (A,B)
-REAL X2 ;
-INTEGER Z2 , C ; 
-Z2 = 5 ; 
-X2 = Z2;
-nomfonction2= X2 + Z2 *A ; 
-ENDR 
-
-LOGICAL ROUTINE nomfonction1 (TAB1(5),MAT1(50),B)
-INTEGER Y1 ; 
-Y1 = 0 ; 
-Y1= Y1 + 58 * 9 ; 
-nomfonction1= TRUE; 
-ENDR 
-
+CHARACTER ROUTINE R(A,B)
+INTEGER X = 5 , Z3 ;
+X = 1;
+Z3 = X;
+R="MELI";
+ENDR
 
 PROGRAM HelloAcad
 % Déclarations
-CHARACTER HERE ; 
-REAL A,B = 9,C =5.0  ; 
-REAL Y =5.3 ; 
-LOGICAL D,N ; 
-CHARACTER P ,Ch; 
-INTEGER TAB DIMENSION (10) ; 
-REAL MAT DIMENSION (10,9) ;
+REAL A=0,B = 9,C =5.0  ; 
+REAL Y =5.3 ;
+INTEGER S=6,E=7,F=8,I,J,K;
+CHARACTER P ; 
+INTEGER TAB DIMENSION (9+ 99) ; 
+REAL MAT DIMENSION (B+ 7.9 , 9) ;
+REAL MAT1 DIMENSION (7,7.9+E) ;
+INTEGER TAB3 DIMENSION (7.0+ B) ;
+
 % Instructions
-D = TRUE;
-N= FALSE ;
-A=45.36;
-IF (((D.NE.A).OR.TRUE ).NE.(Y.OR.C )) THEN A = (A* B + 5 + +8 - 9 + -3 - +6 -(-9)) ; 
-ELSE 
-A = A +( B); 
- ENDIF
 
 
-IF(((MAT(1,2).NE.D).OR.TRUE).NE.(FALSE.OR.5)) THEN A=A-MAT(8,8); ENDIF
-IF(A+B.LT.B-C.OR.(A+B.LT.B-C.AND.TRUE)) THEN A=A-MAT(8,8); ENDIF
-IF(A+B.LT.B-C) THEN A=A-MAT(8,8); ENDIF
-
-MAT(5,2)= Y*MAT(5,6)+A - (50*9 /90 + C *B); 
-D = TRUE ; 
+TAB3(10000)=6;
+MAT(5777,8)=6;
+MAT1(6,8)=6;
 P = "I am wonderful";
-P = Ch; 
-TAB(5) = Y - A *0 + 5 /C +Y * TAB(8) ;
-Y = TAB(4) + TAB (9) ;  
 
-D = CALL nomfonction1 (MAT(2,2)*A/5,TAB(5)- 10 *MAT(5,1),A*2);  TAB(1)= TAB (2) ; 
+IF(A.EQ.B) THEN
+    A = A - B ;
+    IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - B ;
+        B = 30;
+    ELSE
+        A = A + B;
+    ENDIF
+ELSE A=B;
+ENDIF
+
+DOWHILE (Y.GT.B) 
+    A = A - B ;
+    IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - B ;
+        B = 30;
+    ELSE
+        A = A + B;
+    ENDIF
+ENDDO;
+
+DOWHILE (A.LT.B) 
+  DOWHILE(B.GT.C)
+   A= A+B;
+  ENDDO;
+   IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - B ;
+        B = 30;
+    ELSE
+        A = A + B;
+    ENDIF
+ENDDO;
+A=C;
+A=Y;
 
 END

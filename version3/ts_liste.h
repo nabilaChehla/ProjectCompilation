@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+#include <ctype.h>
 #include "pile.h"
 // Constants
 #define MAX_NAME_LENGTH 50
@@ -433,18 +434,14 @@ char *floatToString(float number)
   return result;
 }
 
-void ConcatTaille(int num1, int num2, char *result, size_t result_size)
+void ConcatTaille(char num1[], char num2[], char *result, size_t result_size)
 {
   const char *separator = " | ";
 
   // Convert integers to strings
-  char str1[20]; // Adjust the size based on the expected maximum length of an integer
-  char str2[20];
-  sprintf(str1, "%d", num1);
-  sprintf(str2, "%d", num2);
 
-  size_t len1 = strlen(str1);
-  size_t len2 = strlen(str2);
+  size_t len1 = strlen(num1);
+  size_t len2 = strlen(num2);
   size_t len_sep = strlen(separator);
   size_t len_result = len1 + len_sep + len2 + 1; // +1 for  \0
 
@@ -455,32 +452,35 @@ void ConcatTaille(int num1, int num2, char *result, size_t result_size)
     exit(EXIT_FAILURE);
   }
 
-  strcpy(result, str1);
+  strcpy(result, num1);
   strcat(result, separator);
-  strcat(result, str2);
+  strcat(result, num2);
 }
 
-void add_Taille_Tab_Mat(const char *idf, int taille1, int taille2, Stack *stack_name_Routine)
+void add_Taille_Tab_Mat(const char *idf, char taille1[], char taille2[], Stack *stack_name_Routine)
 {
   char Taille[MAX_VAL_LENGTH];
   ConcatTaille(taille1, taille2, Taille, sizeof(Taille));
   add_VALUE_Cst_Idf(idf, Taille, top(stack_name_Routine));
 }
 
-void extractIntegers_SIZE_TS(const char *sizeTS, int *firstSize, int *secondSize)
+void extractIntegers_SIZE_TS(const char *sizeTS, char *firstSize, char *secondSize)
 {
   // Use sscanf to extract two integers separated by '|'
-  if (sscanf(sizeTS, " %d | %d", firstSize, secondSize) != 2)
+
+  if (sscanf(sizeTS, "%s | %s", firstSize, secondSize) != 2)
   {
     // Handle error, if the format doesn't match
     printf("Error: Invalid sizeTS format!\n");
   }
 }
+
 int semantiqueError(char *msg)
 {
   printf("\n%s", msg);
   printf("\nFile %s, line %d, character %d: semantic error\n", fileName, nb_ligne, Col);
   displayList_Sep_MotCle();
+  displayList_Cst_Idf();
   exit(EXIT_FAILURE);
 }
 
@@ -642,62 +642,104 @@ void check_Affectation_fin_Routine(Stack *stack_type, char save_type_operateur[M
 
 void checkSize(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine, int taille1, int taille2)
 {
-  int firstSize;
-  int secondSize;
-  extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf(idf, top(stack_name_Routine)), &firstSize, &secondSize);
-  if (firstSize <= taille1 || taille1 < 0 || secondSize < taille2 || taille2 < 0)
-    semantiqueError("Size of matrice incorrect \n");
+  char firstSize[MAX_STRING_SIZE];
+  char secondSize[MAX_STRING_SIZE];
+  extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf(idf, top(stack_name_Routine)), firstSize, secondSize);
+  if (strcmp(firstSize, "-"))
+  {
+    printf("%s | %s", firstSize, secondSize);
+    if (strcmp(secondSize, "-"))
+    {
+      if (atoi(firstSize) <= taille1 || taille1 < 0 || atoi(secondSize) < taille2 || taille2 < 0)
+        semantiqueError("Size of matrice incorrect \n");
+    }
+    else
+    {
+      if (atoi(firstSize) <= taille1 || taille1 < 0)
+        semantiqueError("Size of matrice incorrect \n");
+    }
+  }
+  else
+  {
+    printf("%s | %s", firstSize, secondSize);
+    if (strcmp(secondSize, "-"))
+      if (atoi(secondSize) < taille2 || taille2 < 0)
+        semantiqueError("Size of matrice incorrect \n");
+  }
 }
 
 void checkType_affectation_idf(char idf[MAX_NAME_LENGTH], char save_type_operateur[MAX_TYPE_LENGTH], Stack *stack_name_Routine, int cmpt)
-{
-  if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), save_type_operateur) && cmpt == 2)
+{ // checker qu'on a un type inserre dans TS car les parametres de fonctuion n'ont pas de type donc on ne fait pas le traitement
+  if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "") != 0)
   {
-    if (!strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "REAL"))
+    if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), save_type_operateur) && cmpt == 2)
     {
-      if (strcmp(save_type_operateur, "INTEGER"))
+      if (!strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "REAL"))
+      {
+        if (strcmp(save_type_operateur, "INTEGER"))
+        {
+          printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, return_TYPE_Cst_Idf(idf, top(stack_name_Routine)));
+          semantiqueError("Incompatibile types\n");
+        }
+      }
+      else
       {
         printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, return_TYPE_Cst_Idf(idf, top(stack_name_Routine)));
         semantiqueError("Incompatibile types\n");
       }
-    }
-    else
-    {
-      printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, return_TYPE_Cst_Idf(idf, top(stack_name_Routine)));
-      semantiqueError("Incompatibile types\n");
     }
   }
 }
 
 void checkType_affectation_TAB(char TAB_reference[MAX_STRING_SIZE], char save_type_operateur[MAX_TYPE_LENGTH], Stack *stack_name_Routine, int cmpt)
 {
-  if (strcmp(TAB_reference, save_type_operateur) && (cmpt == 3 || cmpt == 2))
+  // checker qu'on a un type inserre dans TS car les parametres de fonctuion n'ont pas de type donc on ne fait pas le traitement
+  if (strcmp(return_TYPE_Cst_Idf(TAB_reference, top(stack_name_Routine)), "") != 0)
   {
-    if (!strcmp(TAB_reference, "REAL"))
+    if (strcmp(TAB_reference, save_type_operateur) && (cmpt == 3 || cmpt == 2))
     {
-      if (strcmp(save_type_operateur, "INTEGER"))
+      if (!strcmp(TAB_reference, "REAL"))
+      {
+        if (strcmp(save_type_operateur, "INTEGER"))
+        {
+          printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, TAB_reference);
+          semantiqueError("Incompatibile types\n");
+        }
+      }
+      else
       {
         printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, TAB_reference);
         semantiqueError("Incompatibile types\n");
       }
     }
-    else
-    {
-      printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, TAB_reference);
-      semantiqueError("Incompatibile types\n");
-    }
+  }
+}
+
+void check_Type_char(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
+{
+  if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "") != 0)
+  {
+    if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "CHARACTER") != 0)
+      semantiqueError("Incompatible types\n");
   }
 }
 void checkType_affectation_idf_Logical(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
 {
-  if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "LOGICAL"))
-    semantiqueError("Incompatible types\n");
+  if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "") != 0)
+  {
+    if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "LOGICAL"))
+      semantiqueError("Incompatible types\n");
+  }
 }
 
 bool activerDivPar0(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
 {
-  if (atof(return_VALUE_SIZE_Cst_Idf(idf, top(stack_name_Routine))) == 0)
-    return true;
+  if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "REAL") == 0 || strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "INTEGER") == 0)
+  {
+    if (atof(return_VALUE_SIZE_Cst_Idf(idf, top(stack_name_Routine))) == 0)
+      return true;
+    return false;
+  }
   else
     return false;
 }
@@ -706,4 +748,118 @@ void checkDivPar0(bool divZero)
 {
   if (divZero == true)
     semantiqueError("Error: Division sur 0");
+}
+
+bool checkTaille(char taille[])
+{
+
+  if (strstr(taille, "temp") != NULL)
+    return true;
+  else
+    return false;
+}
+
+void Traitement_taille_TAB_MAT(char idf[MAX_NAME_LENGTH], char taille1[], char taille2[], char save_type_operateur[], Stack *stack_name_Routine, bool SiIDF1)
+{
+  if (!checkTaille(taille1) && strcmp(save_type_operateur, "INTEGER"))
+  {
+    semantiqueError("the size 2 must be an integer");
+  }
+  if (!strcmp(return_CODE_Cst_Idf(idf, top(stack_name_Routine)), "MATRICE"))
+  {
+
+    if (checkTaille(taille1) && checkTaille(taille2))
+    {
+      add_Taille_Tab_Mat(idf, "-", "-", stack_name_Routine);
+    }
+    else
+    {
+      if (checkTaille(taille1) && !checkTaille(taille2))
+      {
+
+        if (!isdigit(taille2[0]))
+        {
+          add_Taille_Tab_Mat(idf, "-", return_VALUE_SIZE_Cst_Idf(taille2, top(stack_name_Routine)), stack_name_Routine);
+        }
+        else
+        {
+          add_Taille_Tab_Mat(idf, "-", taille2, stack_name_Routine);
+        }
+      }
+      else
+      {
+        if (!checkTaille(taille1) && !checkTaille(taille2))
+        {
+
+          if (isdigit(taille1[0]))
+          {
+            if (isdigit(taille2[0]))
+            {
+              add_Taille_Tab_Mat(idf, taille1, taille2, stack_name_Routine);
+            }
+            else
+            {
+              add_Taille_Tab_Mat(idf, taille1, return_VALUE_SIZE_Cst_Idf(taille2, top(stack_name_Routine)), stack_name_Routine);
+            }
+          }
+          else
+          {
+            printf("here2");
+            if (isdigit(taille2[0]))
+            {
+              add_Taille_Tab_Mat(idf, return_VALUE_SIZE_Cst_Idf(taille1, top(stack_name_Routine)), taille2, stack_name_Routine);
+            }
+            if (!isdigit(taille2[0]))
+            {
+              add_Taille_Tab_Mat(idf, return_VALUE_SIZE_Cst_Idf(taille1, top(stack_name_Routine)), return_VALUE_SIZE_Cst_Idf(taille2, top(stack_name_Routine)), stack_name_Routine);
+            }
+          }
+        }
+        else if (!checkTaille(taille1) && checkTaille(taille2))
+        {
+          if (!isdigit(taille1[0]))
+          {
+            add_Taille_Tab_Mat(idf, return_VALUE_SIZE_Cst_Idf(taille1, top(stack_name_Routine)), "-", stack_name_Routine);
+          }
+          else
+          {
+            add_Taille_Tab_Mat(idf, taille1, "-", stack_name_Routine);
+          }
+        }
+      }
+    }
+  }
+  else
+  {
+    if (checkTaille(taille1))
+    {
+      add_Taille_Tab_Mat(idf, "-", "0", stack_name_Routine);
+    }
+    else
+    {
+      if (!isdigit(taille1[0]))
+        add_Taille_Tab_Mat(idf, return_VALUE_SIZE_Cst_Idf(taille1, top(stack_name_Routine)), "0", stack_name_Routine);
+      else
+        add_Taille_Tab_Mat(idf, taille1, "0", stack_name_Routine);
+    }
+  }
+}
+
+void check_Type_operateurs(Stack *stack_variable, Stack *stack_name_Routine, bool binaire)
+{
+  // le plus le moins la devision ne se fait que si l'operateur et de type int ou real
+  char op1[MAX_NAME_LENGTH];
+  char op2[MAX_NAME_LENGTH];
+  strcpy(op1, top(stack_variable));
+  pop(stack_variable);
+  strcpy(op2, top(stack_variable));
+  if ((binaire && (idf_exist(op1, top(stack_name_Routine))) && (strcmp(return_CODE_Cst_Idf(op1, top(stack_name_Routine)), "VARIABLE") == 0 && strcmp(return_TYPE_Cst_Idf(op1, top(stack_name_Routine)), "CHARACTER") == 0)) || ((idf_exist(op2, top(stack_name_Routine))) && strcmp(return_CODE_Cst_Idf(op2, top(stack_name_Routine)), "VARIABLE") == 0 && strcmp(return_TYPE_Cst_Idf(op2, top(stack_name_Routine)), "CHARACTER") == 0))
+  {
+    semantiqueError("Cette operation ne se fait pas au type CHARACTER");
+  }
+  if ((binaire && (idf_exist(op1, top(stack_name_Routine))) && (strcmp(return_CODE_Cst_Idf(op1, top(stack_name_Routine)), "VARIABLE") == 0 && strcmp(return_TYPE_Cst_Idf(op1, top(stack_name_Routine)), "LOGICAL") == 0)) || ((idf_exist(op2, top(stack_name_Routine))) && strcmp(return_CODE_Cst_Idf(op2, top(stack_name_Routine)), "VARIABLE") == 0 && strcmp(return_TYPE_Cst_Idf(op2, top(stack_name_Routine)), "LOGICAL") == 0))
+  {
+    semantiqueError("Cette operation ne se fait pas au type LOGICAL");
+  }
+  push(stack_variable, op1);
 }
