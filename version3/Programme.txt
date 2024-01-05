@@ -4,6 +4,7 @@ REAL A,B,C  ;
 INTEGER Y ; 
 LOGICAL L ; 
 CHARACTER C ;
+CHARACTER str *5 ;
 INTEGER TAB DIMENSION (10) ; 
 REAL MAT DIMENSION (10,10) ;
 LOGICAL TABLOG DIMENSION (10) ; 
@@ -44,5 +45,8 @@ A = MAT (-10,12);
 % Utilisation de CHARACTER ou LOGICAL dans expresion
 A = 5 + C ; 
 A = 10.2 * TABLOG(2); 
+
+% Test :valeur de character ne depasse pas length 
+str = "L3 ACAD c Groupe 2" ; 
 
 END
