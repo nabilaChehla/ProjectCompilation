@@ -365,7 +365,7 @@ BOUCLE_INST2: DOWHILE_mc  {push(stack_deb_cond,intToString(qc));}
 ;
 
 INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {
-                                                                      check_idf_Aff_Call($3,stack_name_Routine); // verifier qu'il existe + n'est pas une routine
+                                                                      check_idf_Aff_Call($1,stack_name_Routine); // verifier qu'il existe + n'est pas une routine
                                                                       CheckRoutineExiste ($4);
                                                                        check_Routine_Signature($4,stack_name_Routine,nbArg);
                                                                       check_TypeRetour_compatible($1,$3,stack_name_Routine);

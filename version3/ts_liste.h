@@ -254,7 +254,7 @@ char *return_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX
     }
     current = current->next;
   }
-  printf("ERROR : cant find the code node doesnt exist"); // Node with the specified name does not exist
+  printf("ERROR : cant find the type node doesnt exist"); // Node with the specified name does not exist
 }
 
 char *return_VALUE_SIZE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
@@ -603,11 +603,11 @@ void check_Routine_Signature(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routin
 
 void check_TypeRetour_compatible(char nomVar[MAX_NAME_LENGTH], char nomRoutine[MAX_NAME_LENGTH], Stack *stack_name_Routine)
 {
-  if (strcmp(return_TYPE_Cst_Idf(nomVar, top(stack_name_Routine)), return_TYPE_Cst_Idf(nomRoutine, top(stack_name_Routine))))
+  if (strcmp(return_TYPE_Cst_Idf(nomVar, top(stack_name_Routine)), return_TYPE_Cst_Idf(nomRoutine, top(stack_name_Routine))) == 0)
   {
-    if (!strcmp(return_TYPE_Cst_Idf(nomVar, top(stack_name_Routine)), "REAL"))
+    if (strcmp(return_TYPE_Cst_Idf(nomVar, top(stack_name_Routine)), "REAL") != 0)
     {
-      if (strcmp(return_TYPE_Cst_Idf(nomRoutine, top(stack_name_Routine)), "INTEGER"))
+      if (strcmp(return_TYPE_Cst_Idf(nomRoutine, top(stack_name_Routine)), "INTEGER") == 0)
       {
         semantiqueError("Incompatibile types\n");
       }

@@ -31,7 +31,6 @@ INTEGER X, Z;
 CHARACTER C ;
 LOGICAL D;
 INTEGER MAT DIMENSION (8, 95);
-INTEGER B,A;
 
 B =  5-(6);
 A =  (B * 5);
@@ -56,6 +55,8 @@ INTEGER MAT DIMENSION (30,10);
 LOGICAL MATLOG DIMENSION (50);
 LOGICAL TAB DIMENSION (50);
 REAL S ; 
+A = 5 ; 
+X = TRUE ; 
 B = A;
 A = MAT(5,4) + (B * 5) ;
 C = "L3 acad c meli bila";
@@ -67,9 +68,10 @@ WRITE ("La Valeur de A est ", A, "et i am heppy yaaay",80+ 96  +MAT(10,3),"io");
 
 DOWHILE (A.LT.10) 
 A = A + 1; 
-IF ((A.EQ.( 123)).OR.(C.EQ.TRUE)) THEN A = 5 + X ; 
+IF ((A.EQ.( 123)).OR.(C.EQ.TRUE)) THEN A = 5 + B ; 
 ELSE 
 
+A = 655- 852 /B + 45 ; 
 A = CALL nomfonction1 (50 , -60 , pi , TAB(0), MAT(7,9),A);
 ENDIF
 A = A + B; 
@@ -77,8 +79,8 @@ A = A + B;
 ENDDO;
 
 IF(((MAT(1,2).NE.pi).OR.TRUE).NE.(FALSE.OR.TRUE)) THEN A=A-MAT(8,8); ENDIF
-IF(A+B.LT.B-C.OR.(A+B.LT.B-C.AND.TRUE)) THEN A=A-MAT(8,8); ENDIF
-IF(A+B.LT.B-C) THEN A=A-MAT(8,8); ENDIF
+IF(A+B.LT.B- 1.OR.(A+B.LT.B-A.AND.TRUE)) THEN A=A-MAT(8,8); ENDIF
+IF(A+B.LT.B- 6.23) THEN A=A-MAT(8,8); ENDIF
 
 IF(A+B.AND.B) THEN A=A-MAT(8,8); ENDIF
 IF((TRUE).AND.B) THEN A=A-MAT(8,8); ENDIF
@@ -96,7 +98,7 @@ ELSE
 A = A +( B); 
  ENDIF
 
-A = TAB(5) + D - 89 ; 
+A = TAB(5) + B/A/(A + B - 89) - 89 ; 
 EQUIVALENCE (A, S, MAT(5,6)), (D, X); 
 
 END
