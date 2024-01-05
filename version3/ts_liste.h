@@ -285,6 +285,40 @@ void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VA
   }
   printf("ERROR : cant change the value node doesnt exist"); // Node with the specified name does not exist
 }
+
+int return_taille_character(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
+{
+  char *type_idf = return_TYPE_Cst_Idf(name, scope);
+  int result = 0;
+
+  // Declare loop variable outside the loop
+  int i = 0;
+
+  // Iterate through each character in the string
+  while (type_idf[i] != '\0')
+  {
+    // Skip non-digit characters
+    while (type_idf[i] != '\0' && (type_idf[i] < '0' || type_idf[i] > '9'))
+    {
+      ++i;
+    }
+
+    // Break the loop if a non-digit character is encountered
+    if (type_idf[i] == '\0')
+    {
+      break;
+    }
+
+    // Update the result by multiplying it by 10 and adding the new digit
+    result = result * 10 + (type_idf[i] - '0');
+
+    // Move to the next character
+    ++i;
+  }
+
+  return result;
+}
+
 void add_SCOPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
   elt_Cst_Idf_node *current = L_Cst_Idf->head;
@@ -719,7 +753,7 @@ void check_Type_char(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
 {
   if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "") != 0)
   {
-    if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "CHARACTER") != 0)
+    if (strstr(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "CHARACTER") == NULL)
       semantiqueError("Incompatible types\n");
   }
 }
@@ -874,4 +908,17 @@ void check_Type_operateurs(Stack *stack_variable, Stack *stack_name_Routine, boo
     semantiqueError("Cette operation ne se fait pas au type LOGICAL");
   }
   push(stack_variable, op1);
+}
+
+void check_taille_character(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
+{
+  if (strstr(return_TYPE_Cst_Idf(name, scope), "CHARACTER ") != NULL)
+  {
+    if (strlen(return_VALUE_SIZE_Cst_Idf(name, scope)) - 2 > return_taille_character(name, scope))
+    {
+      char str1[] = "La taille du character est de max ";
+      strcat(str1, intToString(return_taille_character(name, scope)));
+      semantiqueError(str1);
+    }
+  }
 }

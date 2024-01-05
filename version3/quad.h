@@ -57,11 +57,11 @@ void afficher_qdr()
   }
 }
 
-void quadExpression(Stack *stack_variable, char opr[MAX_STRING_SIZE], char *temp)
+void quadExpression(Stack *stack_variable, char opr[MAX_STRING_SIZE])
 {
   char op1[MAX_STRING_SIZE];
   char op2[MAX_STRING_SIZE];
-
+  char temp[10];
   strcpy(temp, "temp");
   strcpy(op2, top(stack_variable));
   pop(stack_variable);

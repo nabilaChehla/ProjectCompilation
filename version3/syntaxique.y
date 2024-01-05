@@ -117,7 +117,7 @@ DEC_TAB: type idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante       
         |CHARACTER_mc idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante   {checkDoubleDeclaration($2,stack_name_Routine);
                                                                                     if(strcmp(save_type_operateur,"INTEGER"))semantiqueError("the Size 2 must be an integer");
                                                                                     add_SCOPE_Cst_Idf($2,top(stack_name_Routine));
-                                                                                    add_TYPE_Cst_Idf($2,"CHARACTER",top(stack_name_Routine));
+                                                                                    add_TYPE_Cst_Idf($2,"CHARACTER 1",top(stack_name_Routine));
                                                                                     add_CODE_Cst_Idf($2,code,top(stack_name_Routine));
                                                                                     Traitement_taille_TAB_MAT($2,taille1,taille2,save_type_operateur,stack_name_Routine,SiIDF1);
                                                                                     ajour_quad(tab_dec,1,taille1);
@@ -127,22 +127,22 @@ DEC_TAB: type idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante       
 ;
 
 LIST_PAR_TAB : ver EXP { strcpy(taille2,top(stack_variable));pop(stack_variable); strcpy(code,"MATRICE");if(!checkTaille(taille2) && strcmp(strg,"INTEGER")){ semantiqueError("the size must be an integer");}
- tab_dec=qc; quadr("BOUNDS","",taille2,"vide");} 
-              |        { strcpy(code,"TABLEAU");tab_dec=qc;quadr("BOUNDS","","vide","vide");}
+                        tab_dec=qc; quadr("BOUNDS","",taille2,"vide");} 
+              |         { strcpy(code,"TABLEAU");tab_dec=qc;quadr("BOUNDS","","vide","vide");}
               ;
 DEC_AFF: aff cst_int  {push(stack_value, intToString($2));push(stack_variable,intToString($2))} 
        | aff cst_real {push(stack_value, floatToString($2));push(stack_variable,floatToString($2)) } 
        | aff  TRUE_mc {push(stack_value, $2);push(stack_variable,$2);  }
        | aff FALSE_mc {push(stack_value, $2);push(stack_variable,$2);  }
 ;
-DEC_CHAR :    idf multip cst_int ver   DEC_CHAR            {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
-          |   idf multip cst_int                           {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
-          |   idf multip cst_int DEC_CHAR_AFF              {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
-          |   idf multip cst_int DEC_CHAR_AFF ver DEC_CHAR {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
-          |   idf                                          {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
-          |   idf ver DEC_CHAR                             {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
-          |   idf DEC_CHAR_AFF                             {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
-          |   idf DEC_CHAR_AFF ver   DEC_CHAR              {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER",top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+DEC_CHAR :    idf multip cst_int ver   DEC_CHAR            {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));strcpy(strg,"CHARACTER ");strcat(strg,intToString($3));add_TYPE_Cst_Idf($1, strg,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf multip cst_int                           {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));strcpy(strg,"CHARACTER ");strcat(strg,intToString($3));add_TYPE_Cst_Idf($1, strg,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf multip cst_int DEC_CHAR_AFF              {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));strcpy(strg,"CHARACTER ");strcat(strg,intToString($3));add_TYPE_Cst_Idf($1, strg,top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));check_taille_character($1,top(stack_name_Routine));}
+          |   idf multip cst_int DEC_CHAR_AFF ver DEC_CHAR {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));strcpy(strg,"CHARACTER ");strcat(strg,intToString($3));add_TYPE_Cst_Idf($1, strg,top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));check_taille_character($1,top(stack_name_Routine));}
+          |   idf                                          {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER 1",top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf ver DEC_CHAR                             {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER 1",top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));}
+          |   idf DEC_CHAR_AFF                             {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER 1",top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));check_taille_character($1,top(stack_name_Routine));}
+          |   idf DEC_CHAR_AFF ver   DEC_CHAR              {checkDoubleDeclaration($1,stack_name_Routine);add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_TYPE_Cst_Idf($1, "CHARACTER 1",top(stack_name_Routine));add_VALUE_Cst_Idf($1,top(stack_value),top(stack_name_Routine));pop(stack_value);add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));check_taille_character($1,top(stack_name_Routine));}
 ;
 
 DEC_CHAR_AFF: aff character  {push(stack_value,$2);push(stack_variable,$2);}
@@ -178,6 +178,7 @@ Affectation: idf aff EXP pvg             {check_idf_Variable_Existe($1,stack_nam
                                            check_Type_char($1,stack_name_Routine);
                                            quadr(":=",$3,"vide",$1);
                                            add_VALUE_Cst_Idf($1,$3,top(stack_name_Routine));
+                                           check_taille_character($1,top(stack_name_Routine));
                                           }
             |TAB_PAR aff EXP pvg          {
                                            checkType_affectation_TAB(TAB_reference,save_type_operateur,stack_name_Routine,cmpt);
@@ -235,13 +236,13 @@ liste_parametres_Eq:liste_parametres_Eq ver EXP        { cmpt=0; quadArgument(st
 ;
 EXP :EXPRESSION {divZero=false; }
 ;
-EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1 {divZero=false;check_Type_operateurs(stack_variable,stack_name_Routine,true);quadExpression(stack_variable,"+",temp);}
-           | EXPRESSION moins SUITE_EXPRESSION_1{divZero=false;check_Type_operateurs(stack_variable,stack_name_Routine,true);quadExpression(stack_variable,"-",temp);}
+EXPRESSION:  EXPRESSION plus SUITE_EXPRESSION_1 {divZero=false;check_Type_operateurs(stack_variable,stack_name_Routine,true);quadExpression(stack_variable,"+");}
+           | EXPRESSION moins SUITE_EXPRESSION_1{divZero=false;check_Type_operateurs(stack_variable,stack_name_Routine,true);quadExpression(stack_variable,"-");}
            | SUITE_EXPRESSION_1                
 ;
 
-SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2{divZero=false;check_Type_operateurs(stack_variable,stack_name_Routine,true);quadExpression(stack_variable,"*",temp);}
-                   | SUITE_EXPRESSION_1 divis suiteDiv           {divZero=false;check_Type_operateurs(stack_variable,stack_name_Routine,true);quadExpression(stack_variable,"/",temp);}
+SUITE_EXPRESSION_1:  SUITE_EXPRESSION_1 multip SUITE_EXPRESSION_2{divZero=false;check_Type_operateurs(stack_variable,stack_name_Routine,true);quadExpression(stack_variable,"*");}
+                   | SUITE_EXPRESSION_1 divis suiteDiv           {divZero=false;check_Type_operateurs(stack_variable,stack_name_Routine,true);quadExpression(stack_variable,"/");}
                    | moins SUITE_EXPRESSION_2                    {divZero=false;check_Type_operateurs(stack_variable,stack_name_Routine,false);quadOpUnaire(stack_variable,"Moins Unaire")}
                    | SUITE_EXPRESSION_2                                       
 ;
@@ -300,26 +301,26 @@ TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {check_idf_Matrice_E
                                                             }
 
 ;
-COND:   COND  OR_mc   SUITE_COND_1                {quadExpression(stack_variable,"OR",temp);}
+COND:   COND  OR_mc   SUITE_COND_1                {quadExpression(stack_variable,"OR");}
       | SUITE_COND_1
 ;
-SUITE_COND_1:  SUITE_COND_1  AND_mc  SUITE_COND_2 {quadExpression(stack_variable,"AND",temp);}
+SUITE_COND_1:  SUITE_COND_1  AND_mc  SUITE_COND_2 {quadExpression(stack_variable,"AND");}
              | SUITE_COND_2
 ;
 SUITE_COND_2:   EXPRESSION_BOOL
               | COND_SIMPLE 
 ;
-COND_SIMPLE :EXPRESSION_BOOL  point LT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LT",temp);}
-            |EXPRESSION_BOOL  point GT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GT",temp);}
-            |EXPRESSION_BOOL  point NE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"NE",temp);}
-            |EXPRESSION_BOOL  point LE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LE",temp);}
-            |EXPRESSION_BOOL  point GE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GE",temp);}
-            |EXPRESSION_BOOL  point EQ_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"EQ",temp);}
+COND_SIMPLE :EXPRESSION_BOOL  point LT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LT");}
+            |EXPRESSION_BOOL  point GT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GT");}
+            |EXPRESSION_BOOL  point NE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"NE");}
+            |EXPRESSION_BOOL  point LE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LE");}
+            |EXPRESSION_BOOL  point GE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GE");}
+            |EXPRESSION_BOOL  point EQ_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"EQ");}
 ;
 EXPRESSION_BOOL : EXP                                                          {cmpt=0;} 
                 | LOGICAL_VALUE                                                {pop(stack_value);}
-                | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante         {quadExpression(stack_variable,"OR",temp);}
-                | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante{quadExpression(stack_variable,"AND",temp);} 
+                | par_ouvrante COND  OR_mc   SUITE_COND_1 par_fermante         {quadExpression(stack_variable,"OR");}
+                | par_ouvrante  SUITE_COND_1  AND_mc  SUITE_COND_2 par_fermante{quadExpression(stack_variable,"AND");} 
                 | par_ouvrante COND_SIMPLE par_fermante                                   
                 | par_ouvrante LOGICAL_VALUE par_fermante                      {pop(stack_value);}
 ;

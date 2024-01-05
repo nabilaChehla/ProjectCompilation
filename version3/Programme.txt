@@ -1,0 +1,48 @@
+PROGRAM HelloAcad
+% Déclarations
+REAL A,B,C  ; 
+INTEGER Y ; 
+LOGICAL L ; 
+CHARACTER C ;
+INTEGER TAB DIMENSION (10) ; 
+REAL MAT DIMENSION (10,10) ;
+LOGICAL TABLOG DIMENSION (10) ; 
+
+% TEST Double declaration -----  
+LOGICAL A ; 
+
+
+% TEST utilisation variable non initialisé -----  
+A = B * 5 ;
+
+% TEST DEVISION / 0 ----------------------------  
+%A = 5/0+ 9;
+%A = 5/B ;
+
+% TEST d'utilisation idf non déclaree----------
+A = var ; 
+A = CALL A(5,B); 
+A = MAT(5); 
+
+% Test compatibilite des types-----------------
+Y = 2.2 ; 
+A = Y ; 
+Y = A ;
+C = L ; 
+L = CALL routine2(B);
+
+% Test signature de routine -------------------
+A = CALL routine1(B,2,TAB(2));
+
+
+% Test Taille de Tableau ----------------------
+A = TAB(10);
+A = TAB (-1); 
+A = MAT (10,12); 
+A = MAT (-10,12);
+
+% Utilisation de CHARACTER ou LOGICAL dans expresion
+A = 5 + C ; 
+A = 10.2 * TABLOG(2); 
+
+END
