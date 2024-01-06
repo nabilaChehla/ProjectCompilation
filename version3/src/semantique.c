@@ -4,8 +4,9 @@
 #include <stdbool.h>
 #include <math.h>
 #include <ctype.h>
-#include "tools.h"
-#include "ts_liste.h"
+#include "../include/semantique.h"
+#include "modules/tools.c"
+#include "modules/ts_liste.c"
 
 int semantiqueError(char *msg)
 {

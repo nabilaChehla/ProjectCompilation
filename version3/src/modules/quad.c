@@ -3,19 +3,9 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+#include "../include/tools.h"
+#include "../include/quad.h"
 
-typedef struct qdr
-{
-
-  char oper[100];
-  char op1[100];
-  char op2[100];
-  char res[100];
-
-} qdr;
-qdr quad[1000];
-extern int qc;
-extern int actTemp;
 void quadr(char opr[], char op1[], char op2[], char res[])
 {
 

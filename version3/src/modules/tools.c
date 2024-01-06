@@ -3,21 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
-
-#define MAX_STRING_SIZE 50
-
-//----------------------------------------------------------//
-
-typedef struct Node
-{
-    char data[MAX_STRING_SIZE];
-    struct Node *next;
-} Node;
-
-typedef struct
-{
-    Node *top;
-} Stack;
+#include "../include/tools.h"
 
 void push(Stack *stack, const char *value)
 {

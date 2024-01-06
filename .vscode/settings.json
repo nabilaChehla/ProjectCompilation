@@ -59,6 +59,13 @@
   "files.associations": {
     "stdlib.h": "c",
     "stdbool.h": "c",
-    "ctype.h": "c"
-  }
+    "ctype.h": "c",
+    "semantique.h": "c",
+    "math.h": "c",
+    "stdio.h": "c",
+    "tools.h": "c",
+    "ts_liste.h": "c",
+    "quad.h": "c"
+  },
+  "C_Cpp.dimInactiveRegions": false
 }

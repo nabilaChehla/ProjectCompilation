@@ -3,8 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "semantique.h"
-#include "quad.h"
+#include "modules/quad.c"
+#include "semantique.c"
+
 
  extern  nb_ligne;
  extern Col;

@@ -4,47 +4,8 @@
 #include <stdbool.h>
 #include <math.h>
 #include <ctype.h>
-
-// Constants
-#define MAX_NAME_LENGTH 50
-#define MAX_TYPE_LENGTH 50
-#define MAX_CODE_LENGTH 50
-#define MAX_VAL_LENGTH 50
-#define INITIAL_CAPACITY 50
-#define MAX_STRING_SIZE 50
-#define MAX_SCOPE_LENGTH 50
-
-int nb_ligne = 1;
-int Col = 1;
-int actTemp = 1;
-char fileName[50];
-
-typedef struct elt_Cst_Idf_node
-{
-  char name[MAX_NAME_LENGTH];
-  char type[MAX_TYPE_LENGTH];
-  char val[MAX_VAL_LENGTH];
-  char code[MAX_CODE_LENGTH];
-  char scope[MAX_SCOPE_LENGTH];
-  struct elt_Cst_Idf_node *next;
-} elt_Cst_Idf_node;
-
-typedef struct elt_Sep_MotCle_node
-{
-  char name[MAX_NAME_LENGTH];
-  char code[MAX_CODE_LENGTH];
-  struct elt_Sep_MotCle_node *next;
-} elt_Sep_MotCle_node;
-
-typedef struct list_Cst_Idf
-{
-  elt_Cst_Idf_node *head;
-} list_Cst_Idf;
-
-typedef struct list_Sep_MotCle
-{
-  elt_Sep_MotCle_node *head;
-} list_Sep_MotCle;
+#include "../include/ts_liste.h"
+#include "../include/tools.h"
 
 list_Cst_Idf *L_Cst_Idf;
 list_Sep_MotCle *L_Sep_MotCle;
