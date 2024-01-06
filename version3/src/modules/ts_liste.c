@@ -211,7 +211,11 @@ char *return_TYPE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char scope[MAX
   {
     if (strcmp(current->name, name) == 0 && (strcmp(current->scope, scope) == 0 || strcmp(current->code, "ROUTINE") == 0))
     {
-      return current->type;
+      if (strstr(current->type, "CHARACTER") != NULL)
+        return "CHARACTER";
+
+      else
+        return current->type;
     }
     current = current->next;
   }

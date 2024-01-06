@@ -6,15 +6,16 @@ A = 3 ;
 
 % TEST utilisation variable non initialise 
 B = 5 * 6 / C ;
-
+WRITE(C*5);
 % TEST : derniere affectation n'est pas le nom de la routine
-fonction = Z1 ; 
+fonction1 = A ; %
 ENDR 
 %___________________________________________________________
 REAL ROUTINE fonction2 (X,Y)
 INTEGER B ;
 INTEGER TAB DIMENSION (10) ; 
 B = 0 ; 
+X = 3.3;
 % TEST DEVISION / 0 ----------------------------  
 B = 5/0+ 9 +X*Y;
 B = 5/B ;
@@ -23,46 +24,40 @@ fonction2 = B * X ;
 ENDR 
 %___________________________________________________________
 
-
-CHARACTER ROUTINE nomfonction3 (A,B)
-INTEGER X3 , Z3 ; 
-X3 = 3 ; 
-%nomfonction3 =x3/ 25*36 + 528+ -5744+ -5  ;
-nomfonction3= "NILO"; 
-ENDR 
-
-CHARACTER ROUTINE nomfonction3 (A,B)
-INTEGER X3 , Z3 ; 
-X3 = 3 ; 
-%nomfonction3 =x3/ 25*36 + 528+ -5744+ -5  ;
-nomfonction3= "NILO"; 
-ENDR 
-
 PROGRAM HelloAcad
 % Déclarations
-REAL A,B,C  ; 
+REAL A,B  ; 
 INTEGER Y ; 
 LOGICAL L ; 
 CHARACTER C ;
 CHARACTER str *5 ;
 INTEGER TAB DIMENSION (10) ; 
 REAL MAT DIMENSION (10,10) ;
-LOGICAL TABLOG DIMENSION (10) ; 
+LOGICAL TABLOG DIMENSION (10) ;
+CHARACTER MATchar DIMENSION (10,10) ; 
+L= TRUE ; 
+Y= 5 ;
+B= 0; 
 
 % TEST d'utilisation idf non déclaree----------
 A = X ; 	   %variable non declare
-A = CALL A(5,B);   %Routine non declare
+A = CALL A(5,2);   %Routine non declare
 A = MATRICE(5);    %MATRICE non declare
+fonction1 =3  ;    %MATRICE non declare
+
+%Movaise utilisation de la matrice---------
+A = MAT(5);       
 
 % Test compatibilite des types-----------------
 Y = 2.2 ; 
-A = Y ; 
+A = Y ; % ACCEPTE
 Y = A ;
 C = L ; 
-L = CALL routine2(B);
+C = MAT(0,0);
+L = CALL fonction1(Y,A,B);  % HEREEEEEEEEEEEEEEEEEEEEEEE
 
 % Test signature de routine -------------------
-A = CALL fonction1(B,2,TAB(2));
+A = CALL fonction1(B,TAB(2));
 
 
 % Test Taille de Tableau ----------------------
@@ -73,9 +68,11 @@ A = MAT (-10,12);
 
 % Utilisation de CHARACTER ou LOGICAL dans expresion
 A = 5 + C ; 
+A = 5 * MATchar(0,0) ;
 A = 10.2 * TABLOG(2); 
 
 % Test :valeur de character ne depasse pas length 
+str = "ACAD" ; 
 str = "L3 ACAD c Groupe 2" ; 
 
 END

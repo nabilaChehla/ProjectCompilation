@@ -375,8 +375,7 @@ void check_Type_operateurs(Stack *stack_variable, Stack *stack_name_Routine, boo
     {
         strcpy(op2, extractTableName(op2));
     }
-
-    if ((binaire && (idf_exist(op1, top(stack_name_Routine))) && (strcmp(return_TYPE_Cst_Idf(op1, top(stack_name_Routine)), "CHARACTER") == 0)) || ((idf_exist(op2, top(stack_name_Routine))) && strcmp(return_TYPE_Cst_Idf(op2, top(stack_name_Routine)), "CHARACTER") == 0))
+    if (((binaire && (idf_exist(op1, top(stack_name_Routine)) && strstr(return_TYPE_Cst_Idf(op1, top(stack_name_Routine)), "CHARACTER ") != NULL))) || ((idf_exist(op2, top(stack_name_Routine))) && (strstr(return_TYPE_Cst_Idf(op2, top(stack_name_Routine)), "CHARACTER ") != NULL)))
     {
         semantiqueError("Cette operation ne se fait pas au type CHARACTER");
     }
