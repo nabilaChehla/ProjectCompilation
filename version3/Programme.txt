@@ -1,3 +1,26 @@
+INTEGER ROUTINE nomfonction1 (A,B)
+INTEGER X1 , Z1 ; 
+X1 = 3 ; 
+Z1 = 5 * 6 / X1 ;
+ 
+% TEST : derniere affectation n'est pas le nom de la routine
+nomfonction = Z1 ; 
+ENDR 
+
+CHARACTER ROUTINE nomfonction3 (A,B)
+INTEGER X3 , Z3 ; 
+X3 = 3 ; 
+%nomfonction3 =x3/ 25*36 + 528+ -5744+ -5  ;
+nomfonction3= "NILO"; 
+ENDR 
+
+CHARACTER ROUTINE nomfonction3 (A,B)
+INTEGER X3 , Z3 ; 
+X3 = 3 ; 
+%nomfonction3 =x3/ 25*36 + 528+ -5744+ -5  ;
+nomfonction3= "NILO"; 
+ENDR 
+
 PROGRAM HelloAcad
 % Déclarations
 REAL A,B,C  ; 

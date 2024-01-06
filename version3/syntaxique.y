@@ -3,8 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ts_liste.h"
+#include "semantique.h"
 #include "quad.h"
+
  extern  nb_ligne;
  extern Col;
  int qc=0;
@@ -109,7 +110,7 @@ DEC_TAB: type idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante       
                                                                                     add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));
                                                                                     add_CODE_Cst_Idf($2,code,top(stack_name_Routine));
                                                                                     strcpy(taille1,top(stack_variable));
-                                                                                    Traitement_taille_TAB_MAT($2,taille1,taille2,save_type_operateur,stack_name_Routine,SiIDF1);
+                                                                                    Traitement_taille_TAB_MAT($2,taille1,taille2,save_type_operateur,stack_name_Routine,cmpt,code);                                                                                    ajour_quad(tab_dec,1,taille1);
                                                                                     pop(stack_type);
                                                                                     ajour_quad(tab_dec,1,taille1);
                                                                                     pop(stack_variable);
@@ -122,7 +123,7 @@ DEC_TAB: type idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante       
                                                                                     add_TYPE_Cst_Idf($2,"CHARACTER 1",top(stack_name_Routine));
                                                                                     add_CODE_Cst_Idf($2,code,top(stack_name_Routine));
                                                                                     strcpy(taille1,top(stack_variable));
-                                                                                    Traitement_taille_TAB_MAT($2,taille1,taille2,save_type_operateur,stack_name_Routine,SiIDF1);
+                                                                                    Traitement_taille_TAB_MAT($2,taille1,taille2,save_type_operateur,stack_name_Routine,cmpt,code);
                                                                                     ajour_quad(tab_dec,1,taille1);
                                                                                     pop(stack_variable);                                                                         quadr("ADEC",$2,"vide","vide");
                                                                                     cmpt=0;
@@ -132,7 +133,7 @@ DEC_TAB: type idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante       
 LIST_PAR_TAB : ver EXP { strcpy(taille2,top(stack_variable));
                         pop(stack_variable); 
                         strcpy(code,"MATRICE");
-                        if(!checkTaille(taille2) && strcmp(strg,"INTEGER"))
+                        if(!checkTaille(taille2,cmpt,"MATRICE") && strcmp(strg,"INTEGER"))
                               { semantiqueError("the size must be an integer");}
                         tab_dec=qc;
                         quadr("BOUNDS","",taille2,"vide");} 
