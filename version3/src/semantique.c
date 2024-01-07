@@ -167,11 +167,15 @@ void checkType_affectation_idf(char idf[MAX_NAME_LENGTH], char save_type_operate
 { // checker qu'on a un type inserre dans TS car les parametres de fonctuion n'ont pas de type donc on ne fait pas le traitement
     if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "") != 0)
     {
-        if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), save_type_operateur) && cmpt == 2)
+        printf("typeeeeeee %d", cmpt);
+
+        if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), save_type_operateur) != 0 && (cmpt == 2 || cmpt == 1))
         {
-            if (!strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "REAL"))
+
+            if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "REAL") == 0)
             {
-                if (strcmp(save_type_operateur, "INTEGER"))
+
+                if (strcmp(save_type_operateur, "INTEGER") != 0)
                 {
                     printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, return_TYPE_Cst_Idf(idf, top(stack_name_Routine)));
                     semantiqueError("Incompatibile types\n");
@@ -179,6 +183,7 @@ void checkType_affectation_idf(char idf[MAX_NAME_LENGTH], char save_type_operate
             }
             else
             {
+
                 printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, return_TYPE_Cst_Idf(idf, top(stack_name_Routine)));
                 semantiqueError("Incompatibile types\n");
             }
@@ -283,88 +288,24 @@ bool checkBounds(char taille[])
     }
 }
 
-void Traitement_taille_TAB_MAT(char idf[MAX_NAME_LENGTH], char taille1[], char taille2[], char save_type_operateur[], Stack *stack_name_Routine, int cmpt, char code[])
+void Traitement_taille_DEC_TAB_MAT(char *idf, char taille1[], char taille2[], Stack *stack_name_Routine)
 {
-    if (!checkTaille(taille1, cmpt, code) && strcmp(save_type_operateur, "INTEGER"))
+    printf("Debug: taille1='%s', taille2='%s'\n", taille1, taille2);
+    int taille1_int = atoi(taille1);
+    int taille2_int = atoi(taille2);
+
+    printf("Debug: taille1_int=%d, taille2_int=%d\n", taille1_int, taille2_int);
+
+    if (taille1_int < 1)
     {
-        semantiqueError("the size 2 must be an integer");
-    }
-    if (!strcmp(return_CODE_Cst_Idf(idf, top(stack_name_Routine)), "MATRICE"))
-    {
-
-        if (checkTaille(taille1, cmpt, code) && checkTaille(taille2, cmpt, code))
-        {
-            add_Taille_Tab_Mat(idf, "-", "-", stack_name_Routine);
-        }
-        else
-        {
-            if (checkTaille(taille1, cmpt, code) && !checkTaille(taille2, cmpt, code))
-            {
-
-                if (!isdigit(taille2[0]))
-                {
-                    add_Taille_Tab_Mat(idf, "-", return_VALUE_SIZE_Cst_Idf(taille2, top(stack_name_Routine)), stack_name_Routine);
-                }
-                else
-                {
-                    add_Taille_Tab_Mat(idf, "-", taille2, stack_name_Routine);
-                }
-            }
-            else
-            {
-                if (!checkTaille(taille1, cmpt, code) && !checkTaille(taille2, cmpt, code))
-                {
-
-                    if (isdigit(taille1[0]))
-                    {
-                        if (isdigit(taille2[0]))
-                        {
-                            add_Taille_Tab_Mat(idf, taille1, taille2, stack_name_Routine);
-                        }
-                        else
-                        {
-                            add_Taille_Tab_Mat(idf, taille1, return_VALUE_SIZE_Cst_Idf(taille2, top(stack_name_Routine)), stack_name_Routine);
-                        }
-                    }
-                    else
-                    {
-                        if (isdigit(taille2[0]))
-                        {
-                            add_Taille_Tab_Mat(idf, return_VALUE_SIZE_Cst_Idf(taille1, top(stack_name_Routine)), taille2, stack_name_Routine);
-                        }
-                        if (!isdigit(taille2[0]))
-                        {
-                            add_Taille_Tab_Mat(idf, return_VALUE_SIZE_Cst_Idf(taille1, top(stack_name_Routine)), return_VALUE_SIZE_Cst_Idf(taille2, top(stack_name_Routine)), stack_name_Routine);
-                        }
-                    }
-                }
-                else if (!checkTaille(taille1, cmpt, code) && checkTaille(taille2, cmpt, code))
-                {
-                    if (!isdigit(taille1[0]))
-                    {
-                        add_Taille_Tab_Mat(idf, return_VALUE_SIZE_Cst_Idf(taille1, top(stack_name_Routine)), "-", stack_name_Routine);
-                    }
-                    else
-                    {
-                        add_Taille_Tab_Mat(idf, taille1, "-", stack_name_Routine);
-                    }
-                }
-            }
-        }
+        semantiqueError("La taille du Tableau/Matrice doit être strictement positive");
     }
     else
     {
-        if (checkTaille(taille1, cmpt, code))
-        {
-            add_Taille_Tab_Mat(idf, "-", "0", stack_name_Routine);
-        }
+        if (taille2_int < 1 && strcmp(return_CODE_Cst_Idf(idf, top(stack_name_Routine)), "MATRICE") == 0)
+            semantiqueError("La taille du Tableau/Matrice doit être strictement positive");
         else
-        {
-            if (!isdigit(taille1[0]))
-                add_Taille_Tab_Mat(idf, return_VALUE_SIZE_Cst_Idf(taille1, top(stack_name_Routine)), "0", stack_name_Routine);
-            else
-                add_Taille_Tab_Mat(idf, taille1, "0", stack_name_Routine);
-        }
+            add_Taille_Tab_Mat(idf, taille1, taille2, stack_name_Routine);
     }
 }
 

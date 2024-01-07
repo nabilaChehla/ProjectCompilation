@@ -9,7 +9,7 @@ C = FALSE ;
 DOWHILE (A.LT.10)
    A = A + 1;
    IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - 5 ;
-	MAT(1,0) =MAT(1,0) * A + (B * 7);
+	MAT(0,0) =MAT(1,0) * A + (B * 7);
 	B = 30*3;
    ELSE A = A + B;
    ENDIF
@@ -17,11 +17,16 @@ ENDDO;
 
 fonction1 = A ; 
 ENDR 
+
 % Test Quadruplets de Read Write Equivalence:______________
 
 REAL ROUTINE fonction2 (X,Y,Z)
-INTEGER B , A; 
+INTEGER B  , A = -3; 
+REAL R =1.1; 
 INTEGER MAT DIMENSION (100,100) ;
+%INTEGER MATNeg DIMENSION (5,R) ;
+%INTEGER MATNeg DIMENSION (-1,3) ;
+%INTEGER MATNeg DIMENSION (A,3) ;
 
 READ(A); 
 READ(MAT(5,2));
@@ -35,20 +40,21 @@ ENDR
 
 PROGRAM HelloAcad
 % Déclarations
-REAL A,B,C  ; 
-INTEGER Y , Z ; 
-INTEGER TAB DIMENSION (10) ; 
+REAL A,B,C = 6.3  ; 
+INTEGER Y , Z=-6 ; 
+%INTEGER TAB DIMENSION (C) ; 
+INTEGER TAB DIMENSION (Z) ;
 CHARACTER MAT DIMENSION (10,10) ; 
 CHARACTER char *5;
 
 % Test Quadruplets de Affectation + expression:
 A = 5 ; 
-Y = 20; 
+Y = 50; 
 B = A*2 + Y*Y+ 50 /6; 
 C = 2.25; 
 char="Hi";
 
 % Test Quadruplets de CALL:--------------------
-A =CALL fonction2(MAT(1,3),A, C);
+A =CALL fonction2(TAB(Y),A, C);
 
 END
