@@ -253,9 +253,20 @@ void add_VALUE_Cst_Idf(const char name[MAX_NAME_LENGTH], const char value[MAX_VA
 
 int return_taille_character(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
-  char *type_idf = return_TYPE_Cst_Idf(name, scope);
-  int result = 0;
+  elt_Cst_Idf_node *current = L_Cst_Idf->head;
+  char type_idf[MAX_STRING_SIZE];
+  bool found = false;
 
+  while (current != NULL && !found)
+  {
+    if (strcmp(current->name, name) == 0 && (strcmp(current->scope, scope) == 0) && (strcmp(current->code, "VARIABLE") == 0) && (strstr(current->type, "CHARACTER") != NULL))
+    {
+      strcpy(type_idf, current->type);
+      found = true;
+    }
+    current = current->next;
+  }
+  int result = 0;
   // Declare loop variable outside the loop
   int i = 0;
 

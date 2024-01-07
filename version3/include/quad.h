@@ -26,6 +26,7 @@ typedef struct qdr
   char res[100];
 
 } qdr;
+
 qdr quad[1000];
 extern int qc;
 extern int actTemp;
@@ -35,7 +36,7 @@ void ajour_quad(int num_quad, int colon_quad, char val[]);
 void afficher_qdr();
 void quadExpression(Stack *stack_variable, char opr[MAX_STRING_SIZE]);
 void quadOpUnaire(Stack *stack_variable, char opr[MAX_STRING_SIZE]);
-void Tab_idfInStack_Quad(Stack *stack_variable, const char idf[MAX_NAME_LENGTH], int taille1, int taille2);
+void Tab_idfInStack_Quad(Stack *stack_variable, const char idf[MAX_NAME_LENGTH], char taille1[], char taille2[]);
 void quadParametre(Stack *stack_variable, int nbParametres);
 void quadArgument(Stack *stack_variable);
 void quadRead(char idf_Argument[MAX_NAME_LENGTH]);

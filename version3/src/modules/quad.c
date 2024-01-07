@@ -76,16 +76,16 @@ void quadOpUnaire(Stack *stack_variable, char opr[MAX_STRING_SIZE])
   push(stack_variable, temp);
 }
 
-void Tab_idfInStack_Quad(Stack *stack_variable, const char idf[MAX_NAME_LENGTH], int taille1, int taille2)
+void Tab_idfInStack_Quad(Stack *stack_variable, const char idf[MAX_NAME_LENGTH], char taille1[], char taille2[])
 {
   char SaveTabIdf[MAX_STRING_SIZE];
   strcpy(SaveTabIdf, idf);
   strcat(SaveTabIdf, "(");
-  strcat(SaveTabIdf, intToString(taille1));
-  if (taille2 != -1)
+  strcat(SaveTabIdf, taille1);
+  if (strcmp(taille1,"-1")!=0)
   {
     strcat(SaveTabIdf, ",");
-    strcat(SaveTabIdf, intToString(taille2));
+    strcat(SaveTabIdf, taille2);
   }
   strcat(SaveTabIdf, ")");
 

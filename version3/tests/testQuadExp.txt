@@ -15,20 +15,20 @@ PROGRAM HelloAcad
 % Déclarations
 REAL A=0,B = 9,C =5.0  ; 
 REAL Y =5.3 ;
-INTEGER S=6,E=7,F=8,I,J,K;
+INTEGER S=666,E=7,F=8,I,J,K,temp=4;
 CHARACTER P ; 
 INTEGER TAB DIMENSION (9+ 99) ; 
 REAL MAT DIMENSION (B+ 7.9 , 9) ;
 REAL MAT1 DIMENSION (7,7.9+E) ;
-INTEGER TAB3 DIMENSION (7.0+ B) ;
+INTEGER TAB3 DIMENSION (700) ;
 
 % Instructions
+MAT1(4,F)=6;
+MAT1(E,4)=6;
+%TAB3(A)=6;
+TAB(8)=6;
 
-
-TAB3(10000)=6;
-MAT(5777,8)=6;
-MAT1(6,8)=6;
-P = "I am wonderful";
+P = "I";
 
 IF(A.EQ.B) THEN
     A = A - B ;

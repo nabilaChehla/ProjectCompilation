@@ -75,5 +75,4 @@ bool nodeExists_Sep_MotCle(const char name[MAX_NAME_LENGTH]);
 void removeEmptyStrings(list_Cst_Idf *myList);
 void displayList_Cst_Idf();
 void displayList_Sep_MotCle();
-bool est_Type_Character(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH]);
 #endif // TS_H

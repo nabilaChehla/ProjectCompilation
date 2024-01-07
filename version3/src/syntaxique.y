@@ -29,12 +29,13 @@ Stack *stack_deb_cond;
   char value_op[MAX_STRING_SIZE];
   char taille2[MAX_STRING_SIZE];
   char taille1[MAX_STRING_SIZE]; 
-  char firstSize;
-  char secondSize;
+  char firstSize[MAX_STRING_SIZE];
+  char secondSize[MAX_STRING_SIZE];
   int nbArg = 0 ; 
   int cmpt= 0;
-  bool SiIDF1=false;
-  bool SiIDF2=false;
+  bool isIDF1=false;
+  bool isIDF2=false;
+  int cmpt_TAB=0;
   int nbArg_Write=0 ; 
   int nbArg_Eqv =0 ; 
   int sauv_BR,Fin_inst_cond,tab_dec;
@@ -51,7 +52,7 @@ Stack *stack_deb_cond;
 %token <str>PROGRAM_mc <str>END_mc <str>ROUTINE_mc <str>ENDR_mc <str>LOGICAL_mc <str>TRUE_mc <str>FALSE_mc <str>CHARACTER_mc <str>REAL_mc <str>INTEGER_mc <str>DIMENSION_mc <str>READ_mc <str>WRITE_mc <str>IF_mc <str>THEN_mc <str>ELSE_mc <str>ENDIF_mc <str>GT_mc <str>GE_mc <str>EQ_mc <str>NE_mc <str>LE_mc LT_mc OR_mc AND_mc DOWHILE_mc ENDDO_mc EQUIVALENCE_mc CALL_mc <str>idf <entier>cst_int   <reel>cst_real    <str>character aff plus moins divis multip pvg ver point par_ouvrante par_fermante points_sup
 %start S 
 %%
-S : Fonction_i  MAIN DEC INSTRUCTIONS END_mc
+S : Fonction_i  MAIN DEC INSTRUCTIONS END_mc 
 ;
 MAIN: PROGRAM_mc  idf {push(stack_name_Routine,"main")}
 ;
@@ -88,11 +89,11 @@ ARG : liste_parametres {push(stack_value,intToString(nbArg));quadParametre(stack
       |                {push(stack_value,"0"); nbArg=0;}
 ; 
 liste_parametres: idf  ver liste_parametres                                                {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));nbArg++;push(stack_variable,$1);initVar($1,stack_name_Routine);}                                      
-                | idf par_ouvrante cst_int ver cst_int  par_fermante  ver liste_parametres {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"MATRICE",top(stack_name_Routine));add_Taille_Tab_Mat($1,intToString($3),intToString($5),stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,$5);}
-                | idf par_ouvrante cst_int  par_fermante ver liste_parametres              {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"TABLEAU",top(stack_name_Routine));add_Taille_Tab_Mat($1,intToString($3),"0",stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,-1);}
+                | idf par_ouvrante cst_int ver cst_int  par_fermante  ver liste_parametres {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"MATRICE",top(stack_name_Routine));add_Taille_Tab_Mat($1,intToString($3),intToString($5),stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,intToString($3),intToString($5));}
+                | idf par_ouvrante cst_int  par_fermante ver liste_parametres              {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"TABLEAU",top(stack_name_Routine));add_Taille_Tab_Mat($1,intToString($3),"0",stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,intToString($3),"-1");}
                 | idf                                                                      {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"VARIABLE",top(stack_name_Routine));nbArg++;push(stack_variable,$1);initVar($1,stack_name_Routine);}
-                | idf par_ouvrante cst_int ver cst_int  par_fermante                       {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"MATRICE",top(stack_name_Routine));add_Taille_Tab_Mat($1,intToString($3),intToString($5),stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,$5);}
-                | idf par_ouvrante cst_int  par_fermante                                   {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"TABLEAU",top(stack_name_Routine));add_Taille_Tab_Mat($1,intToString($3),"0",stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,$3,-1);}
+                | idf par_ouvrante cst_int ver cst_int  par_fermante                       {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"MATRICE",top(stack_name_Routine));add_Taille_Tab_Mat($1,intToString($3),intToString($5),stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,intToString($3),intToString($5));}
+                | idf par_ouvrante cst_int  par_fermante                                   {add_SCOPE_Cst_Idf($1,top(stack_name_Routine));add_CODE_Cst_Idf($1,"TABLEAU",top(stack_name_Routine));add_Taille_Tab_Mat($1,intToString($3),"0",stack_name_Routine);nbArg++;Tab_idfInStack_Quad(stack_variable,$1,intToString($3),"-1");}
 ;
 
 DEC: type SUITE_DEC pvg DEC {pop(stack_type)}
@@ -111,9 +112,9 @@ DEC_TAB: type idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante       
                                                                                     add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));
                                                                                     add_CODE_Cst_Idf($2,code,top(stack_name_Routine));
                                                                                     strcpy(taille1,top(stack_variable));
-                                                                                    Traitement_taille_TAB_MAT($2,taille1,taille2,save_type_operateur,stack_name_Routine,cmpt,code);                                                                                    ajour_quad(tab_dec,1,taille1);
+                                                                                    Traitement_taille_TAB_MAT($2,taille1,taille2,save_type_operateur,stack_name_Routine,cmpt,code);
                                                                                     pop(stack_type);
-                                                                                    ajour_quad(tab_dec,1,taille1);
+                                                                                    ajour_quad(tab_dec,2,taille1);
                                                                                     pop(stack_variable);
                                                                                     quadr("ADEC",$2,"vide","vide");
                                                                                     cmpt=0;   
@@ -125,8 +126,9 @@ DEC_TAB: type idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante       
                                                                                     add_CODE_Cst_Idf($2,code,top(stack_name_Routine));
                                                                                     strcpy(taille1,top(stack_variable));
                                                                                     Traitement_taille_TAB_MAT($2,taille1,taille2,save_type_operateur,stack_name_Routine,cmpt,code);
-                                                                                    ajour_quad(tab_dec,1,taille1);
-                                                                                    pop(stack_variable);                                                                         quadr("ADEC",$2,"vide","vide");
+                                                                                    ajour_quad(tab_dec,2,taille1);
+                                                                                    pop(stack_variable);
+                                                                                    quadr("ADEC",$2,"vide","vide");
                                                                                     cmpt=0;
                                                                                     }
 ;
@@ -137,8 +139,8 @@ LIST_PAR_TAB : ver EXP { strcpy(taille2,top(stack_variable));
                         if(!checkTaille(taille2,cmpt,"MATRICE") && strcmp(strg,"INTEGER"))
                               { semantiqueError("the size must be an integer");}
                         tab_dec=qc;
-                        quadr("BOUNDS","",taille2,"vide");} 
-              |         { strcpy(code,"TABLEAU");tab_dec=qc;quadr("BOUNDS","","vide","vide");}
+                        quadr("BOUNDS",taille2,"","vide");} 
+              |         { strcpy(code,"TABLEAU");tab_dec=qc;quadr("BOUNDS","0","","vide");}
               ;
 DEC_AFF: aff cst_int  {push(stack_value, intToString($2));push(stack_variable,intToString($2));} 
        | aff cst_real {push(stack_value, floatToString($2));push(stack_variable,floatToString($2)) } 
@@ -189,6 +191,7 @@ Affectation: idf aff EXP pvg             {check_idf_Variable_Existe($1,stack_nam
                                            quadr(":=",$3,"vide",$1);
                                            add_VALUE_Cst_Idf($1,$3,top(stack_name_Routine));
                                            check_taille_character($1,top(stack_name_Routine));
+                                            
                                           }
             |TAB_PAR aff EXP pvg          {
                                            checkType_affectation_TAB(TAB_reference,save_type_operateur,stack_name_Routine,cmpt);
@@ -264,14 +267,12 @@ SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
                               if(cmpt==2) strcpy(strg,"INTEGER");
                               cmpt=cmpt+2;
                               strcpy(strg,"INTEGER");
-                              SiIDF1=false;
                               push(stack_variable,intToString($1));
                               }     
                    | cst_real {if($1==0)divZero=true;else divZero = false;
                               if (cmpt==0 || cmpt==1){ strcpy(save_type_operateur,"REAL");  strcpy(value_op,floatToString($1));}    
                               if(cmpt==2) strcpy(strg,"REAL"); 
                               cmpt=cmpt+2;
-                              SiIDF1=false;
                               push(stack_variable, floatToString($1));
                               }
                    | TAB_PAR  {  divZero = false  } 
@@ -282,32 +283,74 @@ SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
                               if(cmpt==2) strcpy(strg,return_TYPE_Cst_Idf($1,top(stack_name_Routine)));  
                               if (cmpt==0 || cmpt==1) {strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); strcpy(value_op,return_VALUE_SIZE_Cst_Idf($1,top(stack_name_Routine)));}
                               cmpt=cmpt+2;
-                              SiIDF1=true;
                               push(stack_variable,$1);
-                            }
-                  
+                        }
 ;
-TAB_PAR: idf par_ouvrante cst_int ver cst_int  par_fermante {check_idf_Matrice_Existe($1,stack_name_Routine);// idf n'existe pas dans TS ou pas un nom de matrice 
-                                                             checkSize($1,stack_name_Routine,$3,$5);
+bound_tab:cst_int{push(stack_variable,intToString($1)); cmpt_TAB++;} | idf { push(stack_variable,$1); if (cmpt_TAB==1){isIDF2=true;}else{isIDF1=true;}  cmpt_TAB++; }
+;
+
+TAB_PAR: idf par_ouvrante bound_tab ver bound_tab  par_fermante {check_idf_Matrice_Existe($1,stack_name_Routine);// idf n'existe pas dans TS ou pas un nom de matrice 
+                                                             strcpy(secondSize,top(stack_variable));
+                                                             pop(stack_variable);
+                                                             strcpy(firstSize,top(stack_variable));
+                                                             pop(stack_variable);
+                                                            if (isIDF1==true){
+                                                                 if (isIDF2==true){
+                                                                       if(strcmp(return_TYPE_Cst_Idf(firstSize,top(stack_name_Routine)),"INTEGER")==0 && strcmp(return_VALUE_SIZE_Cst_Idf(secondSize,top(stack_name_Routine)),"INTEGER")==0)
+                                                                       {checkSize($1,stack_name_Routine,return_VALUE_SIZE_Cst_Idf(firstSize,top(stack_name_Routine)),return_VALUE_SIZE_Cst_Idf(secondSize,top(stack_name_Routine))); }
+                                                                       else{semantiqueError("we can reference an array with only integer indexes ");}
+                                                                  }else{
+                                                                        if(strcmp(return_TYPE_Cst_Idf(firstSize,top(stack_name_Routine)),"INTEGER")==0)
+                                                                        {checkSize($1,stack_name_Routine,return_VALUE_SIZE_Cst_Idf(firstSize,top(stack_name_Routine)),secondSize);}
+                                                                        else{semantiqueError("we can reference an array with only integer indexes ");}
+                                                                  }
+                                                            }else{
+                                                                  if (isIDF2==true){
+                                                                       if(strcmp(return_TYPE_Cst_Idf(secondSize,top(stack_name_Routine)),"INTEGER")==0)
+                                                                       {checkSize($1,stack_name_Routine,firstSize,return_VALUE_SIZE_Cst_Idf(secondSize,top(stack_name_Routine))); }
+                                                                       else{semantiqueError("we can reference an array with only integer indexes ");}
+                                                                  }else{
+                                                                        checkSize($1,stack_name_Routine,firstSize,secondSize);}
+                                                            }
+                                                                     
                                                             if (cmpt ==0)
                                                               strcpy(TAB_reference,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
 
-                                                            if (cmpt==1 ) 
-                                                               strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine)));      
-                                                             
+                                                            if (cmpt==1) 
+                                                               strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine)));  
+
+                                                            Tab_idfInStack_Quad(stack_variable,$1,firstSize,secondSize);
+                                                             strcpy(firstSize," ");
+                                                             strcpy(secondSize," ");
+                                                             cmpt_TAB=0;
                                                              cmpt++;
-                                                                  Tab_idfInStack_Quad(stack_variable,$1,$3,$5);
+                                                             isIDF1=false;
+                                                             isIDF2=false;
                                                             }
-      |idf par_ouvrante cst_int  par_fermante              {check_idf_Tableau_Existe($1,stack_name_Routine);
-                                                            checkSize( $1, stack_name_Routine,  $3,  0); 
-                                                            if (cmpt==0)
+      |idf par_ouvrante bound_tab  par_fermante              {check_idf_Tableau_Existe($1,stack_name_Routine);
+                                                             strcpy(firstSize,top(stack_variable));
+                                                             pop(stack_variable);
+                                                            if(isIDF1==true)
+                                                            {
+                                                                  if (strcmp(return_TYPE_Cst_Idf(firstSize,top(stack_name_Routine)),"INTEGER")!=0)
+                                                                  {
+                                                                        semantiqueError("we can reference an array with only integer indexes ");
+                                                                  }else{
+                                                                        checkSize($1,stack_name_Routine,firstSize,"0"); 
+
+                                                                  }
+                                                            }
+      
+                                                            if (cmpt==0 )
                                                                   strcpy(TAB_reference,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
                                                             if (cmpt==1 ) { 
-                                                                  
                                                                   strcpy(save_type_operateur,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 
                                                              }
+                                                            Tab_idfInStack_Quad(stack_variable,$1,firstSize,"0");
+                                                             cmpt_TAB=0;
                                                              cmpt++;
-                                                             Tab_idfInStack_Quad(stack_variable,$1,$3,-1);
+                                                             isIDF1=false;
+                                                             isIDF2=false;
                                                             }
 
 ;
@@ -353,6 +396,7 @@ DEBUT_INST_IF: DEBUT_IF  INSTRUCTIONS ELSE_mc {sauv_BR=qc;
 
 DEBUT_IF:  IF_mc par_ouvrante  COND par_fermante THEN_mc {
                                                            push(stack_BZ,intToString(qc));
+                                                           strcpy(temp,top(stack_variable));
                                                            quadr("BZ", "",temp, "vide"); }
 ;
 
@@ -366,6 +410,7 @@ BOUCLE_INST: BOUCLE_INST1 INSTRUCTIONS ENDDO_mc pvg{strcpy(strg,top(stack_deb_co
                                                 pop(stack_BZ);}
 ;
 BOUCLE_INST1: BOUCLE_INST2 par_ouvrante  COND par_fermante {push(stack_BZ,intToString(qc)); // J'ai laisser le champs 2 vide. Je dois le remplir apres
+                                                            strcpy(temp,top(stack_variable));
                                                             quadr("BZ", "",temp, "vide"); }
 ;
 BOUCLE_INST2: DOWHILE_mc  {push(stack_deb_cond,intToString(qc));}
@@ -374,8 +419,8 @@ BOUCLE_INST2: DOWHILE_mc  {push(stack_deb_cond,intToString(qc));}
 INST_CALL: idf aff CALL_mc idf par_ouvrante ARG_CALL par_fermante pvg {
                                                                       check_idf_Aff_Call($1,stack_name_Routine); // verifier qu'il existe + n'est pas une routine
                                                                       CheckRoutineExiste ($4);
-                                                                       check_Routine_Signature($4,stack_name_Routine,nbArg);
-                                                                      check_TypeRetour_compatible($1,$3,stack_name_Routine);
+                                                                      check_Routine_Signature($4,stack_name_Routine,nbArg);
+                                                                      check_TypeRetour_compatible($1,$4,stack_name_Routine);
                                                                       quadr("CALL",$4,intToString(nbArg),"vide");//(call, nomFonc, nbArg, vide )
                                                                        nbArg = 0;
                                                                        initVar($1,stack_name_Routine);

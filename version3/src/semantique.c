@@ -100,11 +100,11 @@ void check_Routine_Signature(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routin
 
 void check_TypeRetour_compatible(char nomVar[MAX_NAME_LENGTH], char nomRoutine[MAX_NAME_LENGTH], Stack *stack_name_Routine)
 {
-    if (strcmp(return_TYPE_Cst_Idf(nomVar, top(stack_name_Routine)), return_TYPE_Cst_Idf(nomRoutine, top(stack_name_Routine))) == 0)
+    if (strcmp(return_TYPE_Cst_Idf(nomVar, top(stack_name_Routine)), return_TYPE_Cst_Idf(nomRoutine, top(stack_name_Routine))) != 0)
     {
-        if (strcmp(return_TYPE_Cst_Idf(nomVar, top(stack_name_Routine)), "REAL") != 0)
+        if (strcmp(return_TYPE_Cst_Idf(nomVar, top(stack_name_Routine)), "REAL") == 0)
         {
-            if (strcmp(return_TYPE_Cst_Idf(nomRoutine, top(stack_name_Routine)), "INTEGER") == 0)
+            if (strcmp(return_TYPE_Cst_Idf(nomRoutine, top(stack_name_Routine)), "INTEGER") != 0)
             {
                 semantiqueError("Incompatibile types\n");
             }
@@ -137,7 +137,7 @@ void check_Affectation_fin_Routine(Stack *stack_type, char save_type_operateur[M
     }
 }
 
-void checkSize(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine, int taille1, int taille2)
+void checkSize(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine, char taille1[], char taille2[])
 {
     char firstSize[MAX_STRING_SIZE];
     char secondSize[MAX_STRING_SIZE];
@@ -146,19 +146,19 @@ void checkSize(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine, int taille1
     {
         if (strcmp(secondSize, "-") != 0)
         {
-            if (atoi(firstSize) <= taille1 || taille1 < 0 || atoi(secondSize) < taille2 || taille2 < 0)
+            if (atoi(firstSize) < atoi(taille1) || atoi(taille1) < 0 || atoi(secondSize) < atoi(taille2) || atoi(taille2) < 0)
                 semantiqueError("Size of TABLEAU / MATRICE incorrect \n");
         }
         else
         {
-            if (atoi(firstSize) <= taille1 || taille1 < 0)
+            if (atoi(firstSize) < atoi(taille1) || atoi(taille1) < 0)
                 semantiqueError("Size of TABLEAU / MATRICE incorrect \n");
         }
     }
     else
     {
         if (strcmp(secondSize, "-") != 0)
-            if (atoi(secondSize) < taille2 || taille2 < 0)
+            if (atoi(secondSize) < atoi(taille2) || atoi(taille2) < 0)
                 semantiqueError("Size of TABLEAU / MATRICE incorrect \n");
     }
 }
@@ -270,6 +270,18 @@ bool checkTaille(char taille[], int cmpt, char code[])
         }
     }
 }
+bool checkBounds(char taille[])
+{
+
+    if (strstr(taille, "temp") != NULL)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
 
 void Traitement_taille_TAB_MAT(char idf[MAX_NAME_LENGTH], char taille1[], char taille2[], char save_type_operateur[], Stack *stack_name_Routine, int cmpt, char code[])
 {
@@ -375,7 +387,7 @@ void check_Type_operateurs(Stack *stack_variable, Stack *stack_name_Routine, boo
     {
         strcpy(op2, extractTableName(op2));
     }
-    if (((binaire && (idf_exist(op1, top(stack_name_Routine)) && strstr(return_TYPE_Cst_Idf(op1, top(stack_name_Routine)), "CHARACTER ") != NULL))) || ((idf_exist(op2, top(stack_name_Routine))) && (strstr(return_TYPE_Cst_Idf(op2, top(stack_name_Routine)), "CHARACTER ") != NULL)))
+    if ((binaire && (idf_exist(op1, top(stack_name_Routine))) && (strcmp(return_TYPE_Cst_Idf(op1, top(stack_name_Routine)), "CHARACTER") == 0)) || ((idf_exist(op2, top(stack_name_Routine))) && strcmp(return_TYPE_Cst_Idf(op2, top(stack_name_Routine)), "CHARACTER") == 0))
     {
         semantiqueError("Cette operation ne se fait pas au type CHARACTER");
     }
@@ -388,7 +400,7 @@ void check_Type_operateurs(Stack *stack_variable, Stack *stack_name_Routine, boo
 
 void check_taille_character(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH])
 {
-    if (strstr(return_TYPE_Cst_Idf(name, scope), "CHARACTER ") != NULL)
+    if (strstr(return_TYPE_Cst_Idf(name, scope), "CHARACTER") != NULL)
     {
         if (strlen(return_VALUE_SIZE_Cst_Idf(name, scope)) - 2 > return_taille_character(name, scope))
         {
