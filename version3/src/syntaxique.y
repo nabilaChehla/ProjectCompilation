@@ -329,17 +329,16 @@ TAB_PAR: idf par_ouvrante bound_tab ver bound_tab  par_fermante {check_idf_Matri
                                                             }
       |idf par_ouvrante bound_tab  par_fermante              {check_idf_Tableau_Existe($1,stack_name_Routine);
                                                              strcpy(firstSize,top(stack_variable));
+                                                             
                                                              pop(stack_variable);
                                                             if(isIDF1==true)
                                                             {
                                                                   if (strcmp(return_TYPE_Cst_Idf(firstSize,top(stack_name_Routine)),"INTEGER")!=0)
                                                                   {
                                                                         semantiqueError("we can reference an array with only integer indexes ");
-                                                                  }else{
-                                                                        checkSize($1,stack_name_Routine,firstSize,"0"); 
-
                                                                   }
                                                             }
+                                                             checkSize($1,stack_name_Routine,firstSize,"0"); 
       
                                                             if (cmpt==0 )
                                                                   strcpy(TAB_reference,return_TYPE_Cst_Idf($1,top(stack_name_Routine))); 

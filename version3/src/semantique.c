@@ -144,21 +144,21 @@ void checkSize(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine, char taille
     extractIntegers_SIZE_TS(return_VALUE_SIZE_Cst_Idf(idf, top(stack_name_Routine)), firstSize, secondSize);
     if (strcmp(firstSize, "-") != 0)
     {
-        if (strcmp(secondSize, "-") != 0)
+        if (strcmp(secondSize, "-") != 0 && strcmp(secondSize, "0") != 0)
         {
-            if (atoi(firstSize) < atoi(taille1) || atoi(taille1) < 0 || atoi(secondSize) < atoi(taille2) || atoi(taille2) < 0)
+            if (atoi(firstSize) <= atoi(taille1) || atoi(taille1) < 0 || (atoi(secondSize) <= atoi(taille2) || atoi(taille2) < 0))
                 semantiqueError("Size of TABLEAU / MATRICE incorrect \n");
         }
         else
         {
-            if (atoi(firstSize) < atoi(taille1) || atoi(taille1) < 0)
+            if (atoi(firstSize) <= atoi(taille1) || atoi(taille1) < 0)
                 semantiqueError("Size of TABLEAU / MATRICE incorrect \n");
         }
     }
     else
     {
-        if (strcmp(secondSize, "-") != 0)
-            if (atoi(secondSize) < atoi(taille2) || atoi(taille2) < 0)
+        if (strcmp(secondSize, "-") != 0 && strcmp(secondSize, "0") != 0)
+            if (atoi(secondSize) <= atoi(taille2) || atoi(taille2) < 0)
                 semantiqueError("Size of TABLEAU / MATRICE incorrect \n");
     }
 }
