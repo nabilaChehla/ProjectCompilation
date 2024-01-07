@@ -10,8 +10,6 @@
 #include "tools.h"
 #include "ts_liste.h"
 
-
-
 int semantiqueError(char *msg);
 void CheckRoutineExiste(const char name[MAX_NAME_LENGTH]);
 void Check_Retour_Routine(const char nomVariable_Retour[MAX_NAME_LENGTH], Stack *stack_name_Routine);
@@ -41,5 +39,6 @@ void check_Type_operateurs(Stack *stack_variable, Stack *stack_name_Routine, boo
 void check_taille_character(const char name[MAX_NAME_LENGTH], const char scope[MAX_SCOPE_LENGTH]);
 void traitement_Fin_Routine(Stack *stack_name_Routine, Stack *stack_value, Stack *stack_type);
 void Taitement_SUITE_DEC(const char nomVariable[MAX_NAME_LENGTH], Stack *stack_name_Routine, Stack *stack_type);
+void check_idf_Equivalence(char idf[MAX_NAME_LENGTH], char scope[MAX_SCOPE_LENGTH]);
 
 #endif // SEMANTIQUE_H

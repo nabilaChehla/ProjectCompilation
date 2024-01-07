@@ -167,8 +167,6 @@ void checkType_affectation_idf(char idf[MAX_NAME_LENGTH], char save_type_operate
 { // checker qu'on a un type inserre dans TS car les parametres de fonctuion n'ont pas de type donc on ne fait pas le traitement
     if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "") != 0)
     {
-        printf("typeeeeeee %d", cmpt);
-
         if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), save_type_operateur) != 0 && (cmpt == 2 || cmpt == 1))
         {
 
@@ -373,4 +371,12 @@ void Taitement_SUITE_DEC(const char nomVariable[MAX_NAME_LENGTH], Stack *stack_n
     add_TYPE_Cst_Idf(nomVariable, top(stack_type), top(stack_name_Routine));
 
     add_CODE_Cst_Idf(nomVariable, "VARIABLE", top(stack_name_Routine));
+}
+
+void check_idf_Equivalence(char idf[MAX_NAME_LENGTH], char scope[MAX_SCOPE_LENGTH])
+{
+    if (!idf_exist(idf, scope))
+        semantiqueError("Idnetificateur n'exsite pas,il doit etre declare");
+    else if (strcmp(return_CODE_Cst_Idf(idf, scope), "ROUTINE") == 0)
+        semantiqueError("L'Equivalence ne peut pas etre faite avec des fonctions en parametre");
 }

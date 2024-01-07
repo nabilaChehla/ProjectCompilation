@@ -55,17 +55,5 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false,
-  "files.associations": {
-    "stdlib.h": "c",
-    "stdbool.h": "c",
-    "ctype.h": "c",
-    "semantique.h": "c",
-    "math.h": "c",
-    "stdio.h": "c",
-    "tools.h": "c",
-    "ts_liste.h": "c",
-    "quad.h": "c"
-  },
-  "C_Cpp.dimInactiveRegions": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false
 }

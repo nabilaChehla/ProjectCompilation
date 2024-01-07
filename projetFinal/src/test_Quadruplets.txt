@@ -33,7 +33,7 @@ READ(MAT(5,2));
 READ(B); 
 WRITE("Bonjours",A/2+B,B*5);
 
-EQUIVALENCE (A, X, MAT(5,6)), (Y, X); 
+EQUIVALENCE (Z, X, MAT(5,6)), (Y, X); 
 fonction2 = B * X ; 
 ENDR 
 %___________________________________________________________
@@ -41,8 +41,8 @@ ENDR
 PROGRAM HelloAcad
 % Déclarations
 REAL A,B,C = 6.3  ; 
-INTEGER Y , Z=-6 ; 
-%INTEGER TAB DIMENSION (C) ; 
+INTEGER Y , Z=600 ; 
+
 INTEGER TAB DIMENSION (Z) ;
 CHARACTER MAT DIMENSION (10,10) ; 
 CHARACTER char *5;

@@ -107,25 +107,17 @@ SUITE_DEC:  idf DEC_AFF ver SUITE_DEC  {Taitement_SUITE_DEC($1,stack_name_Routin
           | idf                        {Taitement_SUITE_DEC($1,stack_name_Routine,stack_type)} 
  
 ;
-DEC_TAB: type idf DIMENSION_mc par_ouvrante bound_tab LIST_PAR_TAB par_fermante       {   checkDoubleDeclaration($2,stack_name_Routine);                                                                                    
+DEC_TAB: type idf DIMENSION_mc par_ouvrante bound_tab LIST_PAR_TAB par_fermante    {checkDoubleDeclaration($2,stack_name_Routine);                                                                                    
                                                                                     add_SCOPE_Cst_Idf($2,top(stack_name_Routine));
                                                                                     add_TYPE_Cst_Idf($2,top(stack_type),top(stack_name_Routine));
                                                                                     add_CODE_Cst_Idf($2,code,top(stack_name_Routine));
-
                                                                                     strcpy(taille1,top(stack_variable));
-
                                                                                     quadr("BOUNDS","0",taille1,"vide");
                                                                                     if(strcmp(code,"MATRICE")==0)quadr("BOUNDS","0",taille2,"vide");
-
                                                                                     if(isIDF1){if(strcmp(return_TYPE_Cst_Idf(taille1,top(stack_name_Routine)),"INTEGER")!=0)semantiqueError("La variable doit etre un entier");strcpy(taille1,return_VALUE_SIZE_Cst_Idf(taille1,top(stack_name_Routine)));}
                                                                                     if(isIDF2){if(strcmp(return_TYPE_Cst_Idf(taille2,top(stack_name_Routine)),"INTEGER")!=0)semantiqueError("La variable doit etre un entier"); strcpy(taille2,return_VALUE_SIZE_Cst_Idf(taille2,top(stack_name_Routine)));}
                                                                                     Traitement_taille_DEC_TAB_MAT($2,taille1,taille2,stack_name_Routine);
                                                                                     pop(stack_type);
-                                                                                    
-
-
-
-                                                                                    
                                                                                     pop(stack_variable);
                                                                                     quadr("ADEC",$2,"vide","vide");
                                                                                     cmpt=0;  
@@ -135,17 +127,13 @@ DEC_TAB: type idf DIMENSION_mc par_ouvrante bound_tab LIST_PAR_TAB par_fermante 
                                                                                     isIDF2 = false ;
                                                                                     cmpt_TAB = 0 ; 
                                                                                     }
-        |CHARACTER_mc idf DIMENSION_mc par_ouvrante EXP LIST_PAR_TAB par_fermante   {checkDoubleDeclaration($2,stack_name_Routine);
-                                                                                    if(strcmp(save_type_operateur,"INTEGER"))semantiqueError("the Size 2 must be an integer");
-
+       |CHARACTER_mc idf DIMENSION_mc par_ouvrante bound_tab LIST_PAR_TAB par_fermante   {checkDoubleDeclaration($2,stack_name_Routine);
                                                                                     add_SCOPE_Cst_Idf($2,top(stack_name_Routine));
                                                                                     add_TYPE_Cst_Idf($2,"CHARACTER 1",top(stack_name_Routine));
                                                                                     add_CODE_Cst_Idf($2,code,top(stack_name_Routine));                                                       
                                                                                     strcpy(taille1,top(stack_variable));
-
                                                                                     quadr("BOUNDS","0",taille1,"vide");
                                                                                     if(strcmp(code,"MATRICE")==0)quadr("BOUNDS","0",taille2,"vide");
-
                                                                                     if(isIDF1){if(strcmp(return_TYPE_Cst_Idf(taille1,top(stack_name_Routine)),"INTEGER")!=0)semantiqueError("La variable doit etre un entier");strcpy(taille1,return_VALUE_SIZE_Cst_Idf(taille1,top(stack_name_Routine)));}
                                                                                     if(isIDF2){if(strcmp(return_TYPE_Cst_Idf(taille2,top(stack_name_Routine)),"INTEGER")!=0)semantiqueError("La variable doit etre un entier");strcpy(taille2,return_VALUE_SIZE_Cst_Idf(taille2,top(stack_name_Routine)));}
                                                                                     Traitement_taille_DEC_TAB_MAT($2,taille1,taille2,stack_name_Routine);
@@ -164,7 +152,7 @@ LIST_PAR_TAB : ver bound_tab { strcpy(taille2,top(stack_variable));
                         pop(stack_variable); 
                         strcpy(code,"MATRICE");
                         } 
-              |         { strcpy(code,"TABLEAU");}
+              |         { strcpy(code,"TABLEAU");strcpy(taille2,"0");}
               ;
 DEC_AFF: aff cst_int  {push(stack_value, intToString($2));push(stack_variable,intToString($2));} 
        | aff cst_real {push(stack_value, floatToString($2));push(stack_variable,floatToString($2)) } 
@@ -200,14 +188,11 @@ TYPE_INSTRUCTION : Affectation
 ;
 
 Affectation: idf aff EXP pvg             {check_idf_Variable_Existe($1,stack_name_Routine);
-                                          printf("HIIIIIII %s",save_type_operateur );
-                                          checkType_affectation_idf($1,save_type_operateur,stack_name_Routine,cmpt);
-                                                
+                                          checkType_affectation_idf($1,save_type_operateur,stack_name_Routine,cmpt);    
                                                 if(cmpt==2) {add_VALUE_Cst_Idf($1,value_op,top(stack_name_Routine));}
                                                 strcpy(strg,top(stack_variable));
                                                 quadr(":=",strg,"vide",$1);
                                                 pop(stack_variable);
-                                            
                                                 initVar($1,stack_name_Routine);
                                                 cmpt=0;
                                           }
@@ -269,8 +254,10 @@ liste_Equivalance:liste_Equivalance ver SUITE_EQUI
 ;
 SUITE_EQUI: par_ouvrante liste_parametres_Eq par_fermante {quadr("CALL","EQUIVALENCE",intToString(nbArg_Eqv),"vide");nbArg_Eqv=0}
 ;
-liste_parametres_Eq:liste_parametres_Eq ver EXP        { cmpt=0; quadArgument(stack_variable);nbArg_Eqv++;}
-                    |EXP                              { cmpt=0; quadArgument(stack_variable);nbArg_Eqv++; }   
+liste_parametres_Eq:liste_parametres_Eq ver idf        {strcpy(strg,top(stack_name_Routine)); check_idf_Equivalence($3,strg);push(stack_variable,$3);             quadArgument(stack_variable);nbArg_Eqv++; }
+                    |liste_parametres_Eq ver TAB_PAR   {  quadArgument(stack_variable);nbArg_Eqv++;}
+                    |idf                               {strcpy(strg,top(stack_name_Routine)); check_idf_Equivalence($1, strg);  push(stack_variable,$1);          quadArgument(stack_variable);nbArg_Eqv++; }  
+                    |TAB_PAR                           { quadArgument(stack_variable);nbArg_Eqv++; }  
 ;
 EXP :EXPRESSION {divZero=false; }
 ;
@@ -364,6 +351,8 @@ TAB_PAR: idf par_ouvrante bound_tab ver bound_tab  par_fermante {check_idf_Matri
                                                                   if (strcmp(return_TYPE_Cst_Idf(firstSize,top(stack_name_Routine)),"INTEGER")!=0)
                                                                   {
                                                                         semantiqueError("we can reference an array with only integer indexes ");
+                                                                  }else{
+                                                                       checkSize($1,stack_name_Routine,return_VALUE_SIZE_Cst_Idf(firstSize,top(stack_name_Routine)),"0"); 
                                                                   }
                                                             }
                                                             else {checkSize($1,stack_name_Routine,firstSize,"0"); }
@@ -484,6 +473,8 @@ int main(int argc , char *argv[]) {
               stack_value = initializeStack();
               stack_name_Routine = initializeStack();
               stack_variable = initializeStack();
+              strcpy(taille1,"0");
+              strcpy(taille2,"0");
             yyrestart(fileLex);
 
               //initialisation

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/usthb/L3/S5/compilation/TP/Projet/version3",
-      "program": "d:/usthb/L3/S5/compilation/TP/Projet/version3/build/Debug/outDebug",
+      "cwd": "d:/usthb/L3/S5/compilation/TP/Projet/projetFinal/src",
+      "program": "d:/usthb/L3/S5/compilation/TP/Projet/projetFinal/src/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
