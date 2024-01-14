@@ -133,8 +133,8 @@ void check_Affectation_fin_Routine(Stack *stack_type, char save_type_operateur[M
             printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, top(stack_type));
             semantiqueError("Incompatibile types\n");
         }
-        (*cmpt) = 0;
     }
+    (*cmpt) = 0;
 }
 
 void checkSize(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine, char taille1[], char taille2[])
@@ -165,58 +165,55 @@ void checkSize(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine, char taille
 
 void checkType_affectation_idf(char idf[MAX_NAME_LENGTH], char save_type_operateur[MAX_TYPE_LENGTH], Stack *stack_name_Routine, int cmpt)
 { // checker qu'on a un type inserre dans TS car les parametres de fonctuion n'ont pas de type donc on ne fait pas le traitement
-    if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "-") == 0 || strcmp(save_type_operateur,"-") ==0)
-                   return; 
-        if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), save_type_operateur) != 0 && (cmpt == 2 || cmpt == 1 ))
+    if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "-") == 0 || strcmp(save_type_operateur, "-") == 0)
+        return;
+    if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), save_type_operateur) != 0 && (cmpt == 2 || cmpt == 1))
+    {
+
+        if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "REAL") == 0)
         {
-            
-            if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "REAL") == 0)
-            {
-                printf("%s",save_type_operateur);    
-                if (strcmp(save_type_operateur, "INTEGER") != 0)
-                {
-                    
-                    printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, return_TYPE_Cst_Idf(idf, top(stack_name_Routine)));
-                    semantiqueError("Incompatibile types\n");
-                }
-            }
-            else
+            if (strcmp(save_type_operateur, "INTEGER") != 0)
             {
 
                 printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, return_TYPE_Cst_Idf(idf, top(stack_name_Routine)));
                 semantiqueError("Incompatibile types\n");
             }
         }
-    
+        else
+        {
+
+            printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, return_TYPE_Cst_Idf(idf, top(stack_name_Routine)));
+            semantiqueError("Incompatibile types\n");
+        }
+    }
 }
 
 void checkType_affectation_TAB(char TAB_reference[], char save_type_operateur[MAX_TYPE_LENGTH], Stack *stack_name_Routine, int cmpt)
 {
 
     // checker qu'on a un type inserre dans TS car les parametres de fonctuion n'ont pas de type donc on ne fait pas le traitement
-     if (strcmp(TAB_reference, "-") == 0 || strcmp(save_type_operateur,"-") ==0)
-                   return; 
-        if (strcmp(TAB_reference, save_type_operateur) && (cmpt == 3 || cmpt == 2 ))
+    if (strcmp(TAB_reference, "-") == 0 || strcmp(save_type_operateur, "-") == 0)
+        return;
+    if (strcmp(TAB_reference, save_type_operateur) && (cmpt == 3 || cmpt == 2))
+    {
+        if (!strcmp(TAB_reference, "REAL"))
         {
-            if (!strcmp(TAB_reference, "REAL"))
-            {
-                if (strcmp(save_type_operateur, "INTEGER"))
-                {
-                    printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, TAB_reference);
-                    semantiqueError("Incompatibile types\n");
-                }
-            }
-            else
+            if (strcmp(save_type_operateur, "INTEGER"))
             {
                 printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, TAB_reference);
                 semantiqueError("Incompatibile types\n");
             }
         }
-    
+        else
+        {
+            printf("\naffectation d'une expresssion de type %s dans un idf de type %s \n", save_type_operateur, TAB_reference);
+            semantiqueError("Incompatibile types\n");
+        }
+    }
 }
 
 void check_Type_char(char idf[MAX_NAME_LENGTH], Stack *stack_name_Routine)
-{ 
+{
     if (strcmp(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "-") != 0)
     {
         if (strstr(return_TYPE_Cst_Idf(idf, top(stack_name_Routine)), "CHARACTER") == NULL)
@@ -292,7 +289,6 @@ void Traitement_taille_DEC_TAB_MAT(char *idf, char taille1[], char taille2[], St
 {
     int taille1_int = atoi(taille1);
     int taille2_int = atoi(taille2);
-
 
     if (taille1_int < 1)
     {

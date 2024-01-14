@@ -65,13 +65,12 @@ fonc: save_name_func par_ouvrante ARG par_fermante DEC INSTRUCTIONS Affectation_
 ;
 save_name_func: type_fonc ROUTINE_mc idf {push(stack_name_Routine,$3);}
 ;
-Affectation_fonction: idf aff EXP pvg       {Check_Retour_Routine($1, stack_name_Routine);strcpy(strg,top(stack_variable));quadr(":=",strg,"vide",$1);pop(stack_variable);quadr("return",$1,"vide","vide");cmpt=0;}
+Affectation_fonction: idf aff EXP pvg       {Check_Retour_Routine($1, stack_name_Routine);strcpy(strg,top(stack_variable));quadr(":=",strg,"vide",$1);pop(stack_variable);quadr("return",$1,"vide","vide");}
                     | idf aff character pvg {Check_Retour_Routine($1, stack_name_Routine);
                                              strcpy(save_type_operateur,"CHARACTER");
                                              cmpt=cmpt+2;
                                              quadr(":=",$3,"vide",$1);
                                              quadr("return",$1,"vide","vide");
-                                             cmpt =0; 
                                             }
                     | idf aff LOGICAL_VALUE pvg {Check_Retour_Routine($1, stack_name_Routine);
                                              strcpy(save_type_operateur,"LOGICAL");
@@ -287,6 +286,7 @@ SUITE_EXPRESSION_2:  par_ouvrante EXPRESSION par_fermante {}
                                   
                               if(cmpt==2) strcpy(strg,"REAL"); 
                               push(stack_variable, floatToString($1));
+                              cmpt = cmpt + 2 ; 
                               }
                    | TAB_PAR  {  divZero = false  } 
                    | idf {
