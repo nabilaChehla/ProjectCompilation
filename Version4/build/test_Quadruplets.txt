@@ -13,13 +13,12 @@ C = FALSE ;
 
 DOWHILE (A.LT.10)
    A = A + 1;
-   IF(((A.GT.(B + 1)).OR.(C.EQ.TRUE))) THEN A = A - TAB1(A) ;
+   IF(((A.OR.(B + 1)).AND.(C.AND.TRUE).OR.(C.AND.FALSE))) THEN A = A - TAB1(A) ;
 	MAT(A,B) =MAT(1,0) * A + (B * 7);
 	B = 30*3;
    ELSE A = A + B;
    ENDIF
 ENDDO
-
 fonction1 = A ; 
 ENDR 
 
