@@ -11,9 +11,9 @@ A=X;
 B = A ;
 C = FALSE ; 
 
-DOWHILE (A.LT.10)
+DOWHILE ((A.LT.10).OR.(C.EQ.FALSE).AND.(A.EQ.(B*2)))
    A = A + 1;
-   IF((B.LT.(B + 1)).AND.(C.EQ.TRUE).OR.(A.EQ.A)) THEN A = A - TAB1(A) ;
+   IF((B.LT.(B + 1)).AND.(C.EQ.TRUE).OR.(A.EQ.100)) THEN A = A - TAB1(A) ;
 	MAT(A,B) =MAT(1,0) * A + (B * 7);
 	B = 30*3;
    ELSE A = A + B;
