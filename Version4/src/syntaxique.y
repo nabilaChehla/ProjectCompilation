@@ -19,7 +19,6 @@ Stack *stack_variable ;
 Stack *stack_BZ;
 Stack *stack_deb_cond;
 Stack *stack_Qc_Cond;
-Stack *stack_Qc_SOUS_Cond; 
 
   char code [MAX_CODE_LENGTH];
   char save_type_operateur [MAX_TYPE_LENGTH];
@@ -380,32 +379,30 @@ TAB_PAR: idf par_ouvrante bound_tab ver bound_tab  par_fermante {check_idf_Matri
 ;
 CONDITION : COND {}
 ;
-COND_OR : COND  OR_mc                 {push(stack_Qc_SOUS_Cond,intToString(qc));strcpy(strg,top(stack_variable));quadr("BNZ","",strg,"vide");pop(stack_variable);strcpy(temp, "temp");strcat(temp, intToString(actTemp));}
+COND_OR : COND  OR_mc                 {push(stack_Qc_Cond,intToString(qc));strcpy(strg,top(stack_variable));quadr("BNZ","",strg,"vide");pop(stack_variable);strcpy(temp, "temp");strcat(temp, intToString(actTemp));}
 ;
-COND_AND : SUITE_COND_1  AND_mc       {push(stack_Qc_SOUS_Cond,intToString(qc));strcpy(strg,top(stack_variable));quadr("BZ","",strg,"vide");pop(stack_variable);strcpy(temp, "temp");strcat(temp, intToString(actTemp));}
+COND_AND : SUITE_COND_1  AND_mc       {push(stack_Qc_Cond,intToString(qc));strcpy(strg,top(stack_variable));quadr("BZ","",strg,"vide");pop(stack_variable);strcpy(temp, "temp");strcat(temp, intToString(actTemp));}
 ;
 
 
-COND:  COND_OR   SUITE_COND_1         { if(!isEmpty(stack_Qc_SOUS_Cond)){strcpy(strg,top(stack_Qc_SOUS_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_SOUS_Cond);}}   
+COND:  COND_OR   SUITE_COND_1         { if(!isEmpty(stack_Qc_Cond)){strcpy(strg,top(stack_Qc_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_Cond);}}   
       | SUITE_COND_1  
 ;
-SUITE_COND_1:  COND_AND  SUITE_COND_2 { if(!isEmpty(stack_Qc_SOUS_Cond)){strcpy(strg,top(stack_Qc_SOUS_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_SOUS_Cond);}}
+SUITE_COND_1:  COND_AND  SUITE_COND_2 { if(!isEmpty(stack_Qc_Cond)){strcpy(strg,top(stack_Qc_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_Cond);}}
              | SUITE_COND_2
 ;
 SUITE_COND_2:   EXPRESSION_BOOL
               | COND_SIMPLE 
 ;
-COND_SIMPLE :EXPRESSION_BOOL  point LT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LT");if(!isEmpty(stack_Qc_SOUS_Cond)){strcpy(strg,top(stack_Qc_SOUS_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_SOUS_Cond);}}
-            |EXPRESSION_BOOL  point GT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GT");if(!isEmpty(stack_Qc_SOUS_Cond)){strcpy(strg,top(stack_Qc_SOUS_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_SOUS_Cond);}}
-            |EXPRESSION_BOOL  point NE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"NE");if(!isEmpty(stack_Qc_SOUS_Cond)){strcpy(strg,top(stack_Qc_SOUS_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_SOUS_Cond);}}
-            |EXPRESSION_BOOL  point LE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LE");if(!isEmpty(stack_Qc_SOUS_Cond)){strcpy(strg,top(stack_Qc_SOUS_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_SOUS_Cond);}}
-            |EXPRESSION_BOOL  point GE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GE");if(!isEmpty(stack_Qc_SOUS_Cond)){strcpy(strg,top(stack_Qc_SOUS_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_SOUS_Cond);}}
-            |EXPRESSION_BOOL  point EQ_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"EQ");if(!isEmpty(stack_Qc_SOUS_Cond)){strcpy(strg,top(stack_Qc_SOUS_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_SOUS_Cond);}}
+COND_SIMPLE :EXPRESSION_BOOL  point LT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LT");if(!isEmpty(stack_Qc_Cond)){strcpy(strg,top(stack_Qc_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_Cond);}}
+            |EXPRESSION_BOOL  point GT_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GT");if(!isEmpty(stack_Qc_Cond)){strcpy(strg,top(stack_Qc_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_Cond);}}
+            |EXPRESSION_BOOL  point NE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"NE");if(!isEmpty(stack_Qc_Cond)){strcpy(strg,top(stack_Qc_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_Cond);}}
+            |EXPRESSION_BOOL  point LE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"LE");if(!isEmpty(stack_Qc_Cond)){strcpy(strg,top(stack_Qc_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_Cond);}}
+            |EXPRESSION_BOOL  point GE_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"GE");if(!isEmpty(stack_Qc_Cond)){strcpy(strg,top(stack_Qc_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_Cond);}}
+            |EXPRESSION_BOOL  point EQ_mc point  EXPRESSION_BOOL {quadExpression(stack_variable,"EQ");if(!isEmpty(stack_Qc_Cond)){strcpy(strg,top(stack_Qc_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_Cond);}}
 ;
 EXPRESSION_BOOL : EXP                                                          {cmpt=0;} 
                 | LOGICAL_VALUE                                                {pop(stack_value);}
-                |  par_ouvrante COND_OR  SUITE_COND_1 par_fermante           {if(!isEmpty(stack_Qc_SOUS_Cond)){strcpy(strg,top(stack_Qc_SOUS_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_SOUS_Cond);strcpy(temp, "temp");strcat(temp, intToString(actTemp));actTemp++;push(stack_variable, temp);}}
-                | par_ouvrante  COND_AND  SUITE_COND_2 par_fermante          {if(!isEmpty(stack_Qc_SOUS_Cond)){strcpy(strg,top(stack_Qc_SOUS_Cond));ajour_quad(atoi(strg),1,intToString(qc));pop(stack_Qc_SOUS_Cond);strcpy(temp, "temp");strcat(temp, intToString(actTemp));actTemp++;push(stack_variable, temp);}}
                 | par_ouvrante COND_SIMPLE par_fermante                                   
                 | par_ouvrante LOGICAL_VALUE par_fermante                      {pop(stack_value);}
 ;
@@ -490,7 +487,6 @@ int main(int argc , char *argv[]) {
               stack_name_Routine = initializeStack();
               stack_variable = initializeStack();
               stack_Qc_Cond= initializeStack();
-              stack_Qc_SOUS_Cond= initializeStack();
               strcpy(taille1,"0");
               strcpy(taille2,"0");
             yyrestart(fileLex);
