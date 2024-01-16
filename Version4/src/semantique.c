@@ -10,11 +10,13 @@
 
 int semantiqueError(char *msg)
 {
+    setConsoleColor(FOREGROUND_RED);
     printf("\n%s", msg);
     printf("\nFile %s, line %d, character %d: semantic error\n", fileName, nb_ligne, Col);
-    displayList_Sep_MotCle();
-    displayList_Cst_Idf();
-    exit(EXIT_FAILURE);
+    setConsoleColor(FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED);
+    // displayList_Sep_MotCle();
+    // displayList_Cst_Idf();
+    //  exit(EXIT_FAILURE);
 }
 
 void CheckRoutineExiste(const char name[MAX_NAME_LENGTH])

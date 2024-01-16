@@ -390,7 +390,6 @@ TAB_PAR: idf par_ouvrante bound_tab ver bound_tab  par_fermante {check_idf_Matri
 ;
 CONDITION : COND { push(stack_nb_cond_false,intToString(nb_cond_and));push(stack_nb_cond_true,intToString(nb_cond_or)) ; nb_cond_and = 0 ; nb_cond_or=0 ;strcpy(temp,"Cond.temp") ;strcat(temp, intToString(actTemp_cond));push(stack_variable, temp); actTemp_cond++ }
 ;
-
 COND:  COND  OR_mc {nb_cond_or ++;  push(stack_Qc_Cond_true,intToString(qc));strcpy(strg,top(stack_variable));quadr("BNZ","",strg,"vide");strcpy(temp, "temp");strcat(temp, intToString(actTemp));pop(stack_variable)}   SUITE_COND_1                  
       | SUITE_COND_1  
 ;

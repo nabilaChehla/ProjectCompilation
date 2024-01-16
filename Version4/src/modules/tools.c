@@ -4,6 +4,12 @@
 #include <stdbool.h>
 #include <math.h>
 #include "../include/tools.h"
+#include <windows.h>
+
+void setConsoleColor(int color)
+{
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
+}
 
 void push(Stack *stack, const char *value)
 {
