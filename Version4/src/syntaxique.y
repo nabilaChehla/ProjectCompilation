@@ -52,6 +52,8 @@ Stack *stack_nb_cond_false;
   int nbArg_Eqv =0 ; 
   int sauv_BR,Fin_inst_cond,tab_dec;
   bool divZero = false ;
+
+  int actTemp_cond = 1 ; 
 %}
 
 %union {
@@ -386,18 +388,13 @@ TAB_PAR: idf par_ouvrante bound_tab ver bound_tab  par_fermante {check_idf_Matri
                                                             }
 
 ;
-CONDITION : COND { push(stack_nb_cond_false,intToString(nb_cond_and));push(stack_nb_cond_true,intToString(nb_cond_or)) ; nb_cond_and = 0 ; nb_cond_or=0 ; }
-;
-COND_OR : COND  OR_mc                 {nb_cond_or ++;  push(stack_Qc_Cond_true,intToString(qc));strcpy(strg,top(stack_variable));quadr("BNZ","",strg,"vide");pop(stack_variable);strcpy(temp, "temp");strcat(temp, intToString(actTemp));}
-;
-COND_AND : SUITE_COND_1  AND_mc       {nb_cond_and ++ ; push(stack_Qc_Cond_false,intToString(qc));strcpy(strg,top(stack_variable));quadr("BZ","",strg,"vide");pop(stack_variable);strcpy(temp, "temp");strcat(temp, intToString(actTemp));}
+CONDITION : COND { push(stack_nb_cond_false,intToString(nb_cond_and));push(stack_nb_cond_true,intToString(nb_cond_or)) ; nb_cond_and = 0 ; nb_cond_or=0 ;strcpy(temp,"Cond.temp") ;strcat(temp, intToString(actTemp_cond));push(stack_variable, temp); actTemp_cond++ }
 ;
 
-
-COND:  COND_OR   SUITE_COND_1           
+COND:  COND  OR_mc {nb_cond_or ++;  push(stack_Qc_Cond_true,intToString(qc));strcpy(strg,top(stack_variable));quadr("BNZ","",strg,"vide");strcpy(temp, "temp");strcat(temp, intToString(actTemp));pop(stack_variable)}   SUITE_COND_1                  
       | SUITE_COND_1  
 ;
-SUITE_COND_1:  COND_AND  SUITE_COND_2 
+SUITE_COND_1:  SUITE_COND_1  AND_mc {nb_cond_and ++ ; push(stack_Qc_Cond_false,intToString(qc));strcpy(strg,top(stack_variable));quadr("BZ","",strg,"vide");strcpy(temp, "temp");strcat(temp, intToString(actTemp));pop(stack_variable)}   SUITE_COND_2 
              | SUITE_COND_2
 ;
 SUITE_COND_2:   EXPRESSION_BOOL

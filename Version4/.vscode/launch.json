@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/usthb/L3/S5/compilation/TP/Projet/FEKIR_BOUROU_GOUSMI/Version4/src/modules",
-      "program": "d:/usthb/L3/S5/compilation/TP/Projet/FEKIR_BOUROU_GOUSMI/Version4/src/modules/build/Debug/outDebug",
+      "cwd": "d:/usthb/L3/S5/compilation/TP/Projet/Version4/src/modules",
+      "program": "d:/usthb/L3/S5/compilation/TP/Projet/Version4/src/modules/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
