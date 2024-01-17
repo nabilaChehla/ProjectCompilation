@@ -28,6 +28,7 @@ typedef struct
     Node *top;
 } Stack;
 
+void setConsoleColor(int color);
 void push(Stack *stack, const char *value);
 Stack *initializeStack();
 void pop(Stack *stack);

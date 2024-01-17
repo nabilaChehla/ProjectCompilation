@@ -1,0 +1,63 @@
+% Test Quadruplets de condition + Boucle :_________________
+
+INTEGER ROUTINE fonction1 (X,Y,TAB1(30))
+INTEGER A , B ; 
+LOGICAL C ; 
+INTEGER MAT DIMENSION (100,100) ;
+A = 5 ; 
+X= 5 ; 
+TAB1(2)=6;
+A=X;
+B = A ;
+C = FALSE ; 
+
+DOWHILE ((A.LT.(10+A)).OR.(C.EQ.FALSE))
+   A = A + 1;
+   IF((B.LT.(B + 1)).AND.(A.EQ.100))
+	 THEN A = A - TAB1(A) ;
+	MAT(A,B) =MAT(1,0) * A + (B * 7);
+	B = 30*3;
+   ELSE A = A + B;
+   ENDIF
+ENDDO
+fonction1 = A ; 
+ENDR 
+
+% Test Quadruplets de Read Write Equivalence:______________
+REAL ROUTINE fonction2 (X,Y,Z)
+INTEGER B  , A = -3; 
+REAL R =1.1; 
+INTEGER MAT DIMENSION (100,100) ;
+
+READ(A); 
+READ(MAT(5,2));
+READ(B); 
+WRITE("Bonjours",A/2+B,B*5);
+
+EQUIVALENCE (Z, X, MAT(5,6)), (Y, X); 
+fonction2 = B * X ; 
+ENDR 
+%___________________________________________________________
+
+PROGRAM HelloAcad
+% Déclarations
+REAL A,B,C = 6.3  ; 
+INTEGER Y , Z=600 ; 
+
+INTEGER TAB DIMENSION (Z) ;
+REAL MAT DIMENSION (10,10) ; 
+CHARACTER char ;
+
+% Test Quadruplets de Affectation + expression:
+A = 5 ; 
+Y = 5; 
+B = A*2 + Y*Y+ 50 /6; 
+C = 2.25; 
+TAB(5)=8;
+C=MAT(0,0);
+char="i";
+
+% Test Quadruplets de CALL:--------------------
+A =CALL fonction2(MAT(Y,0),TAB(8), C);
+
+END

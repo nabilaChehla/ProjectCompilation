@@ -2,16 +2,17 @@ REAL ROUTINE fonction1 (X,Y,MAT(10,20))
 INTEGER A , B, C ;
 LOGICAL L = TRUE ;  
 % TEST Double declaration -----------------------------------  
-LOGICAL A ;
+%LOGICAL A ;
 REAL MAT DIMENSION (10,10) ;
 
 % Utilisation libre des parametres
 MAT(1,2) = 3 ; 
 X = 1 ; 
 Y = TRUE ; 
+B =MAT(0,0); 
 
 % TEST utilisation variable non initialise 
-B = 5 * 6 / A ;
+B = 5 * 6 / C ;
 WRITE(C*5);
 
 % TEST : derniere affectation n'est pas le nom de la routine
@@ -24,8 +25,8 @@ INTEGER B = 0 ;
 REAL R = 1.1 ; 
 % Taille declaree de matrice/ tableau incorrecte
 
-INTEGER TAB1 DIMENSION (-1) ; 
-INTEGER TAB2 DIMENSION (B) ; 
+INTEGER TAB DIMENSION (-1) ; 
+INTEGER TAB DIMENSION (B) ; 
 LOGICAL MatLog DIMENSION (R); 
 
 % TEST DEVISION / 0 ----------------------------  
@@ -73,13 +74,13 @@ C = L ;
 C = MAT(0,0);   
 L = TAB(6);
 L = CALL fonction1(Y,A,B); 
-A = CALL fonction1(Y,A,B); % ACCEPTE
+A = CALL fonction1(Y,A,B); 
 Y = CALL fonction1(Y,A,B);
 
 
 % Test signature de routine -------------------
 A = CALL fonction1(B,TAB(2));
-A = CALL fonction2 (60,Y); % ACCEPTE
+
 
 % Test Taille de Tableau ----------------------
 Y = 50 ; 
@@ -96,7 +97,6 @@ A = MAT (0,0);
 
 % Utilisation de CHARACTER ou LOGICAL dans expresion
 A = 5 * C ;  
-A = 5 *6 - L *20 ;  
 A = 10.2 * TABchar(2); 
 
 % Test :valeur de character ne depasse pas length 

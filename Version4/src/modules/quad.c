@@ -89,6 +89,8 @@ void Tab_idfInStack_Quad(Stack *stack_variable, const char idf[MAX_NAME_LENGTH],
 
   push(stack_variable, SaveTabIdf);
 }
+
+
 void quadParametre(Stack *stack_variable, int nbParametres)
 {
   while (nbParametres > 0)
